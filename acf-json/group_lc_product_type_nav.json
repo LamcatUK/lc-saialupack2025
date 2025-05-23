@@ -1,0 +1,23 @@
+{
+  "key": "group_lc_product_type_nav",
+  "title": "LC Product Type Nav",
+  "fields": [
+    {
+      "key": "field_lc_product_type_nav_title",
+      "label": "LC Product Type Nav",
+      "name": "title",
+      "type": "message"
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "block",
+        "operator": "==",
+        "value": "acf/lc-product-type-nav"
+      }
+    ]
+  ],
+  "active": 1,
+  "description": ""
+}

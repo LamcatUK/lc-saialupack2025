@@ -1,0 +1,9 @@
+node_modules/
+src/sass/assets/
+vendor/
+*.min.js
+*.min.css
+css/
+js/
+acf-json/
+

@@ -1,0 +1,11 @@
+{
+    "--black": "#0f0f0f",
+    "--white": "#ffffff",
+    "--green-100": "#d3ebe5",
+    "--green-400": "#45b8ac",
+    "--green-700": "#277b6c",
+    "--green-900": "#173f3d",
+    "--coral-400": "#ff6b5e",
+    "--grey-100": "#efefef",
+    "--grey-400": "#d0d3d4"
+}

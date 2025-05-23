@@ -1,0 +1,95 @@
+header {
+    background-color: white;
+    transition: var(--transition);
+
+    .contact-info {
+        font-size: var(--fs-350);
+        font-weight: var(--fw-700);
+    }
+
+    .navbar {
+        border-bottom: 1px solid hsla(0 0% 80% / 1);
+        transition: var(--transition);
+    }
+
+    a.nav-link {
+        color: var(--col-primary-400);
+        font-size: var(--fs-350);
+        font-weight: var(--fw-700);
+        text-transform: uppercase;
+        // letter-spacing: 0.05em;
+        transition: var(--transition);
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+
+        @media (min-width: 992px) {
+            &:hover {
+                color: var(--col-primary-300);
+            }
+        }
+    }
+
+    .logo-container {
+        max-width: 180px;
+        margin-right: 1rem;
+    }
+
+    .logo {
+        background-image: url(../img/sai-logo.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: inline-block;
+        aspect-ratio: 1246 / 181.5;
+        height: 25px;
+        max-width: 100%;
+    }
+
+    &.scrolled {
+        background-color: var(--col-light);
+        box-shadow: 0 4px 12px hsla(0 0% 0% / 0.05);
+
+        .navbar {
+            border-bottom: 1px solid var(--col-grey-100);
+        }
+
+        a.nav-link {
+            color: var(--col-primary-400);
+
+            @media (min-width: 992px) {
+                &:hover {
+                    color: var(--col-primary-300);
+                }
+            }
+        }
+
+        .current_page_item > .nav-link,
+        .current_page_parent > .nav-link,
+        .dropdown.current-page-ancestor > .nav-link,
+        .dropdown.current-menu-item > .nav-link {
+            color: var(--col-primary-300);
+        }
+    }
+
+    &.hide {
+        transform: translateY(-100%);
+    }
+
+    .current_page_item > .nav-link,
+    .current_page_parent > .nav-link,
+    .dropdown.current-page-ancestor > .nav-link,
+    .dropdown.current-menu-item > .nav-link {
+        color: var(--col-primary-300);
+    }
+
+    .contact-info {
+        a {
+            text-decoration: none;
+            color: var(--col-dark);
+        }
+    }
+
+    .order-2 {
+        flex: 1;
+    }
+}
