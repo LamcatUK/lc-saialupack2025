@@ -22218,6 +22218,8 @@ header .order-2 {
   height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
+  -o-object-position: center right;
+  object-position: center right;
 }
 .hero__overlay {
   position: absolute;

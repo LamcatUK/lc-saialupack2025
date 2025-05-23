@@ -33,8 +33,7 @@ $block_id = 'lc-hero-' . $block['id'];
 						'full',
 						false,
 						array(
-							'class' => 'd-block w-100 h-100 object-fit-cover',
-							'style' => 'object-position: center;',
+							'class' => 'd-block w-100 h-100',
 						),
 					);
 					?>
