@@ -22028,10 +22028,6 @@ header a.nav-link {
     color: var(--col-primary-300);
   }
 }
-header .logo-container {
-  max-width: 180px;
-  margin-right: 1rem;
-}
 header .logo {
   background-image: url(../img/sai-logo.svg);
   background-position: center;
@@ -22039,7 +22035,7 @@ header .logo {
   background-size: contain;
   display: inline-block;
   aspect-ratio: 1246/181.5;
-  height: 25px;
+  height: 30px;
   max-width: 100%;
 }
 header.scrolled {
