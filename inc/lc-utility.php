@@ -41,6 +41,13 @@ add_shortcode(
 		return $output;
 	}
 );
+add_shortcode(
+	'contact_address_icon',
+	function () {
+		$output = '<i class="fas fa-map-marker-alt"></i> ' . get_field( 'contact_address', 'option' );
+		return $output;
+	}
+);
 
 add_shortcode(
     'contact_phone',
@@ -64,6 +71,14 @@ add_shortcode(
             return '<a href="tel:' . parse_phone( $phone ) . '" class="' . $class . '">' . $anchor_text . '</a>';
         }
     }
+);
+
+add_shortcode(
+	'contact_phone_icon',
+	function () {
+        $phone = get_field( 'contact_phone', 'option' );
+        return '<a href="tel:' . parse_phone( $phone ) . '"><i class="fas fa-phone"></i>' . esc_attr( $phone ) . '</a>';
+	}
 );
 
 add_shortcode(

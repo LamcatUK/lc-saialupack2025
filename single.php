@@ -84,7 +84,7 @@ get_header();
 
 					if ( $r->have_posts() ) {
 						?>
-					<div class="h5">Related News</div>
+					<div class="h3 fs-500">Related News</div>
 						<div class="related">
 						<?php
 						while ( $r->have_posts() ) {
@@ -95,6 +95,14 @@ get_header();
 									<img src="<?= esc_url( get_the_post_thumbnail_url( get_the_ID(), 'large' ) ); ?>"
 										alt="" class="related__image">
 									<div class="related__content">
+										<div class="news__meta">
+											<div class="news__date">
+												Published <?= esc_html( get_the_date( 'dS M, Y' ) ); ?>
+											</div>
+											<div class="news__read">
+												<i class="fa-regular fa-hourglass"></i> <?= estimate_reading_time_in_minutes( get_the_content() ); ?> min
+											</div>
+										</div>
 										<h3 class="related__title">
 											<?= esc_attr( get_the_title() ); ?>
 										</h3>

@@ -22215,6 +22215,7 @@ u {
 
 .blog__title {
   font-size: var(--fs-800);
+  color: var(--col-green-900);
 }
 .blog__image {
   aspect-ratio: 16/9;
@@ -22222,7 +22223,8 @@ u {
   margin-bottom: 1rem;
   -o-object-fit: cover;
   object-fit: cover;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 .blog__meta {
@@ -22249,37 +22251,41 @@ u {
   }
 }
 .related__card {
-  background-color: var(--col-light);
+  background-color: white;
   text-decoration: none;
   display: grid;
   grid-row: span 4;
   gap: 0;
   align-items: stretch;
-  border-radius: var(--border-radius);
-  border: 2px solid var(--col-light);
+  border-radius: var(--border-sm);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
-  transition: border-color var(--transition);
+  transition: box-shadow var(--transition), transform var(--transition);
 }
 .related__card:hover {
-  border-color: var(--col-blue-400);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(2px);
 }
 .related__image {
   aspect-ratio: 16/9;
   width: 100%;
   -o-object-fit: cover;
   object-fit: cover;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   transition: opacity var(--transition);
+}
+.related__content {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
 }
 .related__title {
   font-size: var(--fs-400);
-  color: var(--col-blue-400);
-  margin-bottom: 0.5rem;
-  padding-inline: 0.5rem;
+  color: var(--col-green-900);
 }
 .related__date {
   align-self: end;
-  color: var(--col-teal-400);
+  color: var(--col-coral-400);
   font-size: var(--fs-300);
   font-weight: var(--fw-400);
   padding-inline: 0.5rem;

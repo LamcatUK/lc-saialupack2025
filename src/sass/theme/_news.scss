@@ -103,13 +103,15 @@ u {
 .blog {
     &__title {
         font-size: var(--fs-800);
+        color: var(--col-green-900);
     }
     &__image {
         aspect-ratio: 16 / 9;
         width: 100%;
         margin-bottom: 1rem;
         object-fit: cover;
-        border-radius: var(--border-radius);
+        border-radius: var(--border-lg);
+        box-shadow: var(--shadow-sm);
         overflow: hidden;
     }
     &__meta {
@@ -134,7 +136,7 @@ u {
     }
 
     &__card {
-        background-color: var(--col-light);
+        background-color: white;
         text-decoration: none;
         display: grid;
         // grid-template-rows: subgrid;
@@ -142,30 +144,36 @@ u {
         gap: 0;
         align-items: stretch;
         // height: 100%;
-        border-radius: var(--border-radius);
-        border: 2px solid var(--col-light);
+        border-radius: var(--border-sm);
+        box-shadow: var(--shadow-lg);
         overflow: hidden;
-        transition: border-color var(--transition);
+        transition:
+            box-shadow var(--transition),
+            transform var(--transition);
         &:hover {
-            border-color: var(--col-blue-400);
+            box-shadow: var(--shadow-sm);
+            transform: translateY(2px);
         }
     }
     &__image {
         aspect-ratio: 16 / 9;
         width: 100%;
         object-fit: cover;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
         transition: opacity var(--transition);
+    }
+    &__content {
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
     }
     &__title {
         font-size: var(--fs-400);
-        color: var(--col-blue-400);
-        margin-bottom: 0.5rem;
-        padding-inline: 0.5rem;
+        color: var(--col-green-900);
     }
     &__date {
         align-self: end;
-        color: var(--col-teal-400);
+        color: var(--col-coral-400);
         font-size: var(--fs-300);
         font-weight: var(--fw-400);
         padding-inline: 0.5rem;
