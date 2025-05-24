@@ -1,10 +1,15 @@
 <?php
+/**
+ * Template for displaying product type taxonomy archive.
+ *
+ * @package lc-saialupack2025
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 get_header();
-$term = get_queried_object();
+$current_term = get_queried_object();
 ?>
 <main id="main">
 <section class="hero">
@@ -13,7 +18,7 @@ $term = get_queried_object();
 			<div class="carousel-item active">
 				<?=
 				wp_get_attachment_image(
-					get_field( 'hero_image', $term ),
+					get_field( 'hero_image', $current_term ),
 					'full',
 					false,
 					array(

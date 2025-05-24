@@ -408,7 +408,7 @@ add_filter(
         // Time-based spam check (ensure form isn't submitted too quickly).
         $start_time = isset( $_SESSION['form_start_time'] ) ? $_SESSION['form_start_time'] : 0;
         $current_time = time();
-        if ( $current_time - $start_time < 15 ) { // Less than 5 seconds.
+        if ( $current_time - $start_time < 5 ) { // Less than 5 seconds.
             $result->invalidate( 'your-message', 'Form submitted too quickly. Possible spam.' );
         }
 

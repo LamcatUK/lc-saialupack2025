@@ -82,8 +82,12 @@ session_start();
 
 	wp_head();
 
+    // phpcs:disable
+    
+    // SCHEMA MARKUP.
+    /*
+
     if ( is_front_page() ) {
-        /*
         ?>
 <script type="application/ld+json">
 {
@@ -165,8 +169,9 @@ session_start();
 }
 </script>
         <?php
-        */
     }
+    */
+    // phpcs:enable
     ?>
 </head>
 <body <?php body_class(); ?>
