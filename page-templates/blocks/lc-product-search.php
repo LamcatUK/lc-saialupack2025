@@ -4,6 +4,8 @@
  *
  * @package lc-saialupack2025
  */
+
+defined( 'ABSPATH' ) || exit;
 ?>
 <section class="product-search py-5">
 	<img class="product-search__background" src="<?= esc_url( get_stylesheet_directory_uri() . '/img/product-search-bg.jpg' ); ?>" alt="Product Search Background">

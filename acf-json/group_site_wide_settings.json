@@ -369,6 +369,24 @@
             "append": ""
         },
         {
+            "key": "field_6831a97d9f8ae",
+            "label": "Images",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
             "key": "field_68307c98314d6",
             "label": "Product Hero",
             "name": "product_hero",
@@ -413,5 +431,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1748008099
+    "modified": 1748085137
 }

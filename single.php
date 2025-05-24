@@ -16,7 +16,7 @@ get_header();
 	$sidebar = array();
 	$after;
 	?>
-	<section class="breadcrumbs container-xl">
+	<section class="yoast-breadcrumbs pb-3">
 	<?php
 	if ( function_exists( 'yoast_breadcrumb' ) ) {
 		yoast_breadcrumb( '<p id="breadcrumbs">', '</p>' );
@@ -29,19 +29,20 @@ get_header();
 
 	$img = get_the_post_thumbnail( get_the_ID(), 'full', array( 'class' => 'blog__image' ) ) ? get_the_post_thumbnail( get_the_ID(), 'full', array( 'class' => 'blog__image' ) ) : '';
 	?>
-	<div class="container-xl">
+	<div class="container">
 		<div class="row g-4 pb-4">
 			<div class="col-lg-9">
 				<h1 class="blog__title"><?= esc_html( get_the_title() ); ?></h1>
 				<?= $img; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-				<div class="blog__meta">
-				<?php
-				$count = estimate_reading_time_in_minutes( get_the_content(), 200, true, true ) ?? null;
-				if ( $count ) {
-					echo wp_kses_post( $count );
-				}
-				?>
+				<div class="news__meta">
+					<div class="news__date">
+						Published <?= esc_html( get_the_date( 'dS M, Y' ) ); ?>
+					</div>
+					<div class="news__read">
+						<i class="fa-regular fa-hourglass"></i> <?= estimate_reading_time_in_minutes( get_the_content() ); ?> min
+					</div>
 				</div>
+
 				<?php
 				echo apply_filters( 'the_content', get_the_content() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
@@ -105,7 +106,7 @@ get_header();
 					</div>
 	    				<?php
 					}
-					?>
+					?><!-- TODO 
 					<a href="/contact-us/" class="blog_cta">
 						<img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/default-blog.jpg"
 							alt="" class="blog_cta__image">
@@ -115,6 +116,7 @@ get_header();
 							</h3>
 						</div>
 					</a>
+				-->
 				</div>
             </div>
         </div>

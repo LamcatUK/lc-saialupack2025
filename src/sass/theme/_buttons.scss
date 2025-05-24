@@ -83,32 +83,10 @@
     font-size: var(--fs-300);
     padding: 0.6rem 0.8rem;
 
-    &.button-primary {
-        background-color: var(--col-primary-400);
-        border-color: var(--col-primary-400);
-        color: var(--col-light);
+    color: var(--col-green-400);
 
-        &:hover {
-            background-color: var(--col-primary-300);
-            border-color: var(--col-primary-300);
-            color: var(--col-dark);
-        }
-
-        &.active {
-            background-color: var(--col-primary-500);
-            color: var(--col-light);
-        }
-    }
-
-    &.button-outline {
-        background-color: transparent;
-        border-color: var(--col-primary-400);
-        color: var(--col-primary-400);
-
-        &:hover {
-            background-color: var(--col-primary-300);
-            color: var(--col-dark);
-        }
+    &.active {
+        color: var(--col-green-900);
     }
 }
 
