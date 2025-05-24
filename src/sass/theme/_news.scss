@@ -71,12 +71,14 @@
         display: flex;
         gap: 0.25rem;
         .catflash {
-            background-color: var(--col-blue-400);
+            background-color: var(--col-coral-400);
             color: white;
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 100vw;
             font-size: var(--fs-300);
-            font-weight: var(--fw-400);
+            font-weight: var(--fw-700);
+            line-height: 1;
+            text-transform: uppercase;
         }
     }
 

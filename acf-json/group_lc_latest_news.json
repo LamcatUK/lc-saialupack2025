@@ -1,0 +1,23 @@
+{
+  "key": "group_lc_latest_news",
+  "title": "LC Latest News",
+  "fields": [
+    {
+      "key": "field_lc_latest_news_title",
+      "label": "LC Latest News",
+      "name": "title",
+      "type": "message"
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "block",
+        "operator": "==",
+        "value": "acf/lc-latest-news"
+      }
+    ]
+  ],
+  "active": 1,
+  "description": ""
+}
