@@ -49,32 +49,32 @@ function lc_rewrite_flush() {
 add_action( 'after_switch_theme', 'lc_rewrite_flush' );
 
 
-add_filter(
-	'acf/load_value/name=button_1',
-	function ( $value, $post_id, $field ) {
-		if ( empty( $value ) ) {
-			return array(
-				'url' => '/products/',
-				'title' => 'View Products',
-			);
-		}
-		return $value;
-	},
-	10,
-	3
-);
+// add_filter(
+// 	'acf/load_value/name=button_1',
+// 	function ( $value, $post_id, $field ) {
+// 		if ( empty( $value ) ) {
+// 			return array(
+// 				'url' => '/products/',
+// 				'title' => 'View Products',
+// 			);
+// 		}
+// 		return $value;
+// 	},
+// 	10,
+// 	3
+// );
 
-add_filter(
-	'acf/load_value/name=button_2',
-	function ( $value, $post_id, $field ) {
-		if ( empty( $value ) ) {
-			return array(
-				'url' => '/contact-us/',
-				'title' => 'Contact Us',
-			);
-		}
-		return $value;
-	},
-	10,
-	3
-);
+// add_filter(
+// 	'acf/load_value/name=button_2',
+// 	function ( $value, $post_id, $field ) {
+// 		if ( empty( $value ) ) {
+// 			return array(
+// 				'url' => '/contact-us/',
+// 				'title' => 'Contact Us',
+// 			);
+// 		}
+// 		return $value;
+// 	},
+// 	10,
+// 	3
+// );
