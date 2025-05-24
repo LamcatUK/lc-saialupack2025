@@ -257,7 +257,9 @@ $slider_fields = array(
 		?>
 	</div>
 </div>
-
+<?php
+get_template_part( 'page-templates/blocks/lc-cta' );
+?>
 <script>
 const filterValues = {};
 

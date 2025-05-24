@@ -57,7 +57,7 @@ get_header();
 		</div>
 	</div>
 </section>
-	<div class="container pb-5">
+	<div class="container pb-5 news">
 		<div class="yoast-breadcrumbs">
 		<?php
 		if ( function_exists( 'yoast_breadcrumb' ) ) {
@@ -65,9 +65,7 @@ get_header();
 		}
 		?>
 		</div>
-    <div>
-    <div class="container-xl pb-5 news">
-        <?php
+    <?php
         if ( get_the_content( null, false, $page_for_posts ) ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo '<div class="mb-5">' . apply_filters( 'the_content', get_the_content( null, false, $page_for_posts ) ) . '</div>';
@@ -147,6 +145,9 @@ get_header();
             <?= understrap_pagination(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         </div>
     </div>
+<?php
+get_template_part( 'page-templates/blocks/lc-cta' );
+?>
 </main>
 <?php
 get_footer();

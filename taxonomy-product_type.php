@@ -127,5 +127,8 @@ $current_term = get_queried_object();
 	}
 	?>
 	</div>
+<?php
+get_template_part( 'page-templates/blocks/lc-cta' );
+?>
 </main>
 <?php get_footer(); ?>
