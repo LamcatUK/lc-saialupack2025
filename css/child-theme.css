@@ -22620,6 +22620,15 @@ u {
   overflow: hidden;
   position: relative;
   isolation: isolate;
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.lc-industry-cards .lc-industry-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(2px);
+}
+.lc-industry-cards .lc-industry-card:hover .lc-industry-card__title {
+  color: var(--col-green-400);
 }
 .lc-industry-cards .lc-industry-card__image {
   position: absolute;
@@ -22645,6 +22654,7 @@ u {
   bottom: 1rem;
   left: 1rem;
   z-index: 2;
+  transition: color var(--transition);
 }
 
 main {

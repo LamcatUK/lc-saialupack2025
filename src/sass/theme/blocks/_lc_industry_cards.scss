@@ -18,6 +18,17 @@
         overflow: hidden;
         position: relative;
         isolation: isolate;
+        box-shadow: var(--shadow-lg);
+        transition:
+            transform var(--transition),
+            box-shadow var(--transition);
+        &:hover {
+            box-shadow: var(--shadow-sm);
+            transform: translateY(2px);
+            .lc-industry-card__title {
+                color: var(--col-green-400);
+            }
+        }
         &__image {
             position: absolute;
             aspect-ratio: 4 / 3;
@@ -41,6 +52,7 @@
             bottom: 1rem;
             left: 1rem;
             z-index: 2;
+            transition: color var(--transition);
         }
     }
 }
