@@ -191,9 +191,9 @@ session_start();
 	}
 	?>
 <header id="wrapper-navbar" class="fixed-top">
-        <nav id="main-nav" class="navbar navbar-expand-lg pb-0" aria-labelledby="main-nav-label">
+        <nav id="main-nav" class="navbar navbar-expand-lg pt-2 pb-0" aria-labelledby="main-nav-label">
             <div class="container-xl">
-                <div class="d-flex justify-content-between w-100 w-lg-auto align-items-center">
+                <div class="d-flex justify-content-between w-100 w-lg-auto align-items-center py-3 py-lg-0">
                     <!-- Logo -->
                     <a href="/" class="logo"></a>
 
@@ -201,15 +201,15 @@ session_start();
                     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false"
                         aria-label="Toggle navigation">
-                        <i class="fal fa-bars"></i>
+                        <i class="fa-solid fa-bars"></i>
                     </button>
                 </div>
 
-                <!-- Navbar Content (Now inside the same container-xl) -->
+                <!-- Navbar Content -->
                 <div id="navbarContent" class="collapse navbar-collapse">
                     <div class="w-100 d-flex flex-column justify-content-lg-between align-items-lg-center row-gap-2">
                         <!-- Contact Details (Hidden on Mobile) -->
-                        <div class="contact-info d-none d-lg-flex gap-3 w-100 justify-content-end">
+                        <div class="contact-info d-none d-lg-flex gap-3 w-100 justify-content-end pb-2">
                             <span><i class="fas fa-phone-alt has-green-400-color"></i> <?= do_shortcode( '[contact_phone]' ); ?></span>
                             <span><i class="fas fa-envelope has-green-400-color"></i> <?= do_shortcode( '[contact_email]' ); ?></span>
                         </div>

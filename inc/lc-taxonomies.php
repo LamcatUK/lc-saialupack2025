@@ -29,7 +29,10 @@ function lc_register_taxonomies() {
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'show_in_rest'      => true,
-			'rewrite'           => array( 'with_front' => false ),
+			'rewrite'           => array(
+				'slug'       => 'type',
+				'with_front' => false,
+			),
 		)
 	);
 
@@ -46,15 +49,3 @@ function lc_register_taxonomies() {
 	);
 }
 add_action( 'init', 'lc_register_taxonomies' );
-
-add_action(
-	'init',
-	function () {
-		add_rewrite_rule(
-			'^([^/]+)/?$',
-			'index.php?product_type=$matches[1]',
-			'top'
-		);
-	},
-	20
-);
