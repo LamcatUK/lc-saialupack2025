@@ -10,15 +10,15 @@
             "type": "message",
             "instructions": "",
             "required": 0,
-            "conditional_logic": false,
+            "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
             "message": "",
-            "esc_html": 0,
-            "new_lines": "wpautop"
+            "new_lines": "wpautop",
+            "esc_html": 0
         },
         {
             "key": "field_68545e1933933",
@@ -101,5 +101,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1750359629
+    "modified": 1750360069
 }
