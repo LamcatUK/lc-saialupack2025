@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.Splide) {
         new Splide('#industryCardsSplide', {
             type   : 'loop',
-            perPage: 4,
+            perPage: 5,
 			perMove: 1,
 			cloneStatus: true,
             gap    : '1.5rem',

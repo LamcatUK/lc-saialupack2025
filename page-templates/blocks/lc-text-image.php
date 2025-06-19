@@ -39,7 +39,7 @@ $image_aos = 'Text/Image' === $order_field ? 'fade-left' : 'fade-right';
 
 ?>
 <section class="text_image py-5 bg--<?= esc_attr( $bgcolour ); ?>">
-	<div class="container-xl">
+	<div class="container">
 		<div class="row g-5">
 			<div
 				class="<?= esc_attr( trim( "$txtcolwidth $txtcol" ) ); ?> d-flex flex-column justify-content-center align-items-start"
@@ -67,7 +67,7 @@ $image_aos = 'Text/Image' === $order_field ? 'fade-left' : 'fade-right';
 				?>
 			</div>
 			<div
-				class="<?= esc_attr( trim( "$imgcolwidth $imgcol" ) ); ?> text_image__image"
+				class="<?= esc_attr( trim( "$imgcolwidth $imgcol" ) ); ?> text_image__image text-center"
 				data-aos="<?= esc_attr( $image_aos ); ?>">
 				<?= $img; // phpcs:ignore ?>
 			</div>

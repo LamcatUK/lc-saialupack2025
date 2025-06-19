@@ -1,27 +1,27 @@
 {
-    "key": "group_lc_industry_cards",
-    "title": "LC Industry Cards",
+    "key": "group_lc_industry_cards_no_slider",
+    "title": "LC Industry Cards (No Slider)",
     "fields": [
         {
-            "key": "field_lc_industry_cards_title",
-            "label": "LC Industry Cards",
+            "key": "field_lc_industry_cards_no_slider_title",
+            "label": "LC Industry Cards (No Slider)",
             "name": "",
             "aria-label": "",
             "type": "message",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": false,
             "wrapper": {
-                "width": "50",
+                "width": "",
                 "class": "",
                 "id": ""
             },
             "message": "",
-            "new_lines": "wpautop",
-            "esc_html": 0
+            "esc_html": 0,
+            "new_lines": "wpautop"
         },
         {
-            "key": "field_6832f79f7e30b",
+            "key": "field_68545e1933933",
             "label": "Background",
             "name": "background",
             "aria-label": "",
@@ -41,7 +41,7 @@
             "allow_in_bindings": 0
         },
         {
-            "key": "field_6832f74932276",
+            "key": "field_68545e1b33934",
             "label": "Title",
             "name": "title",
             "aria-label": "",
@@ -62,7 +62,7 @@
             "append": ""
         },
         {
-            "key": "field_6832f74f32277",
+            "key": "field_68545e1e33935",
             "label": "Content",
             "name": "content",
             "aria-label": "",
@@ -88,7 +88,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/lc-industry-cards"
+                "value": "acf\/lc-industry-cards-no-slider"
             }
         ]
     ],
@@ -101,5 +101,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1750359602
+    "modified": 1750359629
 }

@@ -22647,7 +22647,7 @@ u {
   z-index: 1;
 }
 .lc-industry-cards .lc-industry-card__title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: var(--fw-700);
   color: white;
   position: absolute;
@@ -22655,6 +22655,20 @@ u {
   left: 1rem;
   z-index: 2;
   transition: color var(--transition);
+}
+
+.lc-industry-cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.lc-industry-cards-row .lc-industry-card {
+  flex: 1 1 calc(20% - 1.2rem);
+  max-width: calc(20% - 1.2rem);
+  min-width: 240px;
+  box-sizing: border-box;
+  margin-bottom: 1.5rem;
 }
 
 main {

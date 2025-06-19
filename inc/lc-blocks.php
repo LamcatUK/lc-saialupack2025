@@ -24,6 +24,23 @@ function acf_blocks() {
 
         acf_register_block_type(
             array(
+                'name'            => 'lc_industry_cards_no_slider',
+                'title'           => __( 'LC Industry Cards (No Slider)' ),
+                'category'        => 'layout',
+                'icon'            => 'cover-image',
+                'render_template' => 'page-templates/blocks/lc-industry-cards-no-slider.php',
+                'mode'            => 'edit',
+                'supports'        => array(
+                    'mode'      => false,
+                    'anchor'    => true,
+                    'className' => true,
+                    'align'     => true,
+                ),
+            )
+        );
+
+        acf_register_block_type(
+            array(
                 'name'            => 'lc_industry_cards',
                 'title'           => __( 'LC Industry Cards' ),
                 'category'        => 'layout',
