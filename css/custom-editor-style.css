@@ -17,12 +17,12 @@
   --fs-300: 0.8rem;
   --fs-350: 0.9rem;
   --fs-400: 1rem;
-  --fs-450: clamp(1.1rem, 0.6vw + 0.9rem, 1.25rem);
-  --fs-500: clamp(1.25rem, 1vw + 0.8rem, 1.55rem);
-  --fs-600: clamp(1.6rem, 1.2vw + 1rem, 1.95rem);
-  --fs-700: clamp(2rem, 1.4vw + 1.2rem, 2.45rem);
-  --fs-800: clamp(2.5rem, 1.6vw + 1.5rem, 3.05rem);
-  --fs-900: clamp(3.2rem, 2vw + 1.8rem, 3.8rem);
+  --fs-450: clamp(1.05rem, 0.5vw + 0.85rem, 1.15rem);
+  --fs-500: clamp(1.15rem, 0.8vw + 0.75rem, 1.35rem);
+  --fs-600: clamp(1.4rem, 1vw + 0.85rem, 1.7rem);
+  --fs-700: clamp(1.75rem, 1.2vw + 1rem, 2.1rem);
+  --fs-800: clamp(2.1rem, 1.4vw + 1.25rem, 2.6rem);
+  --fs-900: clamp(2.6rem, 1.6vw + 1.5rem, 3.2rem);
   /* Font Families */
   --ff-body: "Manrope", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --ff-heading: "Manrope", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
