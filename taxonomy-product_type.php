@@ -10,6 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 get_header();
 $current_term = get_queried_object();
+
+$strapline = get_the_archive_description();
+$strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 ?>
 <main id="main">
 <section class="hero">
@@ -70,7 +73,6 @@ $current_term = get_queried_object();
 		}
 		?>
 		</div>
-    <div><?php the_archive_description(); ?></div>
 	<?php
 	if ( have_posts() ) {
 		?>
