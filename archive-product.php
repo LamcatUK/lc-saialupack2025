@@ -88,6 +88,8 @@ $slider_fields = array(
 				<div class="col-md-6 text-white">
 					<?php
 					$d = 0;
+
+					$strapline = 'Explore our full range of foil containers and packaging solutions.';
 					?>
 					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>"><div class="hero__title">Products</div>
 					<?php
