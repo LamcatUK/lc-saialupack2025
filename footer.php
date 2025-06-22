@@ -9,12 +9,12 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <footer class="footer pt-5">
     <div class="container">
-        <div class="row gx-4 g-lg-2 g-xxl-5">
+        <div class="row g-sm-4 g-lg-2 g-xxl-5">
             <div class="col-xl-2 mb-3 pe-3">
                 <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/sai-logo--wo.svg" alt="Sai Alupack Ltd" class="footer__logo" width="200" height="68">
                 <?= do_shortcode( '[social_icons prefix="Connect: "]' ); ?>
             </div>
-            <div class="col-sm-6 col-xl-2">
+            <div class="col-sm-4 col-xl-2">
                 <?=
 				wp_nav_menu(
                     array(
@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
                 );
                 ?>
             </div>
-            <div class="col-sm-6 col-xl-2">
+            <div class="col-sm-4 col-xl-2">
                 <?=
 				wp_nav_menu(
 					array(
@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) || exit;
 				);
 				?>
             </div>
-            <div class="col-sm-6 col-xl-2">
+            <div class="mb-4 mb-sm-0 col-sm-4 col-xl-2">
                 <?=
 				wp_nav_menu(
 					array(
