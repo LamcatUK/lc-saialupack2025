@@ -7,10 +7,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$bg		 = get_field( 'background' );
+$bg = get_field( 'background' );
+
+$form_id = get_field( 'form_id' );
+if ( ! $form_id ) {
+	return;
+}
 ?>
 <section class="lc-brochure-cta py-5">
-	<?= wp_get_attachment_image( $bg, 'full', false, array( 'class' => 'lc-brochure-cta__background') ); ?>
+	<?= wp_get_attachment_image( $bg, 'full', false, array( 'class' => 'lc-brochure-cta__background' ) ); ?>
 	<div class="lc-brochure-cta__overlay"></div>
 	<div class="container" data-aos="fade">
 		<div class="inner">
