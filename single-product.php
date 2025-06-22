@@ -98,7 +98,14 @@ get_header();
 				}
 				?>
 				</div>
+				<?php
+				$samples_available = get_field( 'samples_available' );
+				if ( is_array( $samples_available ) && in_array( 'Yes', $samples_available, true ) ) {
+					?>
 				<div class="my-4"><?= do_shortcode( '[lc_wishlist_button]' ); ?></div>
+					<?php
+				}
+				?>
 			</div>
 		</div>
 	</div>
