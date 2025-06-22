@@ -22477,6 +22477,11 @@ u {
   max-width: min(400px, 90vw);
   margin-bottom: 1rem;
 }
+.hero__brcgs {
+  display: block;
+  max-width: min(120px, 90vw);
+  margin-top: 2rem;
+}
 
 .lc-product-type {
   background-color: var(--col-grey-400);
@@ -22616,6 +22621,7 @@ u {
 .splide__list {
   display: flex;
   align-items: stretch;
+  margin-bottom: 1rem !important;
 }
 .splide__slide {
   display: flex;

@@ -1,10 +1,10 @@
 {
-    "key": "group_lc_industry_cards",
-    "title": "LC Industry Cards",
+    "key": "group_lc_popular_products",
+    "title": "LC Popular Products",
     "fields": [
         {
-            "key": "field_lc_industry_cards_title",
-            "label": "LC Industry Cards",
+            "key": "field_lc_popular_products_title",
+            "label": "LC Popular Products",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -21,7 +21,7 @@
             "esc_html": 0
         },
         {
-            "key": "field_6832f79f7e30b",
+            "key": "field_6857e9ddc9479",
             "label": "Background",
             "name": "background",
             "aria-label": "",
@@ -41,7 +41,7 @@
             "allow_in_bindings": 0
         },
         {
-            "key": "field_6832f74932276",
+            "key": "field_6857e9aeab59c",
             "label": "Title",
             "name": "title",
             "aria-label": "",
@@ -62,11 +62,11 @@
             "append": ""
         },
         {
-            "key": "field_6832f74f32277",
+            "key": "field_6857e9b7ab59d",
             "label": "Content",
             "name": "content",
             "aria-label": "",
-            "type": "textarea",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -78,9 +78,40 @@
             "default_value": "",
             "maxlength": "",
             "allow_in_bindings": 0,
-            "rows": 4,
             "placeholder": "",
-            "new_lines": "wpautop"
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_6857e9bfab59e",
+            "label": "Products",
+            "name": "products",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "product"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "filters": [
+                "search",
+                "taxonomy"
+            ],
+            "return_format": "id",
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 0,
+            "elements": "",
+            "bidirectional": 0,
+            "bidirectional_target": []
         }
     ],
     "location": [
@@ -88,7 +119,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/lc-industry-cards"
+                "value": "acf\/lc-popular-products"
             }
         ]
     ],
@@ -101,5 +132,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1750591975
+    "modified": 1750591999
 }

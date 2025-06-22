@@ -53,12 +53,6 @@ $block_id = 'lc-hero-' . $block['id'];
 				<div class="col-md-6 text-white">
 					<?php
 					$d = 0;
-					// phpcs:disable
-					// if ( is_front_page() ) {
-					// 	echo '<img data-aos="fade" src="' . esc_url( get_stylesheet_directory_uri() . '/img/sai-logo--wo.svg' ) . '" alt="Sai Alupack Logo" class="hero__logo" />';
-					// 	$d += 100;
-					// }
-					// phpcs:enable
 					?>
 					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>"><div class="hero__title"><?= esc_html( $heading ); ?></div>
 					<?php
@@ -95,9 +89,15 @@ $block_id = 'lc-hero-' . $block['id'];
 							</a>
 						</span>
 							<?php
+							$d += 100;
 						}
 						?>
 					</div>
+					<?php
+					if ( is_front_page() ) {
+						echo '<img data-aos="fade" data-aos-delay="' . esc_attr( $d ) . '" src="' . esc_url( get_stylesheet_directory_uri() . '/img/brcgs_cert_packaging_logo_rgb.webp' ) . '" alt="BRCGS Certification" class="hero__brcgs" />';
+					}
+					?>
 				</div>
 			</div>
 		</div>
