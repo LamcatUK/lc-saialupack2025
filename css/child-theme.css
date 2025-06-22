@@ -22621,7 +22621,7 @@ u {
 .splide__list {
   display: flex;
   align-items: stretch;
-  margin-bottom: 1rem !important;
+  margin-block: 1rem !important;
 }
 .splide__slide {
   display: flex;
@@ -22695,6 +22695,49 @@ u {
   min-width: 240px;
   box-sizing: border-box;
   margin-bottom: 1.5rem;
+}
+
+.lc-brochure-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: 4rem;
+}
+.lc-brochure-cta__background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+.lc-brochure-cta__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(var(--col-green-900), var(--col-green-400));
+  filter: brightness(0.8);
+  opacity: 0.7;
+  z-index: 0;
+}
+.lc-brochure-cta .container, .lc-brochure-cta .yoast-breadcrumbs {
+  max-width: 75ch;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  position: relative;
+  z-index: 1;
+  color: white;
+  background: rgba(255, 255, 255, 0.1); /* transparent white */
+  backdrop-filter: blur(10px); /* apply blur */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* subtle border */
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 main {

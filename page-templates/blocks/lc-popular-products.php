@@ -39,7 +39,7 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 						$edge_terms     = wp_get_post_terms( $product, 'edge_type', array( 'fields' => 'slugs' ) );
 						?>
 					<li class="splide__slide product-card">
-						<a class="card h-100" href="<?= esc_url( get_permalink() ); ?>">
+						<a class="card h-100" href="<?= esc_url( get_permalink( $product) ); ?>">
 							<?php
 							if ( has_post_thumbnail( $product ) ) {
 								?>
