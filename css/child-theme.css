@@ -14,6 +14,7 @@
   --col-coral-400: #ff6b5e;
   /* Font Sizes */
   --base-font-size: 16px;
+  --fs-200: 0.7rem;
   --fs-300: 0.8rem;
   --fs-350: 0.9rem;
   --fs-400: 1rem;
@@ -22016,8 +22017,8 @@ header .logo {
   background-repeat: no-repeat;
   background-size: contain;
   display: inline-block;
-  aspect-ratio: 1246/181.5;
-  height: 30px;
+  aspect-ratio: 1248.21/303.32;
+  height: 50px;
   max-width: 100%;
 }
 header.scrolled {
@@ -22061,7 +22062,7 @@ header .order-2 {
 .footer {
   background-color: var(--col-green-900);
   color: #fff;
-  font-size: var(--fs-400);
+  font-size: var(--fs-300);
 }
 .footer a {
   color: #fff;
@@ -22074,7 +22075,30 @@ header .order-2 {
 .footer .footer__logo {
   width: 280px;
   max-width: 100%;
+  margin-bottom: 1rem;
+}
+.footer .footer__brcgs {
+  width: 120px;
+  max-width: 100%;
   margin-bottom: 0.5rem;
+}
+.footer .social-icons {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.footer .social-icons__prefix {
+  font-size: var(--fs-300);
+  font-weight: var(--fw-600);
+  text-transform: uppercase;
+}
+.footer a {
+  font-weight: var(--fw-500);
+  transition: color var(--transition);
+}
+.footer a:hover {
+  color: var(--col-coral-400);
 }
 .footer .footer__menu ul {
   list-style: none;
@@ -22082,28 +22106,24 @@ header .order-2 {
   margin: 0;
 }
 .footer .footer__menu ul li {
-  margin-bottom: 0.5rem;
-}
-.footer .footer__menu ul li a {
-  font-weight: var(--fw-500);
+  margin-bottom: 0.25rem;
 }
 .footer .footer-title {
   font-family: var(--ff-heading);
   margin-bottom: 1rem;
 }
 .footer .colophon {
-  border-top: 1px solid hsl(var(--hsl-light)/0.1);
+  border-top: 1px solid hsla(0, 0%, 100%, 0.6);
   margin-top: 2rem;
-  padding-top: 1.5rem;
-  font-size: var(--fs-300);
-  color: var(--col-grey-200);
+  font-size: var(--fs-200);
+  color: var(--col-grey-400);
 }
 .footer .colophon a {
-  color: var(--col-grey-200);
+  color: var(--col-grey-400);
   transition: color var(--transition);
 }
 .footer .colophon a:hover {
-  color: var(--col-primary-300) !important;
+  color: var(--col-coral-400);
 }
 .footer .colophon .lc {
   font-weight: var(--fw-600);

@@ -26,7 +26,7 @@ $block_id = 'lc-hero-' . $block['id'];
 			$active = 'active';
 			foreach ( $images as $index => $image ) {
 				?>
-				<div class="carousel-item <?php echo $active; ?>">
+				<div class="carousel-item <?= esc_attr( $active ); ?>">
 					<?=
 					wp_get_attachment_image(
 						$image['ID'],
@@ -53,10 +53,12 @@ $block_id = 'lc-hero-' . $block['id'];
 				<div class="col-md-6 text-white">
 					<?php
 					$d = 0;
+					// phpcs:disable
 					// if ( is_front_page() ) {
 					// 	echo '<img data-aos="fade" src="' . esc_url( get_stylesheet_directory_uri() . '/img/sai-logo--wo.svg' ) . '" alt="Sai Alupack Logo" class="hero__logo" />';
 					// 	$d += 100;
 					// }
+					// phpcs:enable
 					?>
 					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>"><div class="hero__title"><?= esc_html( $heading ); ?></div>
 					<?php

@@ -100,6 +100,7 @@ function widgets_init() {
 			'primary_nav'  => __( 'Primary Nav', 'lc-saialupack2025' ),
 			'footer_menu1' => __( 'Footer Nav 1', 'lc-saialupack2025' ),
 			'footer_menu2' => __( 'Footer Nav 2', 'lc-saialupack2025' ),
+			'footer_menu3' => __( 'Footer Nav 3', 'lc-saialupack2025' ),
 	    )
 	);
 

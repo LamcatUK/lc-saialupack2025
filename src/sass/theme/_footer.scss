@@ -2,7 +2,7 @@
     background-color: var(--col-green-900);
 
     color: #fff;
-    font-size: var(--fs-400);
+    font-size: var(--fs-300);
 
     a {
         color: #fff;
@@ -17,8 +17,34 @@
     .footer__logo {
         width: 280px;
         max-width: 100%;
+        margin-bottom: 1rem;
+        // filter: brightness(0) invert(1); // If using a dark-mode-safe SVG
+    }
+    .footer__brcgs {
+        width: 120px;
+        max-width: 100%;
         margin-bottom: 0.5rem;
         // filter: brightness(0) invert(1); // If using a dark-mode-safe SVG
+    }
+
+    .social-icons {
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        &__prefix {
+            font-size: var(--fs-300);
+            font-weight: var(--fw-600);
+            text-transform: uppercase;
+        }
+    }
+
+    a {
+        font-weight: var(--fw-500);
+        transition: color var(--transition);
+        &:hover {
+            color: var(--col-coral-400);
+        }
     }
 
     .footer__menu {
@@ -28,11 +54,7 @@
             margin: 0;
 
             li {
-                margin-bottom: 0.5rem;
-
-                a {
-                    font-weight: var(--fw-500);
-                }
+                margin-bottom: 0.25rem;
             }
         }
     }
@@ -43,18 +65,17 @@
     }
 
     .colophon {
-        border-top: 1px solid hsl(var(--hsl-light) / 0.1);
+        border-top: 1px solid hsl(0 0 100% / 0.6);
         margin-top: 2rem;
-        padding-top: 1.5rem;
-        font-size: var(--fs-300);
-        color: var(--col-grey-200);
+        font-size: var(--fs-200);
+        color: var(--col-grey-400);
 
         a {
-            color: var(--col-grey-200);
+            color: var(--col-grey-400);
             transition: color var(--transition);
 
             &:hover {
-                color: var(--col-primary-300) !important;
+                color: var(--col-coral-400);
             }
         }
 

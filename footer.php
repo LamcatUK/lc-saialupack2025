@@ -10,10 +10,11 @@ defined( 'ABSPATH' ) || exit;
 <footer class="footer pt-5">
     <div class="container">
         <div class="row gx-4 g-lg-2 g-xxl-5">
-            <div class="col-xl-3 text-center mb-3 pe-3">
-                <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/sai-logo--wo.svg" alt="Sai Alupack Ltd" class="footer__logo">
+            <div class="col-xl-2 mb-3 pe-3">
+                <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/sai-logo--wo.svg" alt="Sai Alupack Ltd" class="footer__logo" width="200" height="68">
+                <?= do_shortcode( '[social_icons prefix="Connect: "]' ); ?>
             </div>
-            <div class="col-sm-6 col-xl-3">
+            <div class="col-sm-6 col-xl-2">
                 <?=
 				wp_nav_menu(
                     array(
@@ -23,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
                 );
                 ?>
             </div>
-            <div class="col-sm-6 col-xl-3">
+            <div class="col-sm-6 col-xl-2">
                 <?=
 				wp_nav_menu(
 					array(
@@ -33,13 +34,23 @@ defined( 'ABSPATH' ) || exit;
 				);
 				?>
             </div>
-            <div class="col-sm-6 col-xl-3">
+            <div class="col-sm-6 col-xl-2">
+                <?=
+				wp_nav_menu(
+					array(
+						'theme_location'  => 'footer_menu3',
+						'container_class' => 'footer__menu',
+					)
+				);
+				?>
+            </div>
+            <div class="col-sm-6 col-xl-2">
                 <ul class="fa-ul">
                     <li class="mb-2">
                         <span class="fa-li">
                             <i class="fas fa-map-marker-alt"></i>
                         </span>
-                        <?= get_field( 'contact_address', 'options' ); ?>
+                        <?= wp_kses_post( get_field( 'contact_address', 'options' ) ); ?>
                     </li>
                     <li class="mb-2">
                         <span class="fa-li">
@@ -54,9 +65,12 @@ defined( 'ABSPATH' ) || exit;
                         <a href="mailto:<?= esc_html( antispambot( get_field( 'contact_email', 'options' ) ) ); ?>"><?= esc_html( antispambot( get_field( 'contact_email', 'options' ) ) ); ?></a>
                 </ul>
             </div>
+            <div class="col-sm-6 col-xl-2">
+                <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/brcgs_cert_packaging_logo_rgb.webp" alt="BRCGS Certification" class="footer__brcgs">
+            </div>
         </div>
 
-        <div class="row gx-2 colophon py-3">
+        <div class="row gx-2 colophon py-2">
             <div class="col-lg-7 text-center text-lg-start">
                 &copy; <?= esc_html( gmdate( 'Y' ) ); ?> Sai Alupack Ltd. Registered in England, no. 14328453.
             </div>

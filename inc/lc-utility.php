@@ -168,6 +168,7 @@ add_shortcode(
 		$atts = shortcode_atts(
 			array(
 				'class' => '',
+				'prefix' => '',
 			),
 			$atts,
 			'social_icons'
@@ -197,7 +198,10 @@ add_shortcode(
 
     	$class = esc_attr( trim( $atts['class'] ) );
 
-	    return ! empty( $icons ) ? '<div class="social-icons ' . $class . '">' . implode( ' ', $icons ) . '</div>' : '';
+        if ( ! empty( $atts['prefix'] ) ) {
+            $prefix = '<span class="social-icons__prefix">' . $atts['prefix'] . '</span>';
+        }
+	    return ! empty( $icons ) ? '<div class="social-icons ' . $class . '">' . $prefix . implode( ' ', $icons ) . '</div>' : '';
 	}
 );
 

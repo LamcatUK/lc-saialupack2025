@@ -191,7 +191,7 @@ session_start();
 	}
 	?>
 <header id="wrapper-navbar" class="fixed-top">
-        <nav id="main-nav" class="navbar navbar-expand-lg pt-2 pb-0" aria-labelledby="main-nav-label">
+        <nav id="main-nav" class="navbar navbar-expand-lg py-2" aria-labelledby="main-nav-label">
             <div class="container-xl">
                 <div class="d-flex justify-content-between w-100 w-lg-auto align-items-center py-3 py-lg-0">
                     <!-- Logo -->
