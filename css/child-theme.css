@@ -22954,6 +22954,7 @@ for (; i < all.length; i++) {
   color: var(--col-dark);
   box-shadow: var(--shadow-lg);
   transition: box-shadow var(--transition), transform var(--transition);
+  border-radius: var(--border-sm);
 }
 .product-card a:hover {
   box-shadow: var(--shadow-sm);
@@ -22961,6 +22962,27 @@ for (; i < all.length; i++) {
 }
 .product-card a li {
   font-weight: 400;
+}
+
+.has-samples .product-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  text-decoration: none;
+  color: var(--col-dark);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-sm);
+}
+.has-samples .product-card li {
+  font-weight: 400;
+}
+
+.wishlist-checkbox {
+  display: none;
+}
+
+.product-card.selected {
+  border: 2px solid var(--col-green-400);
+  background-color: var(--col-green-100);
 }
 
 .has-blue-color,

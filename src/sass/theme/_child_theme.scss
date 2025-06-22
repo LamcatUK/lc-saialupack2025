@@ -250,4 +250,24 @@ for (; i < all.length; i++) {
     li {
         font-weight: 400;
     }
+    border-radius: var(--border-sm);
+}
+
+.has-samples .product-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    text-decoration: none;
+    color: var(--col-dark);
+    box-shadow: var(--shadow-sm);
+    li {
+        font-weight: 400;
+    }
+    border-radius: var(--border-sm);
+}
+.wishlist-checkbox {
+    display: none;
+}
+.product-card.selected {
+    border: 2px solid var(--col-green-400);
+    background-color: var(--col-green-100);
 }
