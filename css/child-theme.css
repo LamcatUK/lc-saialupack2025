@@ -22971,6 +22971,7 @@ for (; i < all.length; i++) {
   color: var(--col-dark);
   box-shadow: var(--shadow-sm);
   border-radius: var(--border-sm);
+  cursor: pointer;
 }
 .has-samples .product-card li {
   font-weight: 400;

@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	document.getElementById('requestSamples').addEventListener('click', function() {
 		if (!this.disabled) {
-			window.location.href = '/request-sample/';
+			window.location.href = '/request-samples/';
 		}
 	});
 });

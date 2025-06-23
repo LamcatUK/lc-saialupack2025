@@ -263,6 +263,7 @@ for (; i < all.length; i++) {
         font-weight: 400;
     }
     border-radius: var(--border-sm);
+    cursor: pointer;
 }
 .wishlist-checkbox {
     display: none;
