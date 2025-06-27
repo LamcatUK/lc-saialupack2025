@@ -210,6 +210,7 @@ session_start();
                     <div class="w-100 d-flex flex-column justify-content-lg-between align-items-lg-center row-gap-2">
                         <!-- Contact Details (Hidden on Mobile) -->
                         <div class="contact-info d-none d-lg-flex gap-3 w-100 justify-content-end pb-2">
+                            🇬🇧
                             <span><i class="fas fa-phone-alt has-green-400-color"></i> <?= do_shortcode( '[contact_phone]' ); ?></span>
                             <span><i class="fas fa-envelope has-green-400-color"></i> <?= do_shortcode( '[contact_email]' ); ?></span>
                         </div>
