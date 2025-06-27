@@ -29,6 +29,9 @@ function lc_register_taxonomies() {
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'show_in_rest'      => true,
+			'show_in_graphql' => true,
+			'graphql_single_name' => 'ProductType',
+			'graphql_plural_name' => 'ProductTypes',
 			'rewrite'           => array(
 				'slug'       => 'type',
 				'with_front' => false,

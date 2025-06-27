@@ -316,6 +316,12 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "show_in_rest": 0,
-    "modified": 1750597575
+    "show_in_rest": 1,
+    "show_in_graphql": 1,
+    "graphql_field_name": "product",
+    "map_graphql_types_from_location_rules": 1,
+    "graphql_types": [
+        "Product"
+    ],
+    "modified": 1751013818
 }

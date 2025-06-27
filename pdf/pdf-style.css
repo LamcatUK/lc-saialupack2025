@@ -1,0 +1,29 @@
+table.product-grid {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.product-cell {
+    width: 33.3%;
+    padding: 5mm;
+    border: 1px solid steelblue;
+    border-radius: 1rem;
+    padding: 1rem;
+    vertical-align: top;
+}
+
+.product-img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 3mm;
+}
+
+.product-specs {
+    width: 100%;
+    font-size: 9pt;
+    margin-top: 3mm;
+}
+
+.product-specs td {
+    padding: 1mm;
+}

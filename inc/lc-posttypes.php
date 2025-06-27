@@ -29,6 +29,9 @@ register_post_type(
 		'show_in_rest' => true,
 		'supports'     => array( 'title', 'thumbnail' ),
 		'menu_icon'    => 'dashicons-cart',
+		'show_in_graphql' => true,
+		'graphql_single_name' => 'Product',
+		'graphql_plural_name' => 'Products',
 	)
 );
 }

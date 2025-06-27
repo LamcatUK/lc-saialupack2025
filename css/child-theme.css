@@ -21997,14 +21997,16 @@ header .navbar {
   border-bottom: 1px solid hsl(0, 0%, 80%);
   transition: var(--transition);
 }
+header .navbar-nav {
+  gap: 2rem;
+}
 header a.nav-link {
   color: var(--col-primary-400);
   font-size: var(--fs-350);
   font-weight: var(--fw-700);
   text-transform: uppercase;
   transition: var(--transition);
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-inline: 0 !important;
 }
 @media (min-width: 992px) {
   header a.nav-link:hover {

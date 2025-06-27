@@ -520,3 +520,69 @@ function dimensions($a, $b) {
     }
     return $a;
 }
+
+
+// BROCHURE GENERATION.
+// This action hook listens for the 'generate_brochure' query parameter in the URL.
+add_action(
+    'init',
+    function () {
+	    if ( isset( $_GET['generate_brochure'] ) ) {
+		    include get_stylesheet_directory() . '/pdf/generate-brochure.php';
+		    exit;
+	    }
+    }
+);
+
+if ( function_exists( 'acf_add_options_page' ) ) {
+	acf_add_options_page(
+        array(
+            'page_title' => 'PDF Brochure Content',
+            'menu_title' => 'Brochure Content',
+            'menu_slug'  => 'pdf-brochure-content',
+            'capability' => 'edit_posts',
+            'redirect'   => false,
+        )
+    );
+}
+
+add_action(
+    'graphql_register_types',
+    function () {
+        error_log( '✅ graphql_register_types fired' );
+        if ( ! class_exists( 'WPGraphQL\\GraphQL' ) || ! function_exists( 'get_field' ) ) {
+            return;
+        }
+
+        $fields = array(
+            'sku'               => 'String',
+            'capacity'          => 'Float',
+            'lid'               => 'String',
+            'additional'        => 'String',
+            'top_out_a'         => 'Float',
+            'top_out_b'         => 'Float',
+            'top_in_a'          => 'Float',
+            'top_in_b'          => 'Float',
+            'base_a'            => 'Float',
+            'base_b'            => 'Float',
+            'depth'             => 'Float',
+            'weight'            => 'Float',
+            'samples_available' => 'Boolean',
+        );
+
+        foreach ( $fields as $name => $type ) {
+            register_graphql_field(
+                'Product',
+                $name,
+                array(
+                    'type'        => $type,
+                    'description' => "ACF field `$name`",
+                    'resolve'     => function ( $post ) use ( $name ) {
+                        return get_field( $name, $post->ID );
+                    },
+                )
+            );
+        }
+    }
+);
+

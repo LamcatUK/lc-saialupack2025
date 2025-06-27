@@ -12,6 +12,10 @@ header {
         transition: var(--transition);
     }
 
+    .navbar-nav {
+        gap: 2rem;
+    }
+
     a.nav-link {
         color: var(--col-primary-400);
         font-size: var(--fs-350);
@@ -19,8 +23,7 @@ header {
         text-transform: uppercase;
         // letter-spacing: 0.05em;
         transition: var(--transition);
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
+        padding-inline: 0 !important;
 
         @media (min-width: 992px) {
             &:hover {
