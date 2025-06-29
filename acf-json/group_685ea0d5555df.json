@@ -1,0 +1,54 @@
+{
+    "key": "group_685ea0d5555df",
+    "title": "Brochure: Statement of Compliance",
+    "fields": [
+        {
+            "key": "field_685ea0d59eea5",
+            "label": "Statement of Compliance",
+            "name": "statement_of_compliance",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0,
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "statementOfCompliance",
+            "graphql_non_null": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "pdf-brochure-content"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "show_in_graphql": 1,
+    "graphql_field_name": "brochure:StatementOfCompliance",
+    "map_graphql_types_from_location_rules": 0,
+    "graphql_types": "",
+    "modified": 1751032097
+}

@@ -546,43 +546,353 @@ if ( function_exists( 'acf_add_options_page' ) ) {
     );
 }
 
-add_action(
-    'graphql_register_types',
-    function () {
-        error_log( '✅ graphql_register_types fired' );
-        if ( ! class_exists( 'WPGraphQL\\GraphQL' ) || ! function_exists( 'get_field' ) ) {
-            return;
-        }
 
-        $fields = array(
-            'sku'               => 'String',
-            'capacity'          => 'Float',
-            'lid'               => 'String',
-            'additional'        => 'String',
-            'top_out_a'         => 'Float',
-            'top_out_b'         => 'Float',
-            'top_in_a'          => 'Float',
-            'top_in_b'          => 'Float',
-            'base_a'            => 'Float',
-            'base_b'            => 'Float',
-            'depth'             => 'Float',
-            'weight'            => 'Float',
-            'samples_available' => 'Boolean',
+	function brochure_image_resolver( $field ) {
+		return fn() => ( $img = get_field( $field, 'option' ) ) && is_array( $img )
+			? [ 'sourceUrl' => $img['url'] ?? '', 'altText' => $img['alt'] ?? '' ]
+			: null;
+	}
+
+add_action( 'graphql_register_types', function () {
+	if ( ! function_exists( 'get_field' ) ) {
+		return;
+	}
+
+	// === PRODUCT META FIELDS ===
+	$fields = array(
+		'sku'               => 'String',
+		'capacity'          => 'Float',
+		'lid'               => 'String',
+		'additional'        => 'String',
+		'top_out_a'         => 'Float',
+		'top_out_b'         => 'Float',
+		'top_in_a'          => 'Float',
+		'top_in_b'          => 'Float',
+		'base_a'            => 'Float',
+		'base_b'            => 'Float',
+		'depth'             => 'Float',
+		'weight'            => 'Float',
+		'samples_available' => 'Boolean',
+	);
+
+	foreach ( $fields as $name => $type ) {
+		register_graphql_field( 'Product', $name, [
+			'type'        => $type,
+			'description' => "ACF field `$name`",
+			'resolve'     => function( $post ) use ( $name, $type ) {
+				$value = get_field( $name, $post->ID );
+				if ( $value === '' || $value === null ) {
+					return null;
+				}
+				if ( $type === 'Float' ) {
+					return (float) $value;
+				}
+				if ( $type === 'Boolean' ) {
+					return (bool) $value;
+				}
+				return $value;
+			},
+		] );
+	}
+
+	// === STATIC OPTIONS FIELDS ===
+	register_graphql_field( 'RootQuery', 'coverTitle', [
+		'type'        => 'String',
+		'description' => 'Cover page title',
+		'resolve'     => fn() => get_field( 'cover_title', 'option' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'coverSubtitle', [
+		'type'        => 'String',
+		'description' => 'Cover page subtitle',
+		'resolve'     => fn() => get_field( 'cover_subtitle', 'option' ),
+	] );
+
+register_graphql_field( 'RootQuery', 'coverLogo', [
+	'type'        => 'BrochureImage',
+	'description' => 'Cover logo image',
+	'resolve'     => brochure_image_resolver( 'cover_logo' ),
+] );
+register_graphql_field( 'RootQuery', 'watermark', [
+	'type'        => 'BrochureImage',
+	'description' => 'Watermark image',
+	'resolve'     => brochure_image_resolver( 'watermark' ),
+] );
+
+	register_graphql_field( 'RootQuery', 'aboutHeading', [
+		'type'        => 'String',
+		'description' => 'About heading',
+		'resolve'     => fn() => get_field( 'about_heading', 'option' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'aboutText1', [
+		'type'        => 'String',
+		'description' => 'About text block 1',
+		'resolve'     => fn() => get_field( 'about_text_1', 'option' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'aboutText2', [
+		'type'        => 'String',
+		'description' => 'About text block 2',
+		'resolve'     => fn() => get_field( 'about_text_2', 'option' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'statementOfCompliance', [
+		'type'        => 'String',
+		'description' => 'Compliance statement',
+		'resolve'     => fn() => get_field( 'statement_of_compliance', 'option' ),
+	] );
+
+	// === IMAGES ===
+	register_graphql_object_type( 'BrochureImage', [
+		'description' => 'Image with alt text',
+		'fields'      => [
+			'sourceUrl' => [ 'type' => 'String' ],
+			'altText'   => [ 'type' => 'String' ],
+		],
+	] );
+
+
+	register_graphql_field( 'RootQuery', 'aboutImage1', [
+		'type'        => 'BrochureImage',
+		'description' => 'About image 1',
+		'resolve'     => brochure_image_resolver( 'about_image_1' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'aboutImage2', [
+		'type'        => 'BrochureImage',
+		'description' => 'About image 2',
+		'resolve'     => brochure_image_resolver( 'about_image_2' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'aboutImage3', [
+		'type'        => 'BrochureImage',
+		'description' => 'About image 3',
+		'resolve'     => brochure_image_resolver( 'about_image_3' ),
+	] );
+
+
+	register_graphql_field( 'RootQuery', 'sectorTitle', [
+		'type'        => 'String',
+		'description' => 'Sector Title',
+		'resolve'     => fn() => get_field( 'sectors_page_title', 'option' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'sectorIntro', [
+		'type'        => 'String',
+		'description' => 'Sector Intro',
+		'resolve'     => fn() => get_field( 'sectors_page_intro', 'option' ),
+	] );
+
+	// === SECTORS REPEATER ===
+	register_graphql_object_type( 'Sector', [
+		'description' => 'Sector row',
+		'fields'      => [
+			'sectorTitle' => [
+				'type'    => 'String',
+				'resolve' => fn( $row ) => $row['sector_title'] ?? null,
+			],
+			'sectorDescription' => [
+				'type'    => 'String',
+				'resolve' => fn( $row ) => $row['sector_description'] ?? null,
+			],
+		],
+	] );
+
+    register_graphql_field( 'RootQuery', 'sectorImage1', [
+		'type'        => 'BrochureImage',
+		'description' => 'Sectors image 1',
+		'resolve'     => brochure_image_resolver( 'sector_image_1' ),
+	] );
+    register_graphql_field( 'RootQuery', 'sectorImage2', [
+		'type'        => 'BrochureImage',
+		'description' => 'Sectors image 2',
+		'resolve'     => brochure_image_resolver( 'sector_image_2' ),
+	] );
+    register_graphql_field( 'RootQuery', 'sectorImage3', [
+		'type'        => 'BrochureImage',
+		'description' => 'Sectors image 3',
+		'resolve'     => brochure_image_resolver( 'sector_image_3' ),
+	] );
+    register_graphql_field( 'RootQuery', 'sectorImage4', [
+		'type'        => 'BrochureImage',
+		'description' => 'Sectors image 4',
+		'resolve'     => brochure_image_resolver( 'sector_image_4' ),
+	] );
+
+	register_graphql_field( 'RootQuery', 'sectors', [
+		'type'        => [ 'list_of' => 'Sector' ],
+		'description' => 'Brochure sector list',
+		'resolve'     => fn() => get_field( 'sectors', 'option' ) ?: [],
+	] );
+} );
+
+
+add_action( 'graphql_register_types', function() {
+    register_graphql_field( 'RootQuery', 'productCount', [
+        'type' => 'Int',
+        'description' => __( 'Total number of products', 'your-textdomain' ),
+        'resolve' => function() {
+            $query = new WP_Query([
+                'post_type' => 'product',
+                'post_status' => 'publish',
+                'fields' => 'ids',
+                'nopaging' => true,
+            ]);
+            return $query->found_posts;
+        },
+    ] );
+});
+
+
+// Replace the entire CSV export section with this:
+
+if ( function_exists( 'acf_add_options_page' ) ) {
+    // Add CSV Export admin page
+    add_action( 'admin_menu', function() {
+        add_management_page(
+            'Export Products CSV',
+            'Export Products',
+            'manage_options',
+            'export-products-csv',
+            'render_export_products_page'
         );
+    });
+}
 
-        foreach ( $fields as $name => $type ) {
-            register_graphql_field(
-                'Product',
-                $name,
-                array(
-                    'type'        => $type,
-                    'description' => "ACF field `$name`",
-                    'resolve'     => function ( $post ) use ( $name ) {
-                        return get_field( $name, $post->ID );
-                    },
-                )
-            );
-        }
+/**
+ * Renders the CSV export admin page
+ */
+function render_export_products_page() {
+    // Get product count for display
+    $product_count = wp_count_posts( 'product' )->publish;
+    ?>
+    <div class="wrap">
+        <h1>Export Products CSV</h1>
+        <div class="card">
+            <h2>Product Database Export</h2>
+            <p>Export all published products and their data to a CSV file.</p>
+            <p><strong>Total Products:</strong> <?php echo esc_html( $product_count ); ?></p>
+            
+            <p>
+                <a href="<?php echo admin_url('admin.php?page=export-products-csv&action=download_csv&_wpnonce=' . wp_create_nonce('download_csv')); ?>" 
+                   class="button button-primary">
+                    Download Products CSV
+                </a>
+            </p>
+        </div>
+        
+        <div class="card">
+            <h3>CSV Contents</h3>
+            <p>The exported CSV will include the following fields:</p>
+            <ul>
+                <li>ID</li>
+                <li>Title</li>
+                <li>SKU</li>
+                <li>Product Type(s)</li>
+                <li>Capacity</li>
+                <li>Lid</li>
+                <li>Additional</li>
+                <li>Top Out A</li>
+                <li>Top Out B</li>
+                <li>Top In A</li>
+                <li>Top In B</li>
+                <li>Base A</li>
+                <li>Base B</li>
+                <li>Depth</li>
+                <li>Weight</li>
+                <li>Samples Available</li>
+                <li>Featured Image URL</li>
+                <li>Date Created</li>
+                <li>Last Modified</li>
+            </ul>
+        </div>
+    </div>
+    <?php
+}
+
+// Handle the download via URL parameter instead of POST
+add_action('admin_init', function() {
+    if (isset($_GET['action']) && $_GET['action'] === 'download_csv' && 
+        isset($_GET['page']) && $_GET['page'] === 'export-products-csv' &&
+        wp_verify_nonce($_GET['_wpnonce'], 'download_csv')) {
+        
+        export_products_csv();
     }
-);
+});
 
+/**
+ * Generates and downloads the products CSV file
+ */
+function export_products_csv() {
+    $filename = 'products-export-' . date( 'Y-m-d-H-i-s' ) . '.csv';
+    
+    // Set headers
+    header( 'Content-Type: text/csv; charset=utf-8' );
+    header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+    header( 'Cache-Control: no-cache, must-revalidate' );
+    header( 'Expires: 0' );
+    header( 'Pragma: no-cache' );
+    
+    // Open output stream
+    $output = fopen( 'php://output', 'w' );
+
+    // Add BOM for proper UTF-8 encoding in Excel
+    fwrite( $output, "\xEF\xBB\xBF" );
+
+    // CSV Headers
+    $headers = [
+        'ID', 'Title', 'SKU', 'Product Types', 'Capacity', 'Lid', 'Additional',
+        'Top Out A', 'Top Out B', 'Top In A', 'Top In B', 'Base A', 'Base B',
+        'Depth', 'Weight', 'Samples Available', 'Featured Image URL',
+        'Date Created', 'Last Modified'
+    ];
+    fputcsv( $output, $headers );
+
+    // Get all products
+    $products = get_posts([
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC'
+    ]);
+
+    foreach ( $products as $product ) {
+        // Get product types
+        $product_types = get_the_terms( $product->ID, 'product_type' );
+        $type_names = $product_types && !is_wp_error($product_types) ? 
+            implode( ', ', wp_list_pluck( $product_types, 'name' ) ) : '';
+
+        // Get featured image
+        $featured_image = get_the_post_thumbnail_url( $product->ID, 'full' );
+
+        // Build row data
+        $row = [
+            $product->ID,
+            $product->post_title,
+            get_field( 'sku', $product->ID ) ?: '',
+            $type_names,
+            get_field( 'capacity', $product->ID ) ?: '',
+            get_field( 'lid', $product->ID ) ?: '',
+            get_field( 'additional', $product->ID ) ?: '',
+            get_field( 'top_out_a', $product->ID ) ?: '',
+            get_field( 'top_out_b', $product->ID ) ?: '',
+            get_field( 'top_in_a', $product->ID ) ?: '',
+            get_field( 'top_in_b', $product->ID ) ?: '',
+            get_field( 'base_a', $product->ID ) ?: '',
+            get_field( 'base_b', $product->ID ) ?: '',
+            get_field( 'depth', $product->ID ) ?: '',
+            get_field( 'weight', $product->ID ) ?: '',
+            get_field( 'samples_available', $product->ID ) ? 'Yes' : 'No',
+            $featured_image ?: '',
+            $product->post_date,
+            $product->post_modified
+        ];
+
+        fputcsv( $output, $row );
+    }
+
+    fclose( $output );
+    exit;
+}

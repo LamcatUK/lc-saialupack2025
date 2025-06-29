@@ -58,7 +58,7 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "id",
+            "return_format": "array",
             "library": "all",
             "min_width": "",
             "min_height": "",
@@ -68,7 +68,39 @@
             "max_size": "",
             "mime_types": "",
             "allow_in_bindings": 0,
-            "preview_size": "medium"
+            "preview_size": "medium",
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "coverLogo"
+        },
+        {
+            "key": "field_68603806a58e0",
+            "label": "Watermark",
+            "name": "watermark",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "allow_in_bindings": 0,
+            "preview_size": "medium",
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "watermark"
         }
     ],
     "location": [
@@ -89,5 +121,9 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1750786358
+    "show_in_graphql": 1,
+    "graphql_field_name": "brochure:CoverPage",
+    "map_graphql_types_from_location_rules": 0,
+    "graphql_types": "",
+    "modified": 1751136276
 }
