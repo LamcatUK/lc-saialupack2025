@@ -790,6 +790,8 @@ function render_export_products_page() {
                 <li>Title</li>
                 <li>SKU</li>
                 <li>Product Type(s)</li>
+                <li>Product Categories</li>
+                <li>Edge Types</li>
                 <li>Capacity</li>
                 <li>Lid</li>
                 <li>Additional</li>
@@ -842,10 +844,10 @@ function export_products_csv() {
 
     // CSV Headers
     $headers = [
-        'ID', 'Title', 'SKU', 'Product Types', 'Capacity', 'Lid', 'Additional',
-        'Top Out A', 'Top Out B', 'Top In A', 'Top In B', 'Base A', 'Base B',
-        'Depth', 'Weight', 'Samples Available', 'Featured Image URL',
-        'Date Created', 'Last Modified'
+        'ID', 'Title', 'SKU', 'Product Types', 'Product Categories', 'Edge Types', 
+        'Capacity', 'Lid', 'Additional', 'Top Out A', 'Top Out B', 'Top In A', 
+        'Top In B', 'Base A', 'Base B', 'Depth', 'Weight', 'Samples Available', 
+        'Featured Image URL', 'Date Created', 'Last Modified'
     ];
     fputcsv( $output, $headers );
 
@@ -864,6 +866,16 @@ function export_products_csv() {
         $type_names = $product_types && !is_wp_error($product_types) ? 
             implode( ', ', wp_list_pluck( $product_types, 'name' ) ) : '';
 
+        // Get product categories
+        $product_categories = get_the_terms( $product->ID, 'product_category' );
+        $category_names = $product_categories && !is_wp_error($product_categories) ? 
+            implode( ', ', wp_list_pluck( $product_categories, 'name' ) ) : '';
+
+        // Get edge types
+        $edge_types = get_the_terms( $product->ID, 'edge_type' );
+        $edge_type_names = $edge_types && !is_wp_error($edge_types) ? 
+            implode( ', ', wp_list_pluck( $edge_types, 'name' ) ) : '';
+
         // Get featured image
         $featured_image = get_the_post_thumbnail_url( $product->ID, 'full' );
 
@@ -873,6 +885,8 @@ function export_products_csv() {
             $product->post_title,
             get_field( 'sku', $product->ID ) ?: '',
             $type_names,
+            $category_names,
+            $edge_type_names,
             get_field( 'capacity', $product->ID ) ?: '',
             get_field( 'lid', $product->ID ) ?: '',
             get_field( 'additional', $product->ID ) ?: '',
