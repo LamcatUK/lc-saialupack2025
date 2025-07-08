@@ -50,5 +50,18 @@ function lc_register_taxonomies() {
 			'show_in_rest'      => true,
 		)
 	);
+
+	register_taxonomy(
+		'usage',
+		'product',
+		array(
+			'label'             => 'Usage Category',
+			'hierarchical'      => true,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'show_in_rest'      => true,
+		)
+	);
+
 }
 add_action( 'init', 'lc_register_taxonomies' );

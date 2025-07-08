@@ -3,30 +3,9 @@
     "title": "Product",
     "fields": [
         {
-            "key": "field_682e34fb9a8c0",
-            "label": "SKU",
-            "name": "sku",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "allow_in_bindings": 0,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "key": "field_682e36478bc72",
-            "label": "Additional",
-            "name": "additional",
+            "label": "Product Name",
+            "name": "product_name",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -42,51 +21,11 @@
             "allow_in_bindings": 0,
             "placeholder": "",
             "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_682f6cf75603d",
-            "label": "Lid",
-            "name": "lid",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "allow_in_bindings": 0,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_682e365b8bc73",
-            "label": "Capacity",
-            "name": "capacity",
-            "aria-label": "",
-            "type": "number",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "min": "",
-            "max": "",
-            "allow_in_bindings": 0,
-            "placeholder": "",
-            "step": "",
-            "prepend": "",
-            "append": ""
+            "append": "",
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "additional",
+            "graphql_non_null": 0
         },
         {
             "key": "field_682e36658bc74",
@@ -227,16 +166,16 @@
             "append": ""
         },
         {
-            "key": "field_682e368c8bc77",
-            "label": "Depth",
-            "name": "depth",
+            "key": "field_682e365b8bc73",
+            "label": "Capacity",
+            "name": "capacity",
             "aria-label": "",
             "type": "number",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "50",
+                "width": "33",
                 "class": "",
                 "id": ""
             },
@@ -247,7 +186,38 @@
             "placeholder": "",
             "step": "",
             "prepend": "",
-            "append": ""
+            "append": "",
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "capacity",
+            "graphql_non_null": 0
+        },
+        {
+            "key": "field_682e368c8bc77",
+            "label": "Depth",
+            "name": "depth",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "step": "",
+            "prepend": "",
+            "append": "",
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "depth",
+            "graphql_non_null": 0
         },
         {
             "key": "field_683088513a20d",
@@ -259,7 +229,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "50",
+                "width": "33",
                 "class": "",
                 "id": ""
             },
@@ -270,33 +240,61 @@
             "placeholder": "",
             "step": "",
             "prepend": "",
-            "append": ""
+            "append": "",
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "weight",
+            "graphql_non_null": 0
         },
         {
             "key": "field_6857ffb513397",
-            "label": "Samples Available",
+            "label": "Samples Available?",
             "name": "samples_available",
             "aria-label": "",
-            "type": "checkbox",
+            "type": "true_false",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "Yes": "Yes"
-            },
-            "default_value": [],
-            "return_format": "value",
-            "allow_custom": 0,
+            "message": "",
+            "default_value": 0,
             "allow_in_bindings": 0,
-            "layout": "vertical",
-            "toggle": 0,
-            "save_custom": 0,
-            "custom_choice_button_text": "Add new choice"
+            "ui": 0,
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "samplesAvailable",
+            "graphql_non_null": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_682f6cf75603d",
+            "label": "Lid Available?",
+            "name": "lid",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 0,
+            "ui": 0,
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "lid",
+            "graphql_non_null": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
         }
     ],
     "location": [
@@ -321,5 +319,5 @@
     "graphql_field_name": "product",
     "map_graphql_types_from_location_rules": 0,
     "graphql_types": "",
-    "modified": 1751016145
+    "modified": 1752001657
 }
