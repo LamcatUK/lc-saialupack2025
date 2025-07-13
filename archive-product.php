@@ -12,9 +12,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 
+$product_types = get_terms(
+	array(
+		'taxonomy'   => 'product_type',
+		'hide_empty' => true,
+	)
+);
+
 $product_categories = get_terms(
 	array(
 		'taxonomy'   => 'product_category',
+		'hide_empty' => true,
+	)
+);
+
+$product_usage = get_terms(
+	array(
+		'taxonomy'   => 'usage',
 		'hide_empty' => true,
 	)
 );
@@ -118,11 +132,24 @@ $slider_fields = array(
 <div class="container my-5">
 	<!-- Filters -->
 	<div class="row g-3 mb-4 align-items-end">
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<label for="skuSearch" class="form-label">Search by SKU</label>
 			<input type="text" id="skuSearch" class="form-control" placeholder="e.g. 1409pl">
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2">
+			<label for="typeFilter" class="form-label">Type</label>
+			<select id="typeFilter" class="form-select">
+				<option value="">All</option>
+				<?php
+				foreach ( $product_types as $product_type ) {
+					?>
+				<option value="<?= esc_attr( $product_type->slug ); ?>"><?= esc_html( $product_type->name ); ?></option>
+					<?php
+				}
+				?>
+			</select>
+		</div>
+		<div class="col-md-2">
 			<label for="categoryFilter" class="form-label">Category</label>
 			<select id="categoryFilter" class="form-select">
 				<option value="">All</option>
@@ -135,7 +162,20 @@ $slider_fields = array(
 				?>
 			</select>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2">
+			<label for="usageFilter" class="form-label">Usage</label>
+			<select id="usageFilter" class="form-select">
+				<option value="">All</option>
+				<?php
+				foreach ( $product_usage as $product_use ) {
+					?>
+				<option value="<?= esc_attr( $product_use->slug ); ?>"><?= esc_html( $product_use->name ); ?></option>
+					<?php
+				}
+				?>
+			</select>
+		</div>
+		<div class="col-md-2">
 			<label for="edgeFilter" class="form-label">Edge Type</label>
 			<select id="edgeFilter" class="form-select">
 				<option value="">All</option>
@@ -148,7 +188,7 @@ $slider_fields = array(
 				?>
 			</select>
 		</div>
-		<div class="col-md-3 d-grid">
+		<div class="col-md-2 d-grid">
 			<label class="form-label invisible">Reset</label>
 			<button id="resetFilters" class="btn btn-secondary">Reset Filters</button>
 		</div>
@@ -215,13 +255,17 @@ $slider_fields = array(
 			$base_a    = get_field( 'base_a' );
 			$base_b    = get_field( 'base_b' );
 
+			$type_terms     = wp_get_post_terms( get_the_ID(), 'product_type', array( 'fields' => 'slugs' ) );
 			$category_terms = wp_get_post_terms( get_the_ID(), 'product_category', array( 'fields' => 'slugs' ) );
 			$edge_terms     = wp_get_post_terms( get_the_ID(), 'edge_type', array( 'fields' => 'slugs' ) );
+			$usage_terms    = wp_get_post_terms( get_the_ID(), 'usage', array( 'fields' => 'slugs' ) );
 			?>
 			<div class="col product-card"
 				data-sku="<?= esc_attr( $sku ); ?>"
+				data-type="<?= esc_attr( implode( ',', $type_terms ) ); ?>"
 				data-category="<?= esc_attr( implode( ',', $category_terms ) ); ?>"
 				data-edge="<?= esc_attr( implode( ',', $edge_terms ) ); ?>"
+				data-usage="<?= esc_attr( implode( ',', $usage_terms ) ); ?>"
 				data-capacity="<?= esc_attr( $capacity ); ?>"
 				data-depth="<?= esc_attr( $depth ); ?>"
 				data-topout="<?= esc_attr( $top_out_a ); ?>"
@@ -270,14 +314,19 @@ document.addEventListener('DOMContentLoaded', () => {
 	const params = new URLSearchParams(window.location.search);
 	document.getElementById('skuSearch').value = params.get('sku') || '';
 	document.getElementById('categoryFilter').value = params.get('category') || '';
+	document.getElementById('typeFilter').value = params.get('type') || '';
 	document.getElementById('edgeFilter').value = params.get('edge') || '';
 	document.getElementById('skuSearch').addEventListener('input', filterCards);
 	document.getElementById('categoryFilter').addEventListener('change', filterCards);
+	document.getElementById('typeFilter').addEventListener('change', filterCards);
 	document.getElementById('edgeFilter').addEventListener('change', filterCards);
+	document.getElementById('usageFilter').addEventListener('change', filterCards);
 	document.getElementById('resetFilters').addEventListener('click', () => {
 		document.getElementById('skuSearch').value = '';
 		document.getElementById('categoryFilter').value = '';
+		document.getElementById('typeFilter').value = '';
 		document.getElementById('edgeFilter').value = '';
+		document.getElementById('usageFilter').value = '';
 
 		Object.entries(sliders).forEach(([key, config]) => {
 			const slider = document.getElementById(config.id);
@@ -352,16 +401,22 @@ function filterCards() {
 	const skuQuery = document.getElementById('skuSearch').value.toLowerCase();
 	const selectedCategory = document.getElementById('categoryFilter').value;
 	const selectedEdge = document.getElementById('edgeFilter').value;
+	const selectedType = document.getElementById('typeFilter').value;
+	const selectedUsage = document.getElementById('usageFilter').value;
 
 	const cards = document.querySelectorAll('.product-card');
 	cards.forEach(card => {
 		const sku = card.dataset.sku.toLowerCase();
 		const category = card.dataset.category.split(',');
 		const edge = card.dataset.edge.split(',');
+		const type = card.dataset.type.split(',');
+		const usage = card.dataset.usage.split(',');
 
 		const matchesSku = sku.includes(skuQuery);
 		const matchesCategory = !selectedCategory || category.includes(selectedCategory);
 		const matchesEdge = !selectedEdge || edge.includes(selectedEdge);
+		const matchesType = !selectedType || type.includes(selectedType);
+		const matchesUsage = !selectedUsage || usage.includes(selectedUsage);
 
 		let matchesSliderRanges = true;
 		for (const [field, range] of Object.entries(filterValues)) {
@@ -383,7 +438,7 @@ function filterCards() {
 			}
 		}
 
-		const visible = matchesSku && matchesCategory && matchesEdge && matchesSliderRanges;
+		const visible = matchesSku && matchesCategory && matchesEdge && matchesType && matchesUsage && matchesSliderRanges;
 		card.style.display = visible ? '' : 'none';
 		visibleCount += visible ? 1 : 0;
 	});
