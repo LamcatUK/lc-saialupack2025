@@ -82,6 +82,7 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 		while ( have_posts() ) {
 			the_post();
 			$sku       = get_the_title();
+			$pname     = get_field( 'product_name');
 			$capacity  = get_field( 'capacity' );
 			$depth     = get_field( 'depth' );
 			$top_out_a = get_field( 'top_out_a' );
@@ -93,6 +94,7 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 			?>
 		<div class="col product-card">
 			<a class="card h-100" href="<?php the_permalink(); ?>">
+				<div class="card-title"><?= esc_html( $pname ); ?> <?= esc_html( $sku ); ?></div>
 				<?php
 				if ( has_post_thumbnail() ) {
 					?>
@@ -105,14 +107,34 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 				}
 				?>
 				<div class="card-body">
-					<div class="card-title"><?= esc_html( $sku ); ?></div>
 					<ul class="list-unstyled mb-0 fs-300">
-						
+						<?php
+						if ( $capacity ) {
+							?>
 						<li><strong>Capacity:</strong> <?= esc_html( $capacity ); ?>ml</li>
+							<?php
+						}
+						if ( $depth ) {
+							?>
 						<li><strong>Depth:</strong> <?= esc_html( $depth ); ?>mm</li>
+							<?php
+						}
+						if ( $top_out_a ) {
+							?>
 						<li><strong>Top Out:</strong> <?= esc_html( $top_out_a . ' x ' . $top_out_b ); ?>mm</li>
+							<?php
+						}
+						if ( $top_in_a ) {
+							?>
 						<li><strong>Top In:</strong> <?= esc_html( $top_in_a . ' x ' . $top_in_b ); ?>mm</li>
+							<?php
+						}
+						if ( $base_a ) {
+							?>
 						<li><strong>Base:</strong> <?= esc_html( $base_a . ' x ' . $base_b ); ?>mm</li>
+							<?php
+						}
+						?>
 					</ul>
 				</div>
 			</a>

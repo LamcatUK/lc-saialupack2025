@@ -22952,6 +22952,7 @@ for (; i < all.length; i++) {
 .product-card a {
   display: grid;
   grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
   text-decoration: none;
   color: var(--col-dark);
   box-shadow: var(--shadow-lg);
@@ -22987,6 +22988,13 @@ for (; i < all.length; i++) {
 .product-card.selected {
   border: 2px solid var(--col-green-400);
   background-color: var(--col-green-100);
+}
+
+.product-card .card-title {
+  grid-column: 1/3;
+  font-size: var(--fs-300);
+  padding-inline: 1rem;
+  padding-block-start: 1rem;
 }
 
 .related_products .card {
