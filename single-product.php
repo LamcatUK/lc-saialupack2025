@@ -22,7 +22,7 @@ get_header();
 		?>
 		</section>
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-6 text-center my-auto">
 				<?php
 				if ( has_post_thumbnail() ) {
 					the_post_thumbnail( 'large', array( 'class' => 'img-fluid' ) );
