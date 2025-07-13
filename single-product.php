@@ -234,7 +234,7 @@ get_header();
 								}
 								?>
 								<div class="card-body d-flex flex-column">
-									<h5 class="card-title"><?= esc_html( $related_product_name ? $related_product_name : $related_sku ); ?></h5>
+									<h3 class="card-title fs-400"><?= esc_html( $related_product_name ? $related_product_name : $related_sku ); ?></h3>
 									<p class="card-text small mb-1">SKU: <?= esc_html( $related_sku ); ?></p>
 									<?php
 									// Show all available specifications.
