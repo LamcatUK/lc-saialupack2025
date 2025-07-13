@@ -222,15 +222,17 @@ get_header();
 						?>
 						<div class="col-md-3 col-sm-6 mb-4">
 							<a class="card h-100" href="<?= esc_url( get_permalink() ); ?>">
-								<?php if ( has_post_thumbnail() ) : ?>
-									<a href="<?= esc_url( get_permalink() ); ?>">
-										<?php the_post_thumbnail( 'medium', array( 'class' => 'card-img-top img-fluid' ) ); ?>
-									</a>
-								<?php else : ?>
+								<?php
+								if ( has_post_thumbnail() ) {
+									echo get_the_post_thumbnail( 'medium', array( 'class' => 'card-img-top img-fluid' ) );
+								} else {
+									?>
 									<div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
 										<span class="text-muted">No Image</span>
 									</div>
-								<?php endif; ?>
+									<?php
+								}
+								?>
 								<div class="card-body d-flex flex-column">
 									<h5 class="card-title"><?= esc_html( $related_product_name ? $related_product_name : $related_sku ); ?></h5>
 									<p class="card-text small mb-1">SKU: <?= esc_html( $related_sku ); ?></p>
