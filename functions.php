@@ -12,12 +12,6 @@ define( 'LC_THEME_DIR', WP_CONTENT_DIR . '/themes/lc-saialupack2025' );
 
 require_once LC_THEME_DIR . '/inc/lc-theme.php';
 
-// Include PDF test admin page
-require_once LC_THEME_DIR . '/admin-pdf-test.php';
-
-// Include PDF generator
-require_once LC_THEME_DIR . '/inc/pdf-generator.php';
-
 /**
  * Removes the parent themes stylesheet and scripts from inc/enqueue.php
  */

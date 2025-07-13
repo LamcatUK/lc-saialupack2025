@@ -81,7 +81,7 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 		<?php
 		while ( have_posts() ) {
 			the_post();
-			$sku       = get_field( 'sku' );
+			$sku       = get_the_title();
 			$capacity  = get_field( 'capacity' );
 			$depth     = get_field( 'depth' );
 			$top_out_a = get_field( 'top_out_a' );

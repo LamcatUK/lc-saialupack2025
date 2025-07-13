@@ -518,7 +518,7 @@ function dimensions($a, $b) {
     if ( $a === $b ) {
         return $a . ' x ' . $b;
     }
-    return $a;
+    return $a . ' x ' . $b;
 }
 
 

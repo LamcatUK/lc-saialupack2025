@@ -295,6 +295,31 @@
             "graphql_non_null": 0,
             "ui_on_text": "",
             "ui_off_text": ""
+        },
+        {
+            "key": "field_6873a771235e5",
+            "label": "Product Description",
+            "name": "product_description",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0,
+            "show_in_graphql": 1,
+            "graphql_description": "",
+            "graphql_field_name": "productDescription",
+            "graphql_non_null": 0
         }
     ],
     "location": [
@@ -319,5 +344,5 @@
     "graphql_field_name": "product",
     "map_graphql_types_from_location_rules": 0,
     "graphql_types": "",
-    "modified": 1752001657
+    "modified": 1752409984
 }

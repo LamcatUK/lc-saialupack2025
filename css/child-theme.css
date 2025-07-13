@@ -22955,6 +22955,7 @@ for (; i < all.length; i++) {
   text-decoration: none;
   color: var(--col-dark);
   box-shadow: var(--shadow-lg);
+  align-items: center;
   transition: box-shadow var(--transition), transform var(--transition);
   border-radius: var(--border-sm);
 }
@@ -22986,6 +22987,10 @@ for (; i < all.length; i++) {
 .product-card.selected {
   border: 2px solid var(--col-green-400);
   background-color: var(--col-green-100);
+}
+
+.related_products .card {
+  text-decoration: none;
 }
 
 .has-blue-color,
