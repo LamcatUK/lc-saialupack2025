@@ -22992,6 +22992,12 @@ for (; i < all.length; i++) {
 .related_products .card {
   text-decoration: none;
 }
+.related_products .card .card-img-top {
+  height: 200px;
+  width: 100%;
+  -o-object-fit: contain;
+  object-fit: contain;
+}
 
 .has-blue-color,
 .has-blue-color:visited {

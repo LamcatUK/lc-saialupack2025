@@ -277,4 +277,9 @@ for (; i < all.length; i++) {
 // SINGLE PRODUCTS
 .related_products .card {
     text-decoration: none;
+    .card-img-top {
+        height: 200px;
+        width: 100%;
+        object-fit: contain;
+    }
 }
