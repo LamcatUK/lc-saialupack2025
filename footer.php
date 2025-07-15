@@ -10,41 +10,11 @@ defined( 'ABSPATH' ) || exit;
 <footer class="footer pt-5">
     <div class="container">
         <div class="row g-sm-4 g-lg-2 g-xxl-5">
-            <div class="col-xl-2 mb-3 pe-3">
-                <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/sai-logo--wo.svg" alt="Sai Alupack Ltd" class="footer__logo" width="200" height="68">
-                <?= do_shortcode( '[social_icons prefix="Connect: "]' ); ?>
+            <div class="col-xl-3 mb-3 pe-3 border-end">
+                <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/sai-logo.svg" alt="Sai Alupack Ltd" class="footer__logo" width="200" height="68">
+                <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/brcgs_cert_packaging_logo_rgb.webp" alt="BRCGS Certification" class="footer__brcgs">
             </div>
-            <div class="col-sm-4 col-xl-2">
-                <?=
-				wp_nav_menu(
-                    array(
-                        'theme_location'  => 'footer_menu1',
-                    	'container_class' => 'footer__menu',
-                    )
-                );
-                ?>
-            </div>
-            <div class="col-sm-4 col-xl-2">
-                <?=
-				wp_nav_menu(
-					array(
-						'theme_location'  => 'footer_menu2',
-						'container_class' => 'footer__menu',
-					)
-				);
-				?>
-            </div>
-            <div class="mb-4 mb-sm-0 col-sm-4 col-xl-2">
-                <?=
-				wp_nav_menu(
-					array(
-						'theme_location'  => 'footer_menu3',
-						'container_class' => 'footer__menu',
-					)
-				);
-				?>
-            </div>
-            <div class="col-sm-6 col-xl-2">
+            <div class="col-sm-6 col-xl-3 border-end">
                 <ul class="fa-ul">
                     <li class="mb-2">
                         <span class="fa-li">
@@ -63,10 +33,41 @@ defined( 'ABSPATH' ) || exit;
                             <i class="fas fa-envelope"></i>
                         </span>
                         <a href="mailto:<?= esc_html( antispambot( get_field( 'contact_email', 'options' ) ) ); ?>"><?= esc_html( antispambot( get_field( 'contact_email', 'options' ) ) ); ?></a>
+                    </li>
+                    <li>
+                        <?= do_shortcode( '[social_icons prefix="Connect: "]' ); ?>
+                    </li>
                 </ul>
             </div>
-            <div class="col-sm-6 col-xl-2">
-                <img src="<?= esc_url( get_stylesheet_directory_uri() ); ?>/img/brcgs_cert_packaging_logo_rgb.webp" alt="BRCGS Certification" class="footer__brcgs">
+            <div class="col-sm-4 col-xl-2 border-end">
+                <?=
+				wp_nav_menu(
+                    array(
+                        'theme_location'  => 'footer_menu1',
+                    	'container_class' => 'footer__menu',
+                    )
+                );
+                ?>
+            </div>
+            <div class="col-sm-4 col-xl-2 border-end">
+                <?=
+				wp_nav_menu(
+					array(
+						'theme_location'  => 'footer_menu2',
+						'container_class' => 'footer__menu',
+					)
+				);
+				?>
+            </div>
+            <div class="mb-4 mb-sm-0 col-sm-4 col-xl-2">
+                <?=
+				wp_nav_menu(
+					array(
+						'theme_location'  => 'footer_menu3',
+						'container_class' => 'footer__menu',
+					)
+				);
+				?>
             </div>
         </div>
 

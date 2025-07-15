@@ -22062,30 +22062,22 @@ header .order-2 {
 }
 
 .footer {
-  background-color: var(--col-green-900);
-  color: #fff;
+  background-color: white;
+  color: var(--col-green-900);
   font-size: var(--fs-300);
 }
-.footer a {
-  color: #fff;
-  text-decoration: none;
-  transition: color var(--transition);
-}
-.footer a:hover {
-  color: var(--col-gold);
-}
 .footer .footer__logo {
-  width: 280px;
+  width: 200px;
   max-width: 100%;
   margin-bottom: 1rem;
 }
 .footer .footer__brcgs {
   width: 120px;
   max-width: 100%;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 .footer .social-icons {
-  font-size: 2rem;
+  font-size: 1.6rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -22097,6 +22089,8 @@ header .order-2 {
 }
 .footer a {
   font-weight: var(--fw-500);
+  color: var(--col-green-900);
+  text-decoration: none;
   transition: color var(--transition);
 }
 .footer a:hover {
@@ -22115,13 +22109,12 @@ header .order-2 {
   margin-bottom: 1rem;
 }
 .footer .colophon {
-  border-top: 1px solid hsla(0, 0%, 100%, 0.6);
   margin-top: 2rem;
   font-size: var(--fs-200);
-  color: var(--col-grey-400);
+  color: var(--col-grey-600);
 }
 .footer .colophon a {
-  color: var(--col-grey-400);
+  color: var(--col-grey-600);
   transition: color var(--transition);
 }
 .footer .colophon a:hover {

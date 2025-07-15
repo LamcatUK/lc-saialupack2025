@@ -1,21 +1,12 @@
 .footer {
-    background-color: var(--col-green-900);
+    // background-color: var(--col-green-900);
+    background-color: white;
 
-    color: #fff;
+    color: var(--col-green-900);
     font-size: var(--fs-300);
 
-    a {
-        color: #fff;
-        text-decoration: none;
-        transition: color var(--transition);
-
-        &:hover {
-            color: var(--col-gold);
-        }
-    }
-
     .footer__logo {
-        width: 280px;
+        width: 200px;
         max-width: 100%;
         margin-bottom: 1rem;
         // filter: brightness(0) invert(1); // If using a dark-mode-safe SVG
@@ -23,12 +14,12 @@
     .footer__brcgs {
         width: 120px;
         max-width: 100%;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
         // filter: brightness(0) invert(1); // If using a dark-mode-safe SVG
     }
 
     .social-icons {
-        font-size: 2rem;
+        font-size: 1.6rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -41,6 +32,8 @@
 
     a {
         font-weight: var(--fw-500);
+        color: var(--col-green-900);
+        text-decoration: none;
         transition: color var(--transition);
         &:hover {
             color: var(--col-coral-400);
@@ -65,13 +58,13 @@
     }
 
     .colophon {
-        border-top: 1px solid hsl(0 0 100% / 0.6);
+        // border-top: 1px solid hsl(0 0 0% / 0.4);
         margin-top: 2rem;
         font-size: var(--fs-200);
-        color: var(--col-grey-400);
+        color: var(--col-grey-600);
 
         a {
-            color: var(--col-grey-400);
+            color: var(--col-grey-600);
             transition: color var(--transition);
 
             &:hover {
