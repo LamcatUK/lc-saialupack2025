@@ -129,7 +129,14 @@ $slider_fields = array(
 		</div>
 	</div>
 </section>
-<div class="container my-5">
+<div class="container mb-5">
+	<div class="yoast-breadcrumbs">
+		<?php
+		if ( function_exists( 'yoast_breadcrumb' ) ) {
+			yoast_breadcrumb( '<p id="breadcrumbs">', '</p>' );
+		}
+		?>
+	</div>
 	<!-- Filters -->
 	<div class="row g-3 mb-4 align-items-end">
 		<div class="col-md-2">
