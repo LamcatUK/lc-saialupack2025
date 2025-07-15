@@ -21,7 +21,7 @@ $background = get_field( 'background' );
 $bgcolour   = $background ? $background : 'white';
 
 ?>
-<section class="lc-industry-cards py-5 bg--<?= esc_attr( $bgcolour ); ?>">
+<section class="lc-industry-cards pb-5 bg--<?= esc_attr( $bgcolour ); ?>">
 	<div class="container">
 		<h2 class="text-center"><?= esc_html( get_field( 'title' ) ); ?></h2>
 		<div class="text-center mb-4"><?= wp_kses_post( get_field( 'content' ) ); ?></div>
@@ -29,6 +29,9 @@ $bgcolour   = $background ? $background : 'white';
 			<?php
 			foreach ( $children as $child ) {
 				$industry_image = get_the_post_thumbnail( $child->ID, 'large', array( 'class' => 'lc-industry-card__image' ) );
+				if ( ! $industry_image ) {
+					$industry_image = wp_get_attachment_image( $child->ID, 'large', array( 'class' => 'lc-industry-card__image' ) );
+				}
 				$industry_link  = get_permalink( $child->ID );
 				$industry_title = get_the_title( $child->ID );
 				?>
