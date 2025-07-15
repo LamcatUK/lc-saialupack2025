@@ -1,0 +1,23 @@
+{
+  "key": "group_lc_child_pages",
+  "title": "LC Child Pages",
+  "fields": [
+    {
+      "key": "field_lc_child_pages_title",
+      "label": "LC Child Pages",
+      "name": "title",
+      "type": "message"
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "block",
+        "operator": "==",
+        "value": "acf/lc-child-pages"
+      }
+    ]
+  ],
+  "active": 1,
+  "description": ""
+}
