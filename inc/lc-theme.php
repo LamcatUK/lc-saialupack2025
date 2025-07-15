@@ -488,7 +488,7 @@ function cb_show_all_products_on_archive( $query ) {
 add_action('pre_get_posts', 'cb_show_all_products_on_archive');
 
 function enqueue_nouislider_assets() {
-    if (is_post_type_archive('product')) {
+    if (is_post_type_archive('product') || is_tax('product_type') || is_tax('product_category') || is_tax('edge_type') || is_tax('usage')) {
         wp_enqueue_style('nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.css');
         wp_enqueue_script('nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.js', [], null, true);
     }
