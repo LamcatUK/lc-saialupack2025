@@ -63,8 +63,8 @@
     gap: 1.5rem;
     justify-content: center;
     .lc-industry-card {
-        flex: 1 1 calc(20% - 1.2rem); // 5 cards per row, accounting for gap
-        max-width: calc(20% - 1.2rem);
+        flex: 1 1 calc(33.3% - 1.2rem); // 5 cards per row, accounting for gap
+        max-width: calc(33.3% - 1.2rem);
         min-width: 240px;
         box-sizing: border-box;
         margin-bottom: 1.5rem;

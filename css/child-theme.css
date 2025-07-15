@@ -22685,8 +22685,8 @@ u {
   justify-content: center;
 }
 .lc-industry-cards-row .lc-industry-card {
-  flex: 1 1 calc(20% - 1.2rem);
-  max-width: calc(20% - 1.2rem);
+  flex: 1 1 calc(33.3% - 1.2rem);
+  max-width: calc(33.3% - 1.2rem);
   min-width: 240px;
   box-sizing: border-box;
   margin-bottom: 1.5rem;
