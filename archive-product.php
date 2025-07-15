@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				min: sliderData.min,
 				max: sliderData.max
 			},
-			step: 1,
+			step: 10,
 			tooltips: true,
 			format: {
 				to: value => Math.round(value),
