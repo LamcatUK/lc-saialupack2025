@@ -14,11 +14,23 @@ get_header();
 		<section class="yoast-breadcrumbs pb-3">
 		<?php
 		echo '<a href="/">Home</a>';
+		echo ' &gt; ';
+		echo '<a href="/products/">Products</a>';
+
 		$product_type_terms = get_the_terms( get_the_ID(), 'product_type' );
+		if ( $product_type_terms && ! is_wp_error( $product_type_terms ) ) {
+			echo ' &gt; ';
+			$first_type = $product_type_terms[0];
+			echo '<a href="' . esc_url( get_term_link( $first_type ) ) . '">' . esc_html( $first_type->name ) . '</a>';
+		}
+
 		echo ' &gt; ';
-		echo $product_type_terms[0]->name;
-		echo ' &gt; ';
-		echo get_field( 'product_name' ) . ' ' . get_the_title();
+		$product_name = get_field( 'product_name' );
+		if ( $product_name ) {
+			echo esc_html( $product_name );
+		} else {
+			echo esc_html( get_the_title() );
+		}
 		?>
 		</section>
 		<div class="row">
