@@ -25,8 +25,8 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 				<ul class="splide__list">
 					<?php
 					foreach ( $products as $product ) {
-						$sku       = esc_html( get_the_title() );
-						$pname     = get_field( 'product_name' ) ? get_field( 'product_name' ) : $sku;
+						$sku       = esc_html( get_the_title( $product ) );
+						$pname     = get_field( 'product_name', $product ) ? get_field( 'product_name', $product ) : $sku;
 						$capacity  = get_field( 'capacity', $product );
 						$depth     = get_field( 'depth', $product );
 						$top_out_a = get_field( 'top_out_a', $product );
