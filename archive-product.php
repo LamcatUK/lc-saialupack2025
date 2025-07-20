@@ -297,7 +297,13 @@ $slider_fields = array(
 					<div class="card-body">
 						<div class="card-title"><?= esc_html( $pname ); ?></div>
 						<ul class="list-unstyled mb-0 fs-300">
+							<?php
+							if ( $capacity ) {
+								?>
 							<li><strong>Capacity:</strong> <?= esc_html( $capacity ); ?>ml</li>
+								<?php
+							}
+							?>
 							<li><strong>Depth:</strong> <?= esc_html( $depth ); ?>mm</li>
 							<li><strong>Top Out:</strong> <?= esc_html( $top_out_a . ' x ' . $top_out_b ); ?>mm</li>
 							<li><strong>Top In:</strong> <?= esc_html( $top_in_a . ' x ' . $top_in_b ); ?>mm</li>
