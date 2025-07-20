@@ -1053,6 +1053,14 @@ function import_products_csv() {
         return;
     }
 
+    // Clean headers - remove BOM and extra whitespace
+    $headers = array_map(function($header) {
+        // Remove UTF-8 BOM if present
+        $header = str_replace("\xEF\xBB\xBF", '', $header);
+        // Trim whitespace
+        return trim($header);
+    }, $headers);
+
     // Process the import
     $results = process_csv_import($handle, $headers);
     fclose($handle);
@@ -1083,6 +1091,10 @@ function process_csv_import($handle, $headers) {
 
     // Create header mapping
     $header_map = array_flip(array_map('trim', $headers));
+    
+    // DEBUG: Log all detected headers
+    error_log("Import Debug - All detected headers: " . print_r($headers, true));
+    error_log("Import Debug - Header mapping: " . print_r($header_map, true));
     
     $row_number = 1; // Start at 1 since we've read headers
     
@@ -1153,6 +1165,15 @@ function import_single_product($data, $header_map, $row_number) {
     // Extract other fields
     $product_title = isset($header_map['Product Title']) ? trim($data[$header_map['Product Title']]) : '';
     
+    // DEBUG: Log the extraction process
+    error_log("Import Debug - SKU: $sku");
+    error_log("Import Debug - Header map contains 'Product Title': " . (isset($header_map['Product Title']) ? 'YES' : 'NO'));
+    if (isset($header_map['Product Title'])) {
+        error_log("Import Debug - Product Title index: " . $header_map['Product Title']);
+        error_log("Import Debug - Raw product title data: '" . $data[$header_map['Product Title']] . "'");
+    }
+    error_log("Import Debug - Final product_title variable: '$product_title'");
+    
     // Prepare post data
     $post_data = [
         'post_type' => 'product',
@@ -1175,7 +1196,12 @@ function import_single_product($data, $header_map, $row_number) {
     }
 
     // Set ACF fields
+    error_log("Import Debug - About to update product_name field with: '$product_title' for post ID: $post_id");
     update_field('product_name', $product_title, $post_id);
+    
+    // Verify the field was set
+    $saved_product_name = get_field('product_name', $post_id);
+    error_log("Import Debug - Retrieved product_name after save: '$saved_product_name'");
     
     // Set numeric fields
     $numeric_fields = [
@@ -1230,10 +1256,10 @@ function import_single_product($data, $header_map, $row_number) {
 
     // Set taxonomies
     $taxonomy_fields = [
-        'Product Types' => 'product_type',
+        'Product Types'      => 'product_type',
         'Product Categories' => 'product_category',
-        'Edge Types' => 'edge_type',
-        'Additonal' => 'usage' // Note: CSV has typo "Additonal"
+        'Edge Types'         => 'edge_type',
+        'Usage'              => 'usage', // Fixed: was "Additonal" but CSV column is "Usage".
     ];
 
     foreach ($taxonomy_fields as $csv_field => $taxonomy) {
