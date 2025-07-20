@@ -20,7 +20,7 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 	<div class="container">
 		<h2 class="text-center"><?= esc_html( get_field( 'title' ) ); ?></h2>
 		<div class="text-center mb-4"><?= wp_kses_post( get_field( 'content' ) ); ?></div>
-		<div class="splide" id="productCardsSplide">
+		<div class="mb-4 splide" id="productCardsSplide">
 			<div class="splide__track">
 				<ul class="splide__list">
 					<?php
@@ -77,6 +77,9 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 					?>
 				</ul>
 			</div>
+		</div>
+		<div class="text-center">
+			<a href="/products/" class="button button-primary">All products</a>
 		</div>
 	</div>
 </section>
