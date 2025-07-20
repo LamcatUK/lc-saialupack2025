@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $product_types = get_terms(
 	array(
 		'taxonomy'   => 'product_type',
-		'hide_empty' => false,
+		'hide_empty' => true,
 	)
 );
 
@@ -26,7 +26,7 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 				$cols = 2 === count( $product_types ) ? 'col-md-6' : 'col-lg-3 col-md-6';
 				foreach ( $product_types as $product_type ) {
 					?>
-				<div class="col-lg-3 col-md-6" data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>">
+				<div class="<?= esc_attr( $cols ); ?>" data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>">
 					<a class="lc-product-type__card" href="<?= esc_url( get_term_link( $product_type ) ); ?>">
 						<?php
 						if ( ! empty( get_field( 'image', $product_type ) ) ) {
