@@ -1495,3 +1495,226 @@ function export_product_images() {
     unlink($temp_file);
     exit;
 }
+
+/**
+ * Processes the uploaded ZIP file and imports product images
+ */
+function import_product_images() {
+    // Check if file was uploaded
+    if (!isset($_FILES['product_images_zip']) || $_FILES['product_images_zip']['error'] !== UPLOAD_ERR_OK) {
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-error"><p>Error uploading ZIP file. Please try again.</p></div>';
+        });
+        return;
+    }
+
+    $zip_file = $_FILES['product_images_zip']['tmp_name'];
+    
+    // Check if ZipArchive is available
+    if (!class_exists('ZipArchive')) {
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-error"><p>ZIP extension not available on this server.</p></div>';
+        });
+        return;
+    }
+
+    $zip = new ZipArchive();
+    if ($zip->open($zip_file) !== TRUE) {
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-error"><p>Error reading ZIP file.</p></div>';
+        });
+        return;
+    }
+
+    // Process the import
+    $results = process_image_import($zip);
+    $zip->close();
+
+    // Store results in session to display on page reload
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $_SESSION['image_import_results'] = $results;
+
+    // Redirect to avoid resubmission
+    wp_redirect(admin_url('admin.php?page=export-products-csv&images_import_complete=1'));
+    exit;
+}
+
+/**
+ * Processes images from ZIP archive and matches them to products
+ */
+function process_image_import($zip) {
+    $results = [
+        'total_images' => 0,
+        'successful' => 0,
+        'failed' => 0,
+        'matches' => [],
+        'failures' => []
+    ];
+
+    // Get all products for matching
+    $products = get_posts([
+        'post_type' => 'product',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'fields' => 'ids'
+    ]);
+
+    // Create a lookup array of SKU to post ID
+    $sku_lookup = [];
+    foreach ($products as $product_id) {
+        $sku = get_the_title($product_id);
+        $sku_lookup[strtolower($sku)] = $product_id;
+    }
+
+    // Supported image extensions
+    $supported_extensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $filename = $zip->getNameIndex($i);
+        $results['total_images']++;
+
+        // Skip directories and hidden files
+        if (substr($filename, -1) === '/' || strpos(basename($filename), '.') === 0) {
+            $results['failed']++;
+            $results['failures'][] = [
+                'filename' => $filename,
+                'reason' => 'Directory or hidden file'
+            ];
+            continue;
+        }
+
+        // Get file info
+        $pathinfo = pathinfo($filename);
+        $basename = $pathinfo['filename'];
+        $extension = strtolower($pathinfo['extension']);
+
+        // Check if extension is supported
+        if (!in_array($extension, $supported_extensions)) {
+            $results['failed']++;
+            $results['failures'][] = [
+                'filename' => $filename,
+                'reason' => 'Unsupported file type'
+            ];
+            continue;
+        }
+
+        // Look for matching product by SKU
+        $sku_lower = strtolower($basename);
+        if (!isset($sku_lookup[$sku_lower])) {
+            $results['failed']++;
+            $results['failures'][] = [
+                'filename' => $filename,
+                'reason' => 'No matching product found for SKU: ' . $basename
+            ];
+            continue;
+        }
+
+        $product_id = $sku_lookup[$sku_lower];
+
+        // Extract file content
+        $file_content = $zip->getFromIndex($i);
+        if ($file_content === false) {
+            $results['failed']++;
+            $results['failures'][] = [
+                'filename' => $filename,
+                'reason' => 'Could not extract file from ZIP'
+            ];
+            continue;
+        }
+
+        // Try to import the image
+        $import_result = import_product_image($product_id, $filename, $file_content, $basename);
+        
+        if ($import_result['success']) {
+            $results['successful']++;
+            $results['matches'][] = [
+                'filename' => $filename,
+                'sku' => $basename,
+                'attachment_id' => $import_result['attachment_id']
+            ];
+        } else {
+            $results['failed']++;
+            $results['failures'][] = [
+                'filename' => $filename,
+                'reason' => $import_result['error']
+            ];
+        }
+    }
+
+    return $results;
+}
+
+/**
+ * Imports a single image and sets it as the product's featured image
+ */
+function import_product_image($product_id, $filename, $file_content, $sku) {
+    // Create a temporary file
+    $temp_file = wp_tempnam($filename);
+    if (!$temp_file) {
+        return ['success' => false, 'error' => 'Could not create temporary file'];
+    }
+
+    // Write content to temp file
+    if (file_put_contents($temp_file, $file_content) === false) {
+        unlink($temp_file);
+        return ['success' => false, 'error' => 'Could not write image data'];
+    }
+
+    // Validate the image
+    $image_info = getimagesize($temp_file);
+    if (!$image_info) {
+        unlink($temp_file);
+        return ['success' => false, 'error' => 'Invalid image file'];
+    }
+
+    // Remove existing featured image if it exists
+    $existing_featured = get_post_thumbnail_id($product_id);
+    if ($existing_featured) {
+        wp_delete_attachment($existing_featured, true);
+    }
+
+    // Prepare the attachment data
+    $upload_dir = wp_upload_dir();
+    $file_type = wp_check_filetype($filename);
+    $new_filename = sanitize_file_name($filename);
+    
+    // Move the temp file to uploads directory
+    $upload_path = $upload_dir['path'] . '/' . $new_filename;
+    if (!move_uploaded_file($temp_file, $upload_path)) {
+        if (!copy($temp_file, $upload_path)) {
+            unlink($temp_file);
+            return ['success' => false, 'error' => 'Could not move file to uploads directory'];
+        }
+        unlink($temp_file);
+    }
+
+    // Create the attachment
+    $attachment_data = [
+        'post_mime_type' => $file_type['type'],
+        'post_title' => $sku . ' - Product Image',
+        'post_content' => '',
+        'post_status' => 'inherit'
+    ];
+
+    $attachment_id = wp_insert_attachment($attachment_data, $upload_path, $product_id);
+
+    if (is_wp_error($attachment_id)) {
+        unlink($upload_path);
+        return ['success' => false, 'error' => 'Could not create attachment: ' . $attachment_id->get_error_message()];
+    }
+
+    // Generate attachment metadata
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+    $attachment_metadata = wp_generate_attachment_metadata($attachment_id, $upload_path);
+    wp_update_attachment_metadata($attachment_id, $attachment_metadata);
+
+    // Set as featured image
+    if (!set_post_thumbnail($product_id, $attachment_id)) {
+        wp_delete_attachment($attachment_id, true);
+        return ['success' => false, 'error' => 'Could not set as featured image'];
+    }
+
+    return ['success' => true, 'attachment_id' => $attachment_id];
+}
