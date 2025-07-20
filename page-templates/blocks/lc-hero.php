@@ -24,6 +24,7 @@ $block_id = 'lc-hero-' . $block['id'];
 		<div class="carousel-inner">
 			<?php
 			$active = 'active';
+			$c      = false;
 			foreach ( $images as $index => $image ) {
 				?>
 				<div class="carousel-item <?= esc_attr( $active ); ?>">
@@ -40,6 +41,14 @@ $block_id = 'lc-hero-' . $block['id'];
 				</div>
 				<?php
 				$active = '';
+				$c      = true;
+			}
+			if ( false === $c ) {
+				?>
+				<div class="carousel-item active">
+					<!-- no image -->
+				</div>
+				<?php
 			}
 			?>
 		</div>

@@ -20,9 +20,10 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 	?>
 	<section class="lc-product-type py-5">
 		<div class="container">
-			<div class="row g-4">
+			<div class="row g-4 justify-content-center">
 				<?php
-				$d = 0;
+				$d    = 0;
+				$cols = 2 === count( $product_types ) ? 'col-md-6' : 'col-lg-3 col-md-6';
 				foreach ( $product_types as $product_type ) {
 					?>
 				<div class="col-lg-3 col-md-6" data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>">
