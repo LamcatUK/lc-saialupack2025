@@ -22999,6 +22999,7 @@ for (; i < all.length; i++) {
   grid-column: 1/3;
   font-size: var(--fs-300);
   margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--col-green-100);
 }
 
 .related_products .card {
