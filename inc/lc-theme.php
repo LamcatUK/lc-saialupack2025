@@ -24,10 +24,10 @@ if ( ! defined( 'LC_COLOUR_PALETTE' ) ) {
         array(
             'black'     => '#0f0f0f',
             'white'     => '#ffffff',
-            'green-100' => '#d3ebe5', // very light and soft green
-            'green-400' => '#45b8ac', // original, cool but balanced
-            'green-700' => '#277b6c', // heading toward forest
-            'green-900' => '#173f3d', // original dark, cool green
+            'green-100' => '#d3ebe5',
+            'green-400' => '#45b8ac',
+            'green-700' => '#277b6c',
+            'green-900' => '#173f3d',
             'coral-400' => '#ff6b5e',
             'grey-100'  => '#efefef',
             'grey-400'  => '#d0d3d4',
@@ -247,16 +247,17 @@ function lc_theme_enqueue() {
     $the_theme = wp_get_theme();
     wp_enqueue_style( 'aos-style', 'https://unpkg.com/aos@2.3.1/dist/aos.css', array(), '2.3.1', 'all' );
     wp_enqueue_script( 'aos', 'https://unpkg.com/aos@2.3.1/dist/aos.js', array(), '2.3.1', true );
-    // wp_deregister_script( 'jquery' );
+
     wp_enqueue_style( 'splide-css', 'https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.3/dist/css/splide.min.css', array(), '4.1.3' );
     wp_enqueue_script( 'splide-js', 'https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.3/dist/js/splide.min.js', array(), '4.1.3', true );
     wp_enqueue_style( 'lightbox-stylesheet', 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css', array(), $the_theme->get( 'Version' ) );
     wp_enqueue_script( 'lightbox-scripts', 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js', array(), $the_theme->get( 'Version' ), true );
     wp_enqueue_script( 'masonry-scripts', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', array(), $the_theme->get( 'Version' ), true );
     wp_enqueue_script( 'imagesloaded-scripts', 'https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js', array(), $the_theme->get( 'Version' ), true );
-	// wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.6.3.min.js', array(), null, true);
 
 	// phpcs:disable
+    // wp_deregister_script( 'jquery' );
+	// wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.6.3.min.js', array(), null, true);
     // wp_enqueue_style('lightbox-stylesheet', get_stylesheet_directory_uri() . '/css/lightbox.min.css', array(), $the_theme->get('Version'));
     // wp_enqueue_script('lightbox-scripts', get_stylesheet_directory_uri() . '/js/lightbox.min.js', array(), $the_theme->get('Version'), true);
     // wp_enqueue_script('lightbox-scripts', get_stylesheet_directory_uri() . '/js/lightbox-plus-jquery.min.js', array(), $the_theme->get('Version'), true);
@@ -476,45 +477,33 @@ add_filter(
     2
 );
 
+/**
+ * Sets the number of products displayed on the product archive page to unlimited.
+ *
+ * @param WP_Query $query The WP_Query instance (passed by reference).
+ */
 function cb_show_all_products_on_archive( $query ) {
-	if (
-		!is_admin() &&
-		$query->is_main_query() &&
-		is_post_type_archive('product')
-	) {
-		$query->set('posts_per_page', -1);
-	}
-}
-add_action('pre_get_posts', 'cb_show_all_products_on_archive');
-
-function enqueue_nouislider_assets() {
-    if (is_post_type_archive('product') || is_tax('product_type') || is_tax('product_category') || is_tax('edge_type') || is_tax('usage')) {
-        wp_enqueue_style('nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.css');
-        wp_enqueue_script('nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.js', [], null, true);
+    if (
+        !is_admin() &&
+        $query->is_main_query() &&
+        is_post_type_archive( 'product' )
+    ) {
+        $query->set('posts_per_page', -1);
     }
 }
-add_action('wp_enqueue_scripts', 'enqueue_nouislider_assets');
+add_action( 'pre_get_posts', 'cb_show_all_products_on_archive' );
 
 
-// add_action('init', function() {
-// 	if (!is_admin()) return;
-
-// 	$products = get_posts([
-// 		'post_type' => 'product',
-// 		'posts_per_page' => -1,
-// 		'fields' => 'ids'
-// 	]);
-
-// 	foreach ($products as $post_id) {
-// 		$old = get_field('base_B', $post_id);
-// 		if (!empty($old)) {
-// 			update_field('base_b', $old, $post_id);
-// 		}
-// 	}
-// });
+function enqueue_nouislider_assets() {
+    if ( is_post_type_archive( 'product' ) || is_tax( 'product_type' ) || is_tax( 'product_category' ) || is_tax( 'edge_type' ) || is_tax( 'usage' ) ) {
+        wp_enqueue_style( 'nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.css' );
+        wp_enqueue_script( 'nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.js', array(), null, true );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'enqueue_nouislider_assets' );
 
 
-function dimensions($a, $b) {
+function dimensions( $a, $b ) {
     if ( $a === $b ) {
         return $a . ' x ' . $b;
     }
@@ -547,11 +536,11 @@ if ( function_exists( 'acf_add_options_page' ) ) {
 }
 
 
-	function brochure_image_resolver( $field ) {
-		return fn() => ( $img = get_field( $field, 'option' ) ) && is_array( $img )
-			? [ 'sourceUrl' => $img['url'] ?? '', 'altText' => $img['alt'] ?? '' ]
-			: null;
-	}
+function brochure_image_resolver( $field ) {
+    return fn() => ( $img = get_field( $field, 'option' ) ) && is_array( $img )
+        ? [ 'sourceUrl' => $img['url'] ?? '', 'altText' => $img['alt'] ?? '' ]
+        : null;
+}
 
 add_action( 'graphql_register_types', function () {
 	if ( ! function_exists( 'get_field' ) ) {
@@ -607,16 +596,16 @@ add_action( 'graphql_register_types', function () {
 		'resolve'     => fn() => get_field( 'cover_subtitle', 'option' ),
 	] );
 
-register_graphql_field( 'RootQuery', 'coverLogo', [
-	'type'        => 'BrochureImage',
-	'description' => 'Cover logo image',
-	'resolve'     => brochure_image_resolver( 'cover_logo' ),
-] );
-register_graphql_field( 'RootQuery', 'watermark', [
-	'type'        => 'BrochureImage',
-	'description' => 'Watermark image',
-	'resolve'     => brochure_image_resolver( 'watermark' ),
-] );
+    register_graphql_field( 'RootQuery', 'coverLogo', [
+        'type'        => 'BrochureImage',
+        'description' => 'Cover logo image',
+        'resolve'     => brochure_image_resolver( 'cover_logo' ),
+    ] );
+    register_graphql_field( 'RootQuery', 'watermark', [
+        'type'        => 'BrochureImage',
+        'description' => 'Watermark image',
+        'resolve'     => brochure_image_resolver( 'watermark' ),
+    ] );
 
 	register_graphql_field( 'RootQuery', 'aboutHeading', [
 		'type'        => 'String',
@@ -650,7 +639,6 @@ register_graphql_field( 'RootQuery', 'watermark', [
 			'altText'   => [ 'type' => 'String' ],
 		],
 	] );
-
 
 	register_graphql_field( 'RootQuery', 'aboutImage1', [
 		'type'        => 'BrochureImage',
@@ -746,16 +734,21 @@ add_action( 'graphql_register_types', function() {
 // Replace the entire CSV export section with this:
 
 if ( function_exists( 'acf_add_options_page' ) ) {
-    // Add CSV Export admin page
-    add_action( 'admin_menu', function() {
-        add_management_page(
-            'Export Products CSV',
-            'Export Products',
-            'manage_options',
-            'export-products-csv',
-            'render_export_products_page'
-        );
-   });
+    // Add Export Import Tools as top-level admin menu.
+    add_action(
+        'admin_menu',
+        function () {
+            add_menu_page(
+                'Product Management Tools',
+                'Product Management Tools',
+                'manage_options',
+                'export-products-csv',
+                'render_export_products_page',
+                'dashicons-database-export',
+                30
+            );
+        }
+    );
 }
 
 /**

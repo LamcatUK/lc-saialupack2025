@@ -16,24 +16,27 @@
  */
 function lc_register_post_types() {
 
-register_post_type(
-	'product',
-	array(
-		'labels'       => array(
-			'name'          => 'Products',
-			'singular_name' => 'Product',
-		),
-		'public'       => true,
-		'has_archive'  => true,
-		'rewrite'      => array( 'slug' => 'products', 'with_front' => false ),
-		'show_in_rest' => true,
-		'supports'     => array( 'title', 'thumbnail' ),
-		'menu_icon'    => 'dashicons-cart',
-		'show_in_graphql' => true,
-		'graphql_single_name' => 'Product',
-		'graphql_plural_name' => 'Products',
-	)
-);
+	register_post_type(
+		'product',
+		array(
+			'labels'              => array(
+				'name'          => 'Products',
+				'singular_name' => 'Product',
+			),
+			'public'              => true,
+			'has_archive'         => true,
+			'rewrite'             => array(
+				'slug'       => 'products',
+				'with_front' => false,
+			),
+			'show_in_rest'        => true,
+			'supports'            => array( 'title', 'thumbnail' ),
+			'menu_icon'           => 'dashicons-cart',
+			'show_in_graphql'     => true,
+			'graphql_single_name' => 'Product',
+			'graphql_plural_name' => 'Products',
+		)
+	);
 }
 
 add_action( 'init', 'lc_register_post_types' );
@@ -50,34 +53,3 @@ function lc_rewrite_flush() {
     flush_rewrite_rules();
 }
 add_action( 'after_switch_theme', 'lc_rewrite_flush' );
-
-
-// add_filter(
-// 	'acf/load_value/name=button_1',
-// 	function ( $value, $post_id, $field ) {
-// 		if ( empty( $value ) ) {
-// 			return array(
-// 				'url' => '/products/',
-// 				'title' => 'View Products',
-// 			);
-// 		}
-// 		return $value;
-// 	},
-// 	10,
-// 	3
-// );
-
-// add_filter(
-// 	'acf/load_value/name=button_2',
-// 	function ( $value, $post_id, $field ) {
-// 		if ( empty( $value ) ) {
-// 			return array(
-// 				'url' => '/contact-us/',
-// 				'title' => 'Contact Us',
-// 			);
-// 		}
-// 		return $value;
-// 	},
-// 	10,
-// 	3
-// );
