@@ -22951,6 +22951,8 @@ for (; i < all.length; i++) {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto 1fr;
+  -moz-column-gap: 0.5rem;
+  column-gap: 0.5rem;
   text-decoration: none;
   color: var(--col-dark);
   box-shadow: var(--shadow-lg);
