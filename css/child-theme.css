@@ -37,6 +37,7 @@
   /* Site General */
   --h-top: 70px;
   --h-top-desktop: 79px;
+  --border-xs: 0.25rem;
   --border-sm: 0.5rem;
   --border-lg: 1rem;
   --shadow-sm: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
@@ -22966,7 +22967,8 @@ for (; i < all.length; i++) {
   font-weight: 400;
 }
 .product-card a .card-body {
-  padding-block-start: 0;
+  background-color: var(--col-grey-100);
+  border-radius: var(--border-xs);
 }
 
 .has-samples .product-card {
@@ -22994,7 +22996,7 @@ for (; i < all.length; i++) {
 .product-card .card-title {
   grid-column: 1/3;
   font-size: var(--fs-300);
-  margin-bottom: 0;
+  margin-bottom: 0.25rem;
 }
 
 .related_products .card {
