@@ -251,7 +251,7 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 		while ( $all_posts->have_posts() ) {
 			$all_posts->the_post();
 			$sku       = esc_html( get_the_title() );
-			$pname     = get_field( 'product_name' );
+			$pname     = get_field( 'product_name' ) ? get_field( 'product_name' ) : $sku;
 			$capacity  = get_field( 'capacity' );
 			$depth     = get_field( 'depth' );
 			$top_out_a = get_field( 'top_out_a' );
@@ -291,23 +291,20 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 					}
 					?>
 					<div class="card-body">
-						<div class="card-title"><?= esc_html( $sku ); ?></div>
+						<div class="card-title"><?= esc_html( $pname ); ?></div>
 						<ul class="list-unstyled mb-0 fs-300">
-							<?php if ( $capacity ) { ?>
+							<?php
+							if ( $capacity ) {
+								?>
 							<li><strong>Capacity:</strong> <?= esc_html( $capacity ); ?>ml</li>
-							<?php } ?>
-							<?php if ( $depth ) { ?>
+								<?php
+							}
+							?>
 							<li><strong>Depth:</strong> <?= esc_html( $depth ); ?>mm</li>
-							<?php } ?>
-							<?php if ( $top_out_a ) { ?>
 							<li><strong>Top Out:</strong> <?= esc_html( $top_out_a . ' x ' . $top_out_b ); ?>mm</li>
-							<?php } ?>
-							<?php if ( $top_in_a ) { ?>
 							<li><strong>Top In:</strong> <?= esc_html( $top_in_a . ' x ' . $top_in_b ); ?>mm</li>
-							<?php } ?>
-							<?php if ( $base_a ) { ?>
 							<li><strong>Base:</strong> <?= esc_html( $base_a . ' x ' . $base_b ); ?>mm</li>
-							<?php } ?>
+							<li><strong>SKU:</strong> <?= esc_html( $sku ); ?>mm</li>
 						</ul>
 					</div>
 				</a>
