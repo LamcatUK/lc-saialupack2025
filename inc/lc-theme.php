@@ -843,6 +843,7 @@ function render_export_products_page() {
     <style>
         .product_admin { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .product_admin h1 { grid-column: 1 / 3; }
+        .product_admin .notice { grid-column: 1 / 3; }
         .product_admin .card { max-width: 100%; }
     </style>
     <div class="wrap product_admin">
