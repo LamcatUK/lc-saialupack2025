@@ -25,7 +25,8 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 				<ul class="splide__list">
 					<?php
 					foreach ( $products as $product ) {
-						$sku       = get_field( 'sku', $product );
+						$sku       = esc_html( get_the_title() );
+						$pname     = get_field( 'product_name' ) ? get_field( 'product_name' ) : $sku;
 						$capacity  = get_field( 'capacity', $product );
 						$depth     = get_field( 'depth', $product );
 						$top_out_a = get_field( 'top_out_a', $product );
@@ -40,6 +41,7 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 						?>
 					<li class="splide__slide product-card">
 						<a class="card h-100" href="<?= esc_url( get_permalink( $product ) ); ?>">
+							<div class="card-title"><?= esc_html( $pname ); ?></div>
 							<?php
 							if ( has_post_thumbnail( $product ) ) {
 								?>
@@ -54,11 +56,18 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 							<div class="card-body">
 								<div class="card-title"><?= esc_html( $sku ); ?></div>
 								<ul class="list-unstyled mb-0 fs-300">
+									<?php
+									if ( $capacity ) {
+										?>
 									<li><strong>Capacity:</strong> <?= esc_html( $capacity ); ?>ml</li>
+										<?php
+									}
+									?>
 									<li><strong>Depth:</strong> <?= esc_html( $depth ); ?>mm</li>
 									<li><strong>Top Out:</strong> <?= esc_html( $top_out_a . ' x ' . $top_out_b ); ?>mm</li>
 									<li><strong>Top In:</strong> <?= esc_html( $top_in_a . ' x ' . $top_in_b ); ?>mm</li>
 									<li><strong>Base:</strong> <?= esc_html( $base_a . ' x ' . $base_b ); ?>mm</li>
+									<li><strong>SKU:</strong> <?= esc_html( $sku ); ?></li>
 								</ul>
 							</div>
 						</a>
