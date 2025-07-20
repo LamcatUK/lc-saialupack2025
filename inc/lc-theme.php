@@ -807,10 +807,52 @@ function render_export_products_page() {
         }
     }
 
+    // Display image import results if available
+    if (isset($_GET['images_import_complete']) && $_GET['images_import_complete'] === '1') {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (isset($_SESSION['image_import_results'])) {
+            $results = $_SESSION['image_import_results'];
+            unset($_SESSION['image_import_results']);
+            
+            echo '<div class="notice notice-success">';
+            echo '<h3>Image Import Complete!</h3>';
+            echo '<p><strong>Total Images Processed:</strong> ' . esc_html($results['total_images']) . '</p>';
+            echo '<p><strong>Images Successfully Imported:</strong> ' . esc_html($results['successful']) . '</p>';
+            echo '<p><strong>Images Skipped/Failed:</strong> ' . esc_html($results['failed']) . '</p>';
+            
+            if (!empty($results['matches'])) {
+                echo '<h4 style="color: #00a32a;">Successful Matches:</h4>';
+                echo '<ul>';
+                foreach ($results['matches'] as $match) {
+                    echo '<li>' . esc_html($match['filename']) . ' → Product: ' . esc_html($match['sku']) . '</li>';
+                }
+                echo '</ul>';
+            }
+            
+            if (!empty($results['failures'])) {
+                echo '<h4 style="color: #d63638;">Failed/Skipped:</h4>';
+                echo '<ul>';
+                foreach ($results['failures'] as $failure) {
+                    echo '<li style="color: #d63638;">' . esc_html($failure['filename']) . ': ' . esc_html($failure['reason']) . '</li>';
+                }
+                echo '</ul>';
+            }
+            echo '</div>';
+        }
+    }
+
     // Get product count for display
     $product_count = wp_count_posts( 'product' )->publish;
     ?>
-    <div class="wrap">
+    <style>
+        .product_admin { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .product_admin h1 { grid-column: 1 / 3; }
+        .product_admin .card { max-width: 100%; }
+    </style>
+    <div class="wrap product_admin">
         <h1>Products CSV Import/Export</h1>
         
         <div class="card">
@@ -824,6 +866,37 @@ function render_export_products_page() {
                     Download Products CSV
                 </a>
             </p>
+        </div>
+        
+        <div class="card">
+            <h2>Product Images Export</h2>
+            <p>Export all product featured images as a ZIP file. Images will be named {SKU}.{extension}.</p>
+            <?php
+            $products_with_images = get_posts([
+                'post_type' => 'product',
+                'post_status' => 'publish',
+                'meta_query' => [
+                    [
+                        'key' => '_thumbnail_id',
+                        'compare' => 'EXISTS'
+                    ]
+                ],
+                'posts_per_page' => -1,
+                'fields' => 'ids'
+            ]);
+            ?>
+            <p><strong>Products with Images:</strong> <?php echo count($products_with_images); ?> of <?php echo esc_html( $product_count ); ?></p>
+            
+            <?php if (count($products_with_images) > 0): ?>
+            <p>
+                <a href="<?php echo admin_url('admin.php?page=export-products-csv&action=download_images&_wpnonce=' . wp_create_nonce('download_images')); ?>" 
+                   class="button button-primary">
+                    Download Product Images ZIP
+                </a>
+            </p>
+            <?php else: ?>
+            <p><em>No products with featured images to export.</em></p>
+            <?php endif; ?>
         </div>
         
         <div class="card">
@@ -844,6 +917,30 @@ function render_export_products_page() {
                 <p>
                     <button type="submit" name="import_csv" class="button button-primary">
                         Import Products from CSV
+                    </button>
+                </p>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>Product Images Import</h2>
+            <p>Upload a ZIP file containing product images. Images should be named {SKU}.{extension} where SKU matches the product title.</p>
+            <p><strong>Supported formats:</strong> .jpg, .jpeg, .png, .webp</p>
+            
+            <form method="post" enctype="multipart/form-data">
+                <?php wp_nonce_field('import_product_images', 'import_images_nonce'); ?>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">ZIP File</th>
+                        <td>
+                            <input type="file" name="product_images_zip" accept=".zip" required>
+                            <p class="description">Select a ZIP file containing product images.</p>
+                        </td>
+                    </tr>
+                </table>
+                <p>
+                    <button type="submit" name="import_images" class="button button-primary">
+                        Import Product Images
                     </button>
                 </p>
             </form>
@@ -903,6 +1000,10 @@ add_action('admin_init', function() {
             export_products_csv();
         }
         
+        if ($_GET['action'] === 'download_images' && wp_verify_nonce($_GET['_wpnonce'], 'download_images')) {
+            export_product_images();
+        }
+        
         if ($_GET['action'] === 'clear_products' && wp_verify_nonce($_GET['_wpnonce'], 'clear_products')) {
             // This is handled in the render function to show success message
             return;
@@ -912,6 +1013,11 @@ add_action('admin_init', function() {
     // Handle CSV import
     if (isset($_POST['import_csv']) && wp_verify_nonce($_POST['import_nonce'], 'import_products_csv')) {
         import_products_csv();
+    }
+    
+    // Handle image import
+    if (isset($_POST['import_images']) && wp_verify_nonce($_POST['import_images_nonce'], 'import_product_images')) {
+        import_product_images();
     }
 });
 
@@ -1286,4 +1392,106 @@ function clear_all_products() {
     }
 
     return count($products);
+}
+
+/**
+ * Generates and downloads a ZIP file containing all product featured images
+ */
+function export_product_images() {
+    // Check if ZipArchive is available
+    if (!class_exists('ZipArchive')) {
+        wp_die('ZIP extension not available on this server.');
+        return;
+    }
+
+    // Get all products with featured images
+    $products = get_posts([
+        'post_type' => 'product',
+        'post_status' => 'publish',
+        'meta_query' => [
+            [
+                'key' => '_thumbnail_id',
+                'compare' => 'EXISTS'
+            ]
+        ],
+        'posts_per_page' => -1
+    ]);
+
+    if (empty($products)) {
+        wp_die('No products with featured images found.');
+        return;
+    }
+
+    // Create temporary file for the ZIP
+    $temp_file = wp_tempnam('product-images.zip');
+    if (!$temp_file) {
+        wp_die('Could not create temporary file.');
+        return;
+    }
+
+    $zip = new ZipArchive();
+    if ($zip->open($temp_file, ZipArchive::CREATE) !== TRUE) {
+        unlink($temp_file);
+        wp_die('Could not create ZIP file.');
+        return;
+    }
+
+    $exported_count = 0;
+    $skipped_count = 0;
+    $filename_conflicts = [];
+
+    foreach ($products as $product) {
+        $sku = get_the_title($product->ID);
+        $attachment_id = get_post_thumbnail_id($product->ID);
+        
+        if (!$attachment_id) {
+            $skipped_count++;
+            continue;
+        }
+
+        $attachment_path = get_attached_file($attachment_id);
+        if (!$attachment_path || !file_exists($attachment_path)) {
+            $skipped_count++;
+            continue;
+        }
+
+        // Get file extension
+        $file_info = pathinfo($attachment_path);
+        $extension = strtolower($file_info['extension']);
+        
+        // Create filename as SKU.extension
+        $zip_filename = sanitize_file_name($sku) . '.' . $extension;
+        
+        // Check for filename conflicts
+        if (in_array($zip_filename, $filename_conflicts)) {
+            // Add product ID to make it unique
+            $zip_filename = sanitize_file_name($sku) . '-' . $product->ID . '.' . $extension;
+        }
+        $filename_conflicts[] = $zip_filename;
+
+        // Add file to ZIP
+        if ($zip->addFile($attachment_path, $zip_filename)) {
+            $exported_count++;
+        } else {
+            $skipped_count++;
+        }
+    }
+
+    $zip->close();
+
+    // Prepare download
+    $download_filename = 'product-images-' . date('Y-m-d-H-i-s') . '.zip';
+    
+    // Set headers for download
+    header('Content-Type: application/zip');
+    header('Content-Disposition: attachment; filename="' . $download_filename . '"');
+    header('Content-Length: ' . filesize($temp_file));
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Expires: 0');
+    header('Pragma: no-cache');
+
+    // Output file and clean up
+    readfile($temp_file);
+    unlink($temp_file);
+    exit;
 }
