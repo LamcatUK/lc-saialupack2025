@@ -54,7 +54,6 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 							}
 							?>
 							<div class="card-body">
-								<div class="card-title"><?= esc_html( $sku ); ?></div>
 								<ul class="list-unstyled mb-0 fs-300">
 									<?php
 									if ( $capacity ) {
