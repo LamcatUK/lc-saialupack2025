@@ -308,7 +308,7 @@ $slider_fields = array(
 							<li><strong>Top Out:</strong> <?= esc_html( $top_out_a . ' x ' . $top_out_b ); ?>mm</li>
 							<li><strong>Top In:</strong> <?= esc_html( $top_in_a . ' x ' . $top_in_b ); ?>mm</li>
 							<li><strong>Base:</strong> <?= esc_html( $base_a . ' x ' . $base_b ); ?>mm</li>
-							<li><strong>SKU:</strong> <?= esc_html( $sku ); ?>mm</li>
+							<li><strong>SKU:</strong> <?= esc_html( $sku ); ?></li>
 						</ul>
 					</div>
 				</a>
