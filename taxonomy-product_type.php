@@ -279,6 +279,7 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 				data-base="<?= esc_attr( $base_a ); ?>"
 				data-base-width="<?= esc_attr( $base_b ); ?>">
 				<a class="card h-100" href="<?= esc_url( get_permalink() ); ?>">
+					<div class="card-title"><?= esc_html( $pname ); ?></div>
 					<?php
 					if ( has_post_thumbnail() ) {
 						?>
@@ -291,7 +292,6 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 					}
 					?>
 					<div class="card-body">
-						<div class="card-title"><?= esc_html( $pname ); ?></div>
 						<ul class="list-unstyled mb-0 fs-300">
 							<?php
 							if ( $capacity ) {
