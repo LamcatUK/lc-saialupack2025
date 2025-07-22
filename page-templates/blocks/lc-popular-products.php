@@ -55,6 +55,10 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 							?>
 							<div class="card-body">
 								<ul class="list-unstyled mb-0 fs-300">
+									<li><strong>Top Out:</strong> <?= esc_html( $top_out_a . ' x ' . $top_out_b ); ?>mm</li>
+									<li><strong>Top In:</strong> <?= esc_html( $top_in_a . ' x ' . $top_in_b ); ?>mm</li>
+									<li><strong>Base:</strong> <?= esc_html( $base_a . ' x ' . $base_b ); ?>mm</li>
+									<li><strong>Depth:</strong> <?= esc_html( $depth ); ?>mm</li>
 									<?php
 									if ( $capacity ) {
 										?>
@@ -62,10 +66,6 @@ if ( ! $products || ! is_array( $products ) || empty( $products ) ) {
 										<?php
 									}
 									?>
-									<li><strong>Depth:</strong> <?= esc_html( $depth ); ?>mm</li>
-									<li><strong>Top Out:</strong> <?= esc_html( $top_out_a . ' x ' . $top_out_b ); ?>mm</li>
-									<li><strong>Top In:</strong> <?= esc_html( $top_in_a . ' x ' . $top_in_b ); ?>mm</li>
-									<li><strong>Base:</strong> <?= esc_html( $base_a . ' x ' . $base_b ); ?>mm</li>
 									<li><strong>SKU:</strong> <?= esc_html( $sku ); ?></li>
 								</ul>
 							</div>
