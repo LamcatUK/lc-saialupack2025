@@ -918,7 +918,7 @@ function render_export_products_page() {
         
         <div class="card">
             <h2>Product Images Import</h2>
-            <p>Upload a ZIP file containing product images. Images should be named {SKU}.{extension} where SKU matches the product title.</p>
+            <p>Upload a ZIP file containing product images. Images should be named {SKU}.{extension} where SKU matches the product's original SKU (not the slug).</p>
             <p><strong>Supported formats:</strong> .jpg, .jpeg, .png, .webp</p>
             
             <form method="post" enctype="multipart/form-data">
@@ -1047,10 +1047,12 @@ function import_products_csv() {
         return;
     }
 
-    // Clean headers - remove BOM and extra whitespace
+    // Clean headers - remove BOM, quotes, and extra whitespace
     $headers = array_map(function($header) {
         // Remove UTF-8 BOM if present
         $header = str_replace("\xEF\xBB\xBF", '', $header);
+        // Remove surrounding quotes if present
+        $header = trim($header, '"\'');
         // Trim whitespace
         return trim($header);
     }, $headers);
@@ -1133,6 +1135,41 @@ function process_csv_import($handle, $headers) {
 }
 
 /**
+ * Generates a product slug in the format: {product-name}-{top_out}-{top_in}-{sku}
+ *
+ * @param string $product_name The product name.
+ * @param mixed  $top_out_a    The top out A dimension.
+ * @param mixed  $top_in_a     The top in A dimension.
+ * @param string $sku          The product SKU.
+ * @return string The generated slug.
+ */
+function generate_product_slug( $product_name, $top_out_a, $top_in_a, $sku ) {
+    $parts = array();
+    
+    // Add product name if available.
+    if ( ! empty( $product_name ) ) {
+        $parts[] = sanitize_title( $product_name );
+    }
+    
+    // Add top_out_a if available.
+    if ( ! empty( $top_out_a ) && is_numeric( $top_out_a ) ) {
+        $parts[] = $top_out_a;
+    }
+    
+    // Add top_in_a if available.
+    if ( ! empty( $top_in_a ) && is_numeric( $top_in_a ) ) {
+        $parts[] = $top_in_a;
+    }
+    
+    // Add SKU (always present).
+    if ( ! empty( $sku ) ) {
+        $parts[] = sanitize_title( $sku );
+    }
+    
+    return implode( '-', array_filter( $parts ) );
+}
+
+/**
  * Imports a single product from CSV row data
  */
 function import_single_product($data, $header_map, $row_number) {
@@ -1144,134 +1181,130 @@ function import_single_product($data, $header_map, $row_number) {
     }
 
     // Check if product with this SKU already exists
-    $existing_posts = get_posts([
-        'post_type' => 'product',
-        'post_status' => 'any',
-        'meta_query' => [],
-        'title' => $sku,
-        'posts_per_page' => 1,
-        'fields' => 'ids'
-    ]);
+    $existing_posts = get_posts(
+        array(
+            'post_type'      => 'product',
+            'post_status'    => 'any',
+            'meta_query'     => array(),
+            'title'          => $sku,
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
+        )
+    );
 
-    $is_duplicate = !empty($existing_posts);
-    $post_id = $is_duplicate ? $existing_posts[0] : 0;
+    $is_duplicate = ! empty( $existing_posts );
+    $post_id      = $is_duplicate ? $existing_posts[0] : 0;
 
     // Extract other fields
-    $product_title = isset($header_map['Product Title']) ? trim($data[$header_map['Product Title']]) : '';
-    
-    // DEBUG: Log the extraction process
-    error_log("Import Debug - SKU: $sku");
-    error_log("Import Debug - Header map contains 'Product Title': " . (isset($header_map['Product Title']) ? 'YES' : 'NO'));
-    if (isset($header_map['Product Title'])) {
-        error_log("Import Debug - Product Title index: " . $header_map['Product Title']);
-        error_log("Import Debug - Raw product title data: '" . $data[$header_map['Product Title']] . "'");
-    }
-    error_log("Import Debug - Final product_title variable: '$product_title'");
+    $product_title = isset( $header_map['Product Title'] ) ? trim( $data[ $header_map['Product Title'] ] ) : '';
     
     // Prepare post data
-    $post_data = [
-        'post_type' => 'product',
-        'post_title' => $sku, // SKU becomes the post title
-        'post_status' => 'publish',
-        'post_content' => ''
-    ];
+    $post_data = array(
+        'post_type'    => 'product',
+        'post_title'   => $sku, // SKU becomes the post title
+        'post_status'  => 'publish',
+        'post_content' => '',
+    );
 
-    if ($post_id) {
+    if ( $post_id ) {
         $post_data['ID'] = $post_id;
-        $post_id = wp_update_post($post_data);
+        $post_id = wp_update_post( $post_data );
         $action = 'updated';
     } else {
-        $post_id = wp_insert_post($post_data);
+        $post_id = wp_insert_post( $post_data );
         $action = 'created';
     }
 
-    if (is_wp_error($post_id)) {
-        return ['success' => false, 'error' => 'Failed to create/update post: ' . $post_id->get_error_message()];
+    if ( is_wp_error( $post_id ) ) {
+        return array( 'success' => false, 'error' => 'Failed to create/update post: ' . $post_id->get_error_message() );
     }
 
-    // Set ACF fields
-    error_log("Import Debug - About to update product_name field with: '$product_title' for post ID: $post_id");
-    update_field('product_name', $product_title, $post_id);
+    // Set ACF fields.
+    if ( ! function_exists( 'update_field' ) ) {
+        return array( 
+            'success' => false, 
+            'error'   => 'ACF (Advanced Custom Fields) is not available' 
+        );
+    }
     
-    // Verify the field was set
-    $saved_product_name = get_field('product_name', $post_id);
-    error_log("Import Debug - Retrieved product_name after save: '$saved_product_name'");
+    // Update the product_name field.
+    update_field( 'product_name', $product_title, $post_id );
     
     // Set numeric fields
-    $numeric_fields = [
-        'Capacity' => 'capacity',
-        'Top Out A' => 'top_out_a',
-        'Top Out B' => 'top_out_b', 
-        'Top In A' => 'top_in_a',
-        'Top In B' => 'top_in_b',
-        'Base A' => 'base_a',
-        'Base B' => 'base_b',
-        'Depth' => 'depth',
-        'Weight' => 'weight'
-    ];
+    $numeric_fields = array(
+        'Capacity'   => 'capacity',
+        'Top Out A'  => 'top_out_a',
+        'Top Out B'  => 'top_out_b', 
+        'Top In A'   => 'top_in_a',
+        'Top In B'   => 'top_in_b',
+        'Base A'     => 'base_a',
+        'Base B'     => 'base_b',
+        'Depth'      => 'depth',
+        'Weight'     => 'weight',
+    );
 
-    foreach ($numeric_fields as $csv_field => $acf_field) {
-        if (isset($header_map[$csv_field])) {
-            $value = trim($data[$header_map[$csv_field]]);
-            if (!empty($value) && is_numeric($value)) {
-                update_field($acf_field, (float)$value, $post_id);
+    foreach ( $numeric_fields as $csv_field => $acf_field ) {
+        if ( isset( $header_map[ $csv_field ] ) ) {
+            $value = trim( $data[ $header_map[ $csv_field ] ] );
+            if ( ! empty( $value ) && is_numeric( $value ) ) {
+                update_field( $acf_field, (float) $value, $post_id );
             }
         }
     }
 
     // Handle B field auto-fill from A fields
-    $dimension_pairs = [
-        ['top_out_a', 'top_out_b'],
-        ['top_in_a', 'top_in_b'],
-        ['base_a', 'base_b']
-    ];
+    $dimension_pairs = array(
+        array( 'top_out_a', 'top_out_b' ),
+        array( 'top_in_a', 'top_in_b' ),
+        array( 'base_a', 'base_b' ),
+    );
 
-    foreach ($dimension_pairs as $pair) {
-        $a_value = get_field($pair[0], $post_id);
-        $b_value = get_field($pair[1], $post_id);
+    foreach ( $dimension_pairs as $pair ) {
+        $a_value = get_field( $pair[0], $post_id );
+        $b_value = get_field( $pair[1], $post_id );
         
-        if (!empty($a_value) && empty($b_value)) {
-            update_field($pair[1], $a_value, $post_id);
+        if ( ! empty( $a_value ) && empty( $b_value ) ) {
+            update_field( $pair[1], $a_value, $post_id );
         }
     }
 
     // Set boolean fields
-    if (isset($header_map['Lid'])) {
-        $lid_value = trim($data[$header_map['Lid']]);
-        $lid_bool = (strtolower($lid_value) === 'yes' || $lid_value === '1');
-        update_field('lid', $lid_bool, $post_id);
+    if ( isset( $header_map['Lid'] ) ) {
+        $lid_value = trim( $data[ $header_map['Lid'] ] );
+        $lid_bool  = ( strtolower( $lid_value ) === 'yes' || $lid_value === '1' );
+        update_field( 'lid', $lid_bool, $post_id );
     }
 
-    if (isset($header_map['Samples Available'])) {
-        $samples_value = trim($data[$header_map['Samples Available']]);
-        $samples_bool = (strtolower($samples_value) === 'yes' || $samples_value === '1');
-        update_field('samples_available', $samples_bool, $post_id);
+    if ( isset( $header_map['Samples Available'] ) ) {
+        $samples_value = trim( $data[ $header_map['Samples Available'] ] );
+        $samples_bool  = ( strtolower( $samples_value ) === 'yes' || $samples_value === '1' );
+        update_field( 'samples_available', $samples_bool, $post_id );
     }
 
     // Set taxonomies
-    $taxonomy_fields = [
+    $taxonomy_fields = array(
         'Product Types'      => 'product_type',
         'Product Categories' => 'product_category',
         'Edge Types'         => 'edge_type',
-        'Usage'              => 'usage', // Fixed: was "Additonal" but CSV column is "Usage".
-    ];
+        'Usage'              => 'usage',
+    );
 
-    foreach ($taxonomy_fields as $csv_field => $taxonomy) {
-        if (isset($header_map[$csv_field])) {
-            $terms_string = trim($data[$header_map[$csv_field]]);
-            if (!empty($terms_string)) {
+    foreach ( $taxonomy_fields as $csv_field => $taxonomy ) {
+        if ( isset( $header_map[ $csv_field ] ) ) {
+            $terms_string = trim( $data[ $header_map[ $csv_field ] ] );
+            if ( ! empty( $terms_string ) ) {
                 // Remove quotes and split by comma
-                $terms_string = trim($terms_string, '"');
-                $terms = array_map('trim', explode(',', $terms_string));
+                $terms_string = trim( $terms_string, '"' );
+                $terms        = array_map( 'trim', explode( ',', $terms_string ) );
                 
-                $term_ids = [];
-                foreach ($terms as $term_name) {
-                    if (!empty($term_name)) {
-                        $term = get_term_by('name', $term_name, $taxonomy);
-                        if (!$term) {
+                $term_ids = array();
+                foreach ( $terms as $term_name ) {
+                    if ( ! empty( $term_name ) ) {
+                        $term = get_term_by( 'name', $term_name, $taxonomy );
+                        if ( ! $term ) {
                             // Create the term if it doesn't exist
-                            $term_result = wp_insert_term($term_name, $taxonomy);
-                            if (!is_wp_error($term_result)) {
+                            $term_result = wp_insert_term( $term_name, $taxonomy );
+                            if ( ! is_wp_error( $term_result ) ) {
                                 $term_ids[] = $term_result['term_id'];
                             }
                         } else {
@@ -1280,20 +1313,34 @@ function import_single_product($data, $header_map, $row_number) {
                     }
                 }
                 
-                if (!empty($term_ids)) {
-                    wp_set_object_terms($post_id, $term_ids, $taxonomy);
+                if ( ! empty( $term_ids ) ) {
+                    wp_set_object_terms( $post_id, $term_ids, $taxonomy );
                 }
             }
         }
     }
 
-    return [
-        'success' => true,
-        'action' => $action,
+    // Generate and update the product slug after all fields are set.
+    $top_out_a = get_field( 'top_out_a', $post_id );
+    $top_in_a  = get_field( 'top_in_a', $post_id );
+    $new_slug  = generate_product_slug( $product_title, $top_out_a, $top_in_a, $sku );
+    
+    if ( ! empty( $new_slug ) ) {
+        wp_update_post(
+            array(
+                'ID'        => $post_id,
+                'post_name' => $new_slug,
+            )
+        );
+    }
+
+    return array(
+        'success'      => true,
+        'action'       => $action,
         'is_duplicate' => $is_duplicate,
-        'sku' => $sku,
-        'post_id' => $post_id
-    ];
+        'sku'          => $sku,
+        'post_id'      => $post_id,
+    );
 }
 
 /**
