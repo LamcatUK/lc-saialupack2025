@@ -63,12 +63,12 @@ $block_id = 'lc-hero-' . $block['id'];
 					<?php
 					$d = 0;
 					?>
-					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>"><div class="hero__title"><?= esc_html( $heading ); ?></div>
+					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__title"><?= esc_html( $heading ); ?></h1>
 					<?php
 					$d += 100;
 					if ( $strapline ) {
 						?>
-					<p data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__strapline"><?= esc_html( $strapline ); ?></p></h1>
+					<h2 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__strapline"><?= esc_html( $strapline ); ?></h2>
 						<?php
 						$d += 100;
 					}
