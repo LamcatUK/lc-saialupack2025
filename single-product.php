@@ -88,7 +88,7 @@ get_header();
 					if ( $depth ) {
 						?>
 					<tr>
-						<th>Height/Depth</th>
+						<th>Depth</th>
 						<td><?= esc_html( $depth ); ?> mm</td>
 						<td><img src="<?= esc_url( get_stylesheet_directory_uri() . '/img/icon-depth.svg' ); ?>" alt="Depth" class="img-fluid"></td>
 					</tr>
