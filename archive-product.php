@@ -106,12 +106,10 @@ $slider_fields = array(
 					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__title">Aluminium Foil Containers</h1>
 					<?php
 					$d += 100;
-					if ( $strapline ) {
-						?>
+					?>
 					<h2 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__strapline">Products</h2>
-						<?php
-						$d += 100;
-					}
+					<?php
+					$d += 100;
 					?>
 					<div class="hero__buttons d-flex flex-wrap gap-2">
 						<span data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>">
