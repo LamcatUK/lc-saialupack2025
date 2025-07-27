@@ -1,0 +1,46 @@
+{
+    "key": "group_688605fee15c4",
+    "title": "Product Type Content",
+    "fields": [
+        {
+            "key": "field_688605ff4f27d",
+            "label": "Product Description",
+            "name": "product_description",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Appears below the product block.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "product_type"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1753613869
+}

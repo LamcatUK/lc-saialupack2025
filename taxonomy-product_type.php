@@ -327,6 +327,18 @@ $strapline = preg_replace( '/^<p>(.*)<\/p>$/s', '$1', $strapline );
 	</div>
 <?php
 
+if ( get_field( 'product_description', $current_term ) ) {
+	?>
+	<div class="container mb-5">
+		<div class="product-description">
+			<?php
+			echo wp_kses_post( get_field( 'product_description', $current_term ) );
+			?>
+		</div>
+	</div>
+	<?php
+}
+
 if ( have_rows( 'faqs', $current_term ) ) {
 	?>
 <section class="has-grey-100-background-color">
