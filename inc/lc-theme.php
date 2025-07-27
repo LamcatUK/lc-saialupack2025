@@ -173,22 +173,35 @@ function lc_dashboard_widget_display() {
 
 
 /**
- * Filters Yoast SEO breadcrumbs to remove 'resources' from the path.
+ * Filters Yoast SEO breadcrumbs to remove the 'resources' segment while preserving the path.
  *
  * @param array $links The breadcrumb links.
  * @return array Modified breadcrumb links.
  */
 function remove_resources_from_breadcrumbs( $links ) {
-	return array_filter(
-		$links,
-		function ( $link ) {
-			// Remove any breadcrumb item with 'resources' as the URL part or text.
-			return ! (
-				( isset( $link['url'] ) && false !== strpos( $link['url'], '/resources/' ) ) ||
-				( isset( $link['text'] ) && 'resources' === strtolower( $link['text'] ) )
-			);
+	$modified_links    = array();
+	$skip_next        = false;
+
+	foreach ( $links as $key => $link ) {
+		if ( $skip_next ) {
+			$skip_next = false;
+			continue;
 		}
-	);
+
+		if ( isset( $link['text'] ) && 'resources' === strtolower( $link['text'] ) ) {
+			// If this is a 'resources' item, skip it but preserve URL structure for the next item in the chain.
+			if ( isset( $links[ $key + 1 ] ) ) {
+				$next_link        = $links[ $key + 1 ];
+				$next_link['url'] = $link['url'];
+				$modified_links[] = $next_link;
+				$skip_next       = true;
+			}
+		} else {
+			$modified_links[] = $link;
+		}
+	}
+
+	return $modified_links;
 }
 add_filter( 'wpseo_breadcrumb_links', 'remove_resources_from_breadcrumbs' );
 
