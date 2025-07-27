@@ -19,17 +19,21 @@ $pdf_url = $pdf_id ? wp_get_attachment_url( $pdf_id ) : '';
 				<?= wp_kses_post( get_field( 'pdf_download_text' ) ); ?>
 				<a href="<?= esc_url( $pdf_url ); ?>" class="button button-primary">Download PDF</a>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-3 offset-md-1">
 				<?php
 				if ( wp_attachment_is( 'pdf', $pdf_id ) ) {
 					$thumb_id = get_post_thumbnail_id( $pdf_id );
 					if ( $thumb_id ) {
-						echo wp_get_attachment_image( $thumb_id, 'full', false, array( 'class' => 'img-fluid' ) );
+						?>
+				<a href="<?= esc_url( $pdf_url ); ?>"><?= wp_get_attachment_image( $thumb_id, 'full', false, array( 'class' => 'img-fluid' ) ); ?></a>
+						<?php
 					} else {
 						// Try to get PDF preview.
 						$pdf_image = wp_get_attachment_image( $pdf_id, 'full', true, array( 'class' => 'img-fluid' ) );
 						if ( $pdf_image ) {
-							echo $pdf_image;
+							?>
+				<a href="<?= esc_url( $pdf_url ); ?>"><?= wp_kses_post( $pdf_image ); ?></a>
+							<?php
 						}
 					}
 				}
