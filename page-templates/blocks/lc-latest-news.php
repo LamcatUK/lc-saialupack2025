@@ -33,7 +33,7 @@ $posts = get_posts(
 							<div class="news__content">
 								<div class="news__meta">
 									<div class="news__date">
-										Published <?= esc_html( get_the_date( 'dS M, Y' ) ); ?>
+										Published <?= esc_html( get_the_date( 'dS M, Y', $news_post ) ); ?>
 									</div>
 									<div class="news__read">
 										<i class="fa-regular fa-hourglass"></i> <?= estimate_reading_time_in_minutes( get_the_content() ); ?> min
