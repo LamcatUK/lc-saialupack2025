@@ -76,7 +76,8 @@ defined( 'ABSPATH' ) || exit;
                 &copy; <?= esc_html( gmdate( 'Y' ) ); ?> Sai Alupack Ltd. Registered in England, no. 14328453.
             </div>
             <div class="col-lg-5 text-end d-flex gap-2 justify-content-center justify-content-lg-end flex-wrap">
-                <a href="/privacy-policy/">Privacy &amp; Cookies</a> |
+                <a href="/privacy-policy/">Privacy</a> &amp;
+                <a href="/cookies/">Cookies</a> |
                 <span>Site by <a href="https://www.lamcat.co.uk/" rel="noopener" target="_blank" class="lc" title="Lamcat Design & Consulting">Lamcat</a></span>
             </div>
         </div>
