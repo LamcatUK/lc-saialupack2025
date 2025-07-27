@@ -102,15 +102,13 @@ $slider_fields = array(
 				<div class="col-md-6 text-white">
 					<?php
 					$d = 0;
-
-					$strapline = 'Explore our full range of foil containers and packaging solutions.';
 					?>
-					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>"><div class="hero__title">Products</div>
+					<h1 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__title">Aluminium Foil Containers</h1>
 					<?php
 					$d += 100;
 					if ( $strapline ) {
 						?>
-					<p data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__strapline"><?= esc_html( $strapline ); ?></p></h1>
+					<h2 data-aos="fade" data-aos-delay="<?= esc_attr( $d ); ?>" class="hero__strapline">Products</h2>
 						<?php
 						$d += 100;
 					}
