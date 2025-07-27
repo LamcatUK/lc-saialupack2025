@@ -171,7 +171,29 @@ function lc_dashboard_widget_display() {
 	<?php
 }
 
+
+/**
+ * Filters Yoast SEO breadcrumbs to remove 'resources' from the path.
+ *
+ * @param array $links The breadcrumb links.
+ * @return array Modified breadcrumb links.
+ */
+function remove_resources_from_breadcrumbs( $links ) {
+	return array_filter(
+		$links,
+		function ( $link ) {
+			// Remove any breadcrumb item with 'resources' as the URL part or text.
+			return ! (
+				( isset( $link['url'] ) && false !== strpos( $link['url'], '/resources/' ) ) ||
+				( isset( $link['text'] ) && 'resources' === strtolower( $link['text'] ) )
+			);
+		}
+	);
+}
+add_filter( 'wpseo_breadcrumb_links', 'remove_resources_from_breadcrumbs' );
+
 // phpcs:disable
+
 // add_filter('wpseo_breadcrumb_links', function( $links ) {
 //     global $post;
 //     if ( is_singular( 'post' ) ) {
@@ -186,7 +208,6 @@ function lc_dashboard_widget_display() {
 //     return $links;
 // }
 // );
-
 // remove discussion metabox
 // function cc_gutenberg_register_files()
 // {
