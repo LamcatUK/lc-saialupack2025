@@ -14,7 +14,7 @@ get_header();
     the_post();
     the_content();
 
-    if ( ! is_page( 'contact-us' ) ) {
+    if ( ! is_page( 'contact-us' ) && ! is_page( 'thank-you' ) ) {
         get_template_part( 'page-templates/blocks/lc-cta' );
     }
     ?>
