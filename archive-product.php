@@ -214,11 +214,11 @@ $slider_fields = array(
 						$max = $limits[ $field ]['max'];
 						?>
 						<div class="col-md-6">
-							<div class="row  border pt-5 ps-4 pe-5 pb-0 rounded has-white-background-color">
-								<div class="col-md-4">
+							<div class="row  border ps-4 pe-5 pb-0 rounded has-white-background-color">
+								<div class="col-md-4 align-self-end">
 									<label for="<?= esc_attr( $field ); ?>Range" class="form-label fw-bold"><?= esc_html( $label ); ?></label>
 								</div>
-								<div class="col-md-8 d-flex align-items-center">
+								<div class="col-md-8 pt-5 d-flex align-items-center">
 									<div class="range-inner w-100">
 										<div id="<?= esc_attr( $field ); ?>Range" class="form-range-slider"></div>
 										<div class="text-end small">
