@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 					<div class="row">
 						<div class="col-md-12">
 							<label for="sku" class="form-label">Search by SKU</label>
-							<input type="text" name="sku" id="sku" class="form-control" placeholder="e.g. 546rpl">
+							<input type="text" name="sku" id="sku" class="form-control" placeholder="e.g. W-325265-42" aria-label="Search by SKU">
 						</div>
 					</div>
 				</div>

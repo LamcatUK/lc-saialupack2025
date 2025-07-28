@@ -137,7 +137,7 @@ $slider_fields = array(
 	<div class="row g-3 mb-4 align-items-end">
 		<div class="col-md-2">
 			<label for="skuSearch" class="form-label">Search by SKU</label>
-			<input type="text" id="skuSearch" class="form-control" placeholder="e.g. 1409pl">
+			<input type="text" id="skuSearch" class="form-control" placeholder="e.g. W-325265-42" aria-label="Search by SKU">
 		</div>
 		<div class="col-md-2">
 			<label for="typeFilter" class="form-label">Type</label>

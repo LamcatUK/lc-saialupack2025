@@ -1,1 +1,11 @@
-{"--bs-blue":"#0d6efd","--bs-indigo":"#6610f2","--bs-purple":"#6f42c1","--bs-pink":"#d63384","--bs-red":"#dc3545","--bs-orange":"#fd7e14","--bs-yellow":"#ffc107","--bs-green":"#198754","--bs-teal":"#20c997","--bs-cyan":"#0dcaf0","--bs-white":"#fff","--bs-gray":"#6c757d","--bs-gray-dark":"#343a40"}
+{
+    "--black": "#0f0f0f",
+    "--white": "#ffffff",
+    "--green-100": "#d3ebe5",
+    "--green-400": "#45b8ac",
+    "--green-700": "#277b6c",
+    "--green-900": "#173f3d",
+    "--coral-400": "#ff6b5e",
+    "--grey-100": "#efefef",
+    "--grey-400": "#d0d3d4"
+}
