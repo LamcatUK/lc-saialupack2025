@@ -43,6 +43,12 @@ header {
         max-width: 100%;
     }
 
+    .header_flag {
+        width: 18px;
+        height: 18px;
+        margin-right: 0.5rem;
+    }
+
     &.scrolled {
         background-color: var(--col-light);
         box-shadow: 0 4px 12px hsla(0 0% 0% / 0.05);

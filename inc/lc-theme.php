@@ -179,8 +179,8 @@ function lc_dashboard_widget_display() {
  * @return array Modified breadcrumb links.
  */
 function remove_resources_from_breadcrumbs( $links ) {
-	$modified_links    = array();
-	$skip_next        = false;
+	$modified_links = array();
+	$skip_next      = false;
 
 	foreach ( $links as $key => $link ) {
 		if ( $skip_next ) {
@@ -194,7 +194,7 @@ function remove_resources_from_breadcrumbs( $links ) {
 				$next_link        = $links[ $key + 1 ];
 				$next_link['url'] = $link['url'];
 				$modified_links[] = $next_link;
-				$skip_next       = true;
+				$skip_next        = true;
 			}
 		} else {
 			$modified_links[] = $link;
@@ -323,7 +323,7 @@ add_action(
  * @return string The modified HTML list content for the menu items.
  */
 function add_custom_menu_item( $items, $args ) {
-    if ( $args->theme_location == 'primary_nav' ) {
+    if ( 'primary_nav' === $args->theme_location ) {
         $new_item  = '<li class="d-lg-none menu-item nav-item">' . do_shortcode( '[contact_phone icon="true" class="nav-link"]' ) . '</li>';
         $new_item .= '<li class="d-lg-none menu-item nav-item">' . do_shortcode( '[contact_email icon="true" class="nav-link" text="Email Us"]' ) . '</li>';
         $items    .= $new_item;
@@ -442,7 +442,7 @@ add_filter(
         }
 
         // Time-based spam check (ensure form isn't submitted too quickly).
-        $start_time = isset( $_SESSION['form_start_time'] ) ? $_SESSION['form_start_time'] : 0;
+        $start_time   = isset( $_SESSION['form_start_time'] ) ? $_SESSION['form_start_time'] : 0;
         $current_time = time();
         if ( $current_time - $start_time < 5 ) { // Less than 5 seconds.
             $result->invalidate( 'your-message', 'Form submitted too quickly. Possible spam.' );
@@ -482,7 +482,7 @@ add_action(
         if ( session_status() === PHP_SESSION_NONE ) {
             session_start();
         }
-        $start_time = time();
+        $start_time                  = time();
         $_SESSION['form_start_time'] = $start_time;
         setcookie( 'form_start_time', $start_time, time() + 3600, '/' ); // Cookie valid for 1 hour.
     }
@@ -518,16 +518,19 @@ add_filter(
  */
 function cb_show_all_products_on_archive( $query ) {
     if (
-        !is_admin() &&
+        ! is_admin() &&
         $query->is_main_query() &&
         is_post_type_archive( 'product' )
     ) {
-        $query->set('posts_per_page', -1);
+        $query->set( 'posts_per_page', -1 );
     }
 }
 add_action( 'pre_get_posts', 'cb_show_all_products_on_archive' );
 
 
+/**
+ * Enqueues the noUiSlider CSS and JS assets on product archive and taxonomy pages.
+ */
 function enqueue_nouislider_assets() {
     if ( is_post_type_archive( 'product' ) || is_tax( 'product_type' ) || is_tax( 'product_category' ) || is_tax( 'edge_type' ) || is_tax( 'usage' ) ) {
         wp_enqueue_style( 'nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.css' );
@@ -537,12 +540,20 @@ function enqueue_nouislider_assets() {
 add_action( 'wp_enqueue_scripts', 'enqueue_nouislider_assets' );
 
 
+/**
+ * Returns a formatted string representing the dimensions.
+ *
+ * @param mixed $a First dimension value.
+ * @param mixed $b Second dimension value.
+ * @return string Formatted dimensions string.
+ */
 function dimensions( $a, $b ) {
     if ( $a === $b ) {
-        return $a . ' x ' . $b;
+        return $a;
     }
     return $a . ' x ' . $b;
 }
+
 
 
 // BROCHURE GENERATION.
@@ -570,202 +581,22 @@ if ( function_exists( 'acf_add_options_page' ) ) {
 }
 
 
-function brochure_image_resolver( $field ) {
-    return fn() => ( $img = get_field( $field, 'option' ) ) && is_array( $img )
-        ? [ 'sourceUrl' => $img['url'] ?? '', 'altText' => $img['alt'] ?? '' ]
-        : null;
+/**
+ * Gets total number of published products.
+ *
+ * @return int Number of published products.
+ */
+function get_total_products() {
+    $query = new WP_Query(
+        array(
+            'post_type'   => 'product',
+            'post_status' => 'publish',
+            'fields'      => 'ids',
+            'nopaging'    => true,
+        )
+    );
+    return $query->found_posts;
 }
-
-add_action( 'graphql_register_types', function () {
-	if ( ! function_exists( 'get_field' ) ) {
-		return;
-	}
-
-	// === PRODUCT META FIELDS ===
-	$fields = array(
-		'capacity'          => 'Float',
-		'lid'               => 'Boolean',
-		'product_name'      => 'String',
-		'top_out_a'         => 'Float',
-		'top_out_b'         => 'Float',
-		'top_in_a'          => 'Float',
-		'top_in_b'          => 'Float',
-		'base_a'            => 'Float',
-		'base_b'            => 'Float',
-		'depth'             => 'Float',
-		'weight'            => 'Float',
-		'samples_available' => 'Boolean',
-	);
-
-	foreach ( $fields as $name => $type ) {
-		register_graphql_field( 'Product', $name, [
-			'type'        => $type,
-			'description' => "ACF field `$name`",
-			'resolve'     => function( $post ) use ( $name, $type ) {
-				$value = get_field( $name, $post->ID );
-				if ( $value === '' || $value === null ) {
-					return null;
-				}
-				if ( $type === 'Float' ) {
-					return (float) $value;
-				}
-				if ( $type === 'Boolean' ) {
-					return (bool) $value;
-				}
-				return $value;
-			},
-		] );
-	}
-
-	// === STATIC OPTIONS FIELDS ===
-	register_graphql_field( 'RootQuery', 'coverTitle', [
-		'type'        => 'String',
-		'description' => 'Cover page title',
-		'resolve'     => fn() => get_field( 'cover_title', 'option' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'coverSubtitle', [
-		'type'        => 'String',
-		'description' => 'Cover page subtitle',
-		'resolve'     => fn() => get_field( 'cover_subtitle', 'option' ),
-	] );
-
-    register_graphql_field( 'RootQuery', 'coverLogo', [
-        'type'        => 'BrochureImage',
-        'description' => 'Cover logo image',
-        'resolve'     => brochure_image_resolver( 'cover_logo' ),
-    ] );
-    register_graphql_field( 'RootQuery', 'watermark', [
-        'type'        => 'BrochureImage',
-        'description' => 'Watermark image',
-        'resolve'     => brochure_image_resolver( 'watermark' ),
-    ] );
-
-	register_graphql_field( 'RootQuery', 'aboutHeading', [
-		'type'        => 'String',
-		'description' => 'About heading',
-		'resolve'     => fn() => get_field( 'about_heading', 'option' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'aboutText1', [
-		'type'        => 'String',
-		'description' => 'About text block 1',
-		'resolve'     => fn() => get_field( 'about_text_1', 'option' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'aboutText2', [
-		'type'        => 'String',
-		'description' => 'About text block 2',
-		'resolve'     => fn() => get_field( 'about_text_2', 'option' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'statementOfCompliance', [
-		'type'        => 'String',
-		'description' => 'Compliance statement',
-		'resolve'     => fn() => get_field( 'statement_of_compliance', 'option' ),
-	] );
-
-	// === IMAGES ===
-	register_graphql_object_type( 'BrochureImage', [
-		'description' => 'Image with alt text',
-		'fields'      => [
-			'sourceUrl' => [ 'type' => 'String' ],
-			'altText'   => [ 'type' => 'String' ],
-		],
-	] );
-
-	register_graphql_field( 'RootQuery', 'aboutImage1', [
-		'type'        => 'BrochureImage',
-		'description' => 'About image 1',
-		'resolve'     => brochure_image_resolver( 'about_image_1' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'aboutImage2', [
-		'type'        => 'BrochureImage',
-		'description' => 'About image 2',
-		'resolve'     => brochure_image_resolver( 'about_image_2' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'aboutImage3', [
-		'type'        => 'BrochureImage',
-		'description' => 'About image 3',
-		'resolve'     => brochure_image_resolver( 'about_image_3' ),
-	] );
-
-
-	register_graphql_field( 'RootQuery', 'sectorTitle', [
-		'type'        => 'String',
-		'description' => 'Sector Title',
-		'resolve'     => fn() => get_field( 'sectors_page_title', 'option' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'sectorIntro', [
-		'type'        => 'String',
-		'description' => 'Sector Intro',
-		'resolve'     => fn() => get_field( 'sectors_page_intro', 'option' ),
-	] );
-
-	// === SECTORS REPEATER ===
-	register_graphql_object_type( 'Sector', [
-		'description' => 'Sector row',
-		'fields'      => [
-			'sectorTitle' => [
-				'type'    => 'String',
-				'resolve' => fn( $row ) => $row['sector_title'] ?? null,
-			],
-			'sectorDescription' => [
-				'type'    => 'String',
-				'resolve' => fn( $row ) => $row['sector_description'] ?? null,
-			],
-		],
-	] );
-
-    register_graphql_field( 'RootQuery', 'sectorImage1', [
-		'type'        => 'BrochureImage',
-		'description' => 'Sectors image 1',
-		'resolve'     => brochure_image_resolver( 'sector_image_1' ),
-	] );
-    register_graphql_field( 'RootQuery', 'sectorImage2', [
-		'type'        => 'BrochureImage',
-		'description' => 'Sectors image 2',
-		'resolve'     => brochure_image_resolver( 'sector_image_2' ),
-	] );
-    register_graphql_field( 'RootQuery', 'sectorImage3', [
-		'type'        => 'BrochureImage',
-		'description' => 'Sectors image 3',
-		'resolve'     => brochure_image_resolver( 'sector_image_3' ),
-	] );
-    register_graphql_field( 'RootQuery', 'sectorImage4', [
-		'type'        => 'BrochureImage',
-		'description' => 'Sectors image 4',
-		'resolve'     => brochure_image_resolver( 'sector_image_4' ),
-	] );
-
-	register_graphql_field( 'RootQuery', 'sectors', [
-		'type'        => [ 'list_of' => 'Sector' ],
-		'description' => 'Brochure sector list',
-		'resolve'     => fn() => get_field( 'sectors', 'option' ) ?: [],
-	] );
-} );
-
-
-add_action( 'graphql_register_types', function() {
-    register_graphql_field( 'RootQuery', 'productCount', [
-        'type' => 'Int',
-        'description' => __( 'Total number of products', 'your-textdomain' ),
-        'resolve' => function() {
-            $query = new WP_Query([
-                'post_type' => 'product',
-                'post_status' => 'publish',
-                'fields' => 'ids',
-                'nopaging' => true,
-            ]);
-            return $query->found_posts;
-        },
-    ] );
-});
-
-// Replace the entire CSV export section with this:
 
 if ( function_exists( 'acf_add_options_page' ) ) {
     // Add Export Import Tools as top-level admin menu.
@@ -789,44 +620,44 @@ if ( function_exists( 'acf_add_options_page' ) ) {
  * Renders the CSV export admin page
  */
 function render_export_products_page() {
-    // Handle clear products action
-    if (isset($_GET['action']) && $_GET['action'] === 'clear_products' && 
-        isset($_GET['_wpnonce']) && wp_verify_nonce(wp_unslash($_GET['_wpnonce']), 'clear_products')) {
+    // Handle clear products action.
+    if ( isset( $_GET['action'] ) && 'clear_products' === $_GET['action'] &&
+        isset( $_GET['_wpnonce'] ) && wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'clear_products' ) ) {
         clear_all_products();
         echo '<div class="notice notice-success"><p>All products have been deleted successfully!</p></div>';
     }
 
-    // Display import results if available
-    if (isset($_GET['import_complete']) && $_GET['import_complete'] === '1') {
-        if (session_status() === PHP_SESSION_NONE) {
+    // Display import results if available.
+    if ( isset( $_GET['import_complete'] ) && '1' === $_GET['import_complete'] ) {
+        if ( session_status() === PHP_SESSION_NONE ) {
             session_start();
         }
-        
-        if (isset($_SESSION['import_results'])) {
+
+        if ( isset( $_SESSION['import_results'] ) ) {
             $results = $_SESSION['import_results'];
-            unset($_SESSION['import_results']);
-            
+            unset( $_SESSION['import_results'] );
+
             echo '<div class="notice notice-success">';
             echo '<h3>Import Complete!</h3>';
-            echo '<p><strong>Total Rows Processed:</strong> ' . esc_html($results['total_rows']) . '</p>';
-            echo '<p><strong>Products Imported:</strong> ' . esc_html($results['imported']) . '</p>';
-            echo '<p><strong>Products Updated:</strong> ' . esc_html($results['updated']) . '</p>';
-            echo '<p><strong>Rows Skipped:</strong> ' . esc_html($results['skipped']) . '</p>';
-            
-            if (!empty($results['duplicates'])) {
-                echo '<p><strong>Duplicate SKUs Found:</strong> ' . count($results['duplicates']) . '</p>';
+            echo '<p><strong>Total Rows Processed:</strong> ' . esc_html( $results['total_rows'] ) . '</p>';
+            echo '<p><strong>Products Imported:</strong> ' . esc_html( $results['imported'] ) . '</p>';
+            echo '<p><strong>Products Updated:</strong> ' . esc_html( $results['updated'] ) . '</p>';
+            echo '<p><strong>Rows Skipped:</strong> ' . esc_html( $results['skipped'] ) . '</p>';
+
+            if ( ! empty( $results['duplicates'] ) ) {
+                echo '<p><strong>Duplicate SKUs Found:</strong> ' . count( $results['duplicates'] ) . '</p>';
                 echo '<ul>';
-                foreach ($results['duplicates'] as $duplicate) {
-                    echo '<li>Row ' . esc_html($duplicate['row']) . ': SKU "' . esc_html($duplicate['sku']) . '" (' . esc_html($duplicate['action']) . ')</li>';
+                foreach ( $results['duplicates'] as $duplicate ) {
+                    echo '<li>Row ' . esc_html( $duplicate['row'] ) . ': SKU "' . esc_html( $duplicate['sku'] ) . '" (' . esc_html( $duplicate['action'] ) . ')</li>';
                 }
                 echo '</ul>';
             }
-            
-            if (!empty($results['errors'])) {
+
+            if ( ! empty( $results['errors'] ) ) {
                 echo '<h4 style="color: #d63638;">Errors:</h4>';
                 echo '<ul>';
-                foreach ($results['errors'] as $error) {
-                    echo '<li style="color: #d63638;">' . esc_html($error) . '</li>';
+                foreach ( $results['errors'] as $error ) {
+                    echo '<li style="color: #d63638;">' . esc_html( $error ) . '</li>';
                 }
                 echo '</ul>';
             }
@@ -834,36 +665,36 @@ function render_export_products_page() {
         }
     }
 
-    // Display image import results if available
-    if (isset($_GET['images_import_complete']) && $_GET['images_import_complete'] === '1') {
-        if (session_status() === PHP_SESSION_NONE) {
+    // Display image import results if available.
+    if ( isset( $_GET['images_import_complete'] ) && '1' === $_GET['images_import_complete'] ) {
+        if ( session_status() === PHP_SESSION_NONE ) {
             session_start();
         }
-        
-        if (isset($_SESSION['image_import_results'])) {
+
+        if ( isset( $_SESSION['image_import_results'] ) ) {
             $results = $_SESSION['image_import_results'];
-            unset($_SESSION['image_import_results']);
-            
+            unset( $_SESSION['image_import_results'] );
+
             echo '<div class="notice notice-success">';
             echo '<h3>Image Import Complete!</h3>';
-            echo '<p><strong>Total Images Processed:</strong> ' . esc_html($results['total_images']) . '</p>';
-            echo '<p><strong>Images Successfully Imported:</strong> ' . esc_html($results['successful']) . '</p>';
-            echo '<p><strong>Images Skipped/Failed:</strong> ' . esc_html($results['failed']) . '</p>';
-            
-            if (!empty($results['matches'])) {
+            echo '<p><strong>Total Images Processed:</strong> ' . esc_html( $results['total_images'] ) . '</p>';
+            echo '<p><strong>Images Successfully Imported:</strong> ' . esc_html( $results['successful'] ) . '</p>';
+            echo '<p><strong>Images Skipped/Failed:</strong> ' . esc_html( $results['failed'] ) . '</p>';
+
+            if ( ! empty( $results['matches'] ) ) {
                 echo '<h4 style="color: #00a32a;">Successful Matches:</h4>';
                 echo '<ul>';
-                foreach ($results['matches'] as $match) {
-                    echo '<li>' . esc_html($match['filename']) . ' → Product: ' . esc_html($match['sku']) . '</li>';
+                foreach ( $results['matches'] as $match ) {
+                    echo '<li>' . esc_html( $match['filename'] ) . ' → Product: ' . esc_html( $match['sku'] ) . '</li>';
                 }
                 echo '</ul>';
             }
-            
-            if (!empty($results['failures'])) {
+
+            if ( ! empty( $results['failures'] ) ) {
                 echo '<h4 style="color: #d63638;">Failed/Skipped:</h4>';
                 echo '<ul>';
-                foreach ($results['failures'] as $failure) {
-                    echo '<li style="color: #d63638;">' . esc_html($failure['filename']) . ': ' . esc_html($failure['reason']) . '</li>';
+                foreach ( $results['failures'] as $failure ) {
+                    echo '<li style="color: #d63638;">' . esc_html( $failure['filename'] ) . ': ' . esc_html( $failure['reason'] ) . '</li>';
                 }
                 echo '</ul>';
             }
@@ -871,7 +702,7 @@ function render_export_products_page() {
         }
     }
 
-    // Get product count for display
+    // Get product count for display.
     $product_count = wp_count_posts( 'product' )->publish;
     ?>
     <style>
@@ -889,8 +720,8 @@ function render_export_products_page() {
             <p><strong>Total Products:</strong> <?php echo esc_html( $product_count ); ?></p>
             
             <p>
-                <a href="<?php echo admin_url('admin.php?page=export-products-csv&action=download_csv&_wpnonce=' . wp_create_nonce('download_csv')); ?>" 
-                   class="button button-primary">
+                <a href="<?= esc_url( admin_url( 'admin.php?page=export-products-csv&action=download_csv&_wpnonce=' . wp_create_nonce( 'download_csv' ) ) ); ?>" 
+                class="button button-primary">
                     Download Products CSV
                 </a>
             </p>
@@ -900,31 +731,38 @@ function render_export_products_page() {
             <h2>Product Images Export</h2>
             <p>Export all product featured images as a ZIP file. Images will be named {SKU}.{extension}.</p>
             <?php
-            $products_with_images = get_posts([
-                'post_type' => 'product',
-                'post_status' => 'publish',
-                'meta_query' => [
-                    [
-                        'key' => '_thumbnail_id',
-                        'compare' => 'EXISTS'
-                    ]
-                ],
-                'posts_per_page' => -1,
-                'fields' => 'ids'
-            ]);
+            $products_with_images = get_posts(
+                array(
+                    'post_type'      => 'product',
+                    'post_status'    => 'publish',
+                    'meta_query'     => array(
+                        array(
+                            'key'     => '_thumbnail_id',
+                            'compare' => 'EXISTS',
+                        ),
+                    ),
+                    'posts_per_page' => -1,
+                    'fields'         => 'ids',
+                )
+            );
             ?>
-            <p><strong>Products with Images:</strong> <?php echo count($products_with_images); ?> of <?php echo esc_html( $product_count ); ?></p>
-            
-            <?php if (count($products_with_images) > 0): ?>
+            <p><strong>Products with Images:</strong> <?= count( $products_with_images ); ?> of <?= esc_html( $product_count ); ?></p>
+
+            <?php
+            if ( count( $products_with_images ) > 0 ) {
+                ?>
             <p>
-                <a href="<?php echo admin_url('admin.php?page=export-products-csv&action=download_images&_wpnonce=' . wp_create_nonce('download_images')); ?>" 
-                   class="button button-primary">
+                <a href="<?= esc_url( admin_url( 'admin.php?page=export-products-csv&action=download_images&_wpnonce=' . wp_create_nonce( 'download_images' ) ) ); ?>" class="button button-primary">
                     Download Product Images ZIP
                 </a>
             </p>
-            <?php else: ?>
+                <?php
+            } else {
+                ?>
             <p><em>No products with featured images to export.</em></p>
-            <?php endif; ?>
+                <?php
+            }
+            ?>
         </div>
         
         <div class="card">
@@ -932,7 +770,7 @@ function render_export_products_page() {
             <p>Upload a CSV file to import products. The CSV should match the export format.</p>
             
             <form method="post" enctype="multipart/form-data">
-                <?php wp_nonce_field('import_products_csv', 'import_nonce'); ?>
+                <?php wp_nonce_field( 'import_products_csv', 'import_nonce' ); ?>
                 <table class="form-table">
                     <tr>
                         <th scope="row">CSV File</th>
@@ -956,7 +794,7 @@ function render_export_products_page() {
             <p><strong>Supported formats:</strong> .jpg, .jpeg, .png, .webp</p>
             
             <form method="post" enctype="multipart/form-data">
-                <?php wp_nonce_field('import_product_images', 'import_images_nonce'); ?>
+                <?php wp_nonce_field( 'import_product_images', 'import_images_nonce' ); ?>
                 <table class="form-table">
                     <tr>
                         <th scope="row">ZIP File</th>
@@ -977,13 +815,13 @@ function render_export_products_page() {
         <div class="card">
             <h2 style="color: #d63638;">Danger Zone</h2>
             <p><strong>Warning:</strong> This action will permanently delete ALL products and their featured images. This cannot be undone!</p>
-            <p><strong>Current Products:</strong> <?php echo esc_html( $product_count ); ?></p>
+            <p><strong>Current Products:</strong> <?= esc_html( $product_count ); ?></p>
             
             <p>
-                <a href="<?php echo admin_url('admin.php?page=export-products-csv&action=clear_products&_wpnonce=' . wp_create_nonce('clear_products')); ?>" 
-                   class="button button-secondary"
-                   onclick="return confirm('Are you sure you want to delete ALL products? This cannot be undone!');"
-                   style="background: #d63638; border-color: #d63638; color: white;">
+                <a href="<?= esc_url( admin_url( 'admin.php?page=export-products-csv&action=clear_products&_wpnonce=' . wp_create_nonce( 'clear_products' ) ) ); ?>" 
+                class="button button-secondary"
+                onclick="return confirm('Are you sure you want to delete ALL products? This cannot be undone!');"
+                style="background: #d63638; border-color: #d63638; color: white;">
                     Clear All Products
                 </a>
             </p>
@@ -1021,147 +859,186 @@ function render_export_products_page() {
     <?php
 }
 
-// Handle the download via URL parameter instead of POST
-add_action('admin_init', function() {
-    if (isset($_GET['action']) && isset($_GET['page']) && $_GET['page'] === 'export-products-csv') {
-        if ($_GET['action'] === 'download_csv' && wp_verify_nonce($_GET['_wpnonce'], 'download_csv')) {
-            export_products_csv();
+// Handle the download via URL parameter instead of POST.
+add_action(
+    'admin_init',
+    function () {
+        if ( isset( $_GET['action'] ) && isset( $_GET['page'] ) && 'export-products-csv' === $_GET['page'] ) {
+            if (
+                'download_csv' === $_GET['action'] &&
+                isset( $_GET['_wpnonce'] ) &&
+                wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'download_csv' )
+            ) {
+                export_products_csv();
+            }
+
+            if (
+                'download_images' === $_GET['action'] &&
+                isset( $_GET['_wpnonce'] ) &&
+                wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'download_images' )
+            ) {
+                export_product_images();
+            }
+
+            if (
+                'clear_products' === $_GET['action'] &&
+                isset( $_GET['_wpnonce'] ) &&
+                wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'clear_products' )
+            ) {
+                // This is handled in the render function to show success message.
+                return;
+            }
         }
-        
-        if ($_GET['action'] === 'download_images' && wp_verify_nonce($_GET['_wpnonce'], 'download_images')) {
-            export_product_images();
+
+        // Handle CSV import.
+        if (
+            isset( $_POST['import_csv'] ) &&
+            isset( $_POST['import_nonce'] ) &&
+            wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['import_nonce'] ) ), 'import_products_csv' )
+        ) {
+            import_products_csv();
         }
-        
-        if ($_GET['action'] === 'clear_products' && wp_verify_nonce($_GET['_wpnonce'], 'clear_products')) {
-            // This is handled in the render function to show success message
-            return;
+
+        // Handle image import.
+        if (
+            isset( $_POST['import_images'] ) &&
+            isset( $_POST['import_images_nonce'] ) &&
+            wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['import_images_nonce'] ) ), 'import_product_images' )
+        ) {
+            import_product_images();
         }
     }
-    
-    // Handle CSV import
-    if (isset($_POST['import_csv']) && wp_verify_nonce($_POST['import_nonce'], 'import_products_csv')) {
-        import_products_csv();
-    }
-    
-    // Handle image import
-    if (isset($_POST['import_images']) && wp_verify_nonce($_POST['import_images_nonce'], 'import_product_images')) {
-        import_product_images();
-    }
-});
+);
 
 /**
- * Processes the uploaded CSV file and imports products
+ * Processes the uploaded CSV file and imports products.
  */
 function import_products_csv() {
-    // Check if file was uploaded
-    if (!isset($_FILES['products_csv']) || $_FILES['products_csv']['error'] !== UPLOAD_ERR_OK) {
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>Error uploading file. Please try again.</p></div>';
-        });
+    // Check if file was uploaded.
+    if ( ! isset( $_FILES['products_csv'] ) || UPLOAD_ERR_OK !== $_FILES['products_csv']['error'] ) {
+        add_action(
+            'admin_notices',
+            function () {
+                echo '<div class="notice notice-error"><p>Error uploading file. Please try again.</p></div>';
+            }
+        );
         return;
     }
 
     $file = $_FILES['products_csv']['tmp_name'];
-    
-    // Open and read the CSV file
-    if (($handle = fopen($file, 'r')) === false) {
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>Error reading CSV file.</p></div>';
-        });
+
+    // Open and read the CSV file.
+    if ( ( $handle = fopen( $file, 'r' ) ) === false ) {
+        add_action(
+            'admin_notices',
+            function () {
+                echo '<div class="notice notice-error"><p>Error reading CSV file.</p></div>';
+            }
+        );
         return;
     }
 
-    // Read header row
-    $headers = fgetcsv($handle);
-    if (!$headers) {
-        fclose($handle);
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>Invalid CSV file format.</p></div>';
-        });
+    // Read header row.
+    $headers = fgetcsv( $handle );
+    if ( ! $headers ) {
+        fclose( $handle );
+        add_action(
+            'admin_notices',
+            function () {
+                echo '<div class="notice notice-error"><p>Invalid CSV file format.</p></div>';
+            }
+        );
         return;
     }
 
-    // Clean headers - remove BOM, quotes, and extra whitespace
-    $headers = array_map(function($header) {
-        // Remove UTF-8 BOM if present
-        $header = str_replace("\xEF\xBB\xBF", '', $header);
-        // Remove surrounding quotes if present
-        $header = trim($header, '"\'');
-        // Trim whitespace
-        return trim($header);
-    }, $headers);
+    // Clean headers - remove BOM, quotes, and extra whitespace.
+    $headers = array_map(
+        function ( $header ) {
+            // Remove UTF-8 BOM if present.
+            $header = str_replace( "\xEF\xBB\xBF", '', $header );
+            // Remove surrounding quotes if present.
+            $header = trim( $header, '"\'' );
+            // Trim whitespace.
+            return trim( $header );
+        },
+        $headers
+    );
 
-    // Process the import
-    $results = process_csv_import($handle, $headers);
-    fclose($handle);
+    // Process the import.
+    $results = process_csv_import( $handle, $headers );
+    fclose( $handle );
 
-    // Store results in session to display on page reload
-    if (session_status() === PHP_SESSION_NONE) {
+    // Store results in session to display on page reload.
+    if ( session_status() === PHP_SESSION_NONE ) {
         session_start();
     }
     $_SESSION['import_results'] = $results;
 
-    // Redirect to avoid resubmission
-    wp_redirect(admin_url('admin.php?page=export-products-csv&import_complete=1'));
+    // Redirect to avoid resubmission.
+    wp_redirect( admin_url( 'admin.php?page=export-products-csv&import_complete=1' ) );
     exit;
 }
 
 /**
- * Processes the CSV data and imports products
+ * Processes the CSV data and imports products.
+ *
+ * @param resource $handle  The file handle to the opened CSV file.
+ * @param array    $headers The array of CSV header fields.
+ * @return array            The results of the import process.
  */
-function process_csv_import($handle, $headers) {
-    $results = [
+function process_csv_import( $handle, $headers ) {
+    $results = array(
         'total_rows' => 0,
-        'imported' => 0,
-        'updated' => 0,
-        'skipped' => 0,
-        'errors' => [],
-        'duplicates' => []
-    ];
+        'imported'   => 0,
+        'updated'    => 0,
+        'skipped'    => 0,
+        'errors'     => array(),
+        'duplicates' => array(),
+    );
 
-    // Create header mapping
-    $header_map = array_flip(array_map('trim', $headers));
-    
-    // DEBUG: Log all detected headers
-    error_log("Import Debug - All detected headers: " . print_r($headers, true));
-    error_log("Import Debug - Header mapping: " . print_r($header_map, true));
-    
-    $row_number = 1; // Start at 1 since we've read headers
-    
-    while (($data = fgetcsv($handle)) !== false) {
-        $row_number++;
-        $results['total_rows']++;
-        
-        // Skip empty rows
-        if (empty(array_filter($data))) {
-            $results['skipped']++;
+    // Create header mapping.
+    $header_map = array_flip( array_map( 'trim', $headers ) );
+
+    // DEBUG: Log all detected headers.
+    error_log( 'Import Debug - All detected headers: ' . print_r( $headers, true ) );
+    error_log( 'Import Debug - Header mapping: ' . print_r( $header_map, true ) );
+
+    $row_number = 1; // Start at 1 since we've read headers.
+
+    while ( ( $data = fgetcsv( $handle ) ) !== false ) {
+        ++$row_number;
+        ++$results['total_rows'];
+
+        // Skip empty rows.
+        if ( empty( array_filter( $data ) ) ) {
+            ++$results['skipped'];
             continue;
         }
 
         try {
-            $import_result = import_single_product($data, $header_map, $row_number);
-            
-            if ($import_result['success']) {
-                if ($import_result['action'] === 'created') {
-                    $results['imported']++;
+            $import_result = import_single_product( $data, $header_map, $row_number );
+
+            if ( $import_result['success'] ) {
+                if ( 'created' === $import_result['action'] ) {
+                    ++$results['imported'];
                 } else {
-                    $results['updated']++;
+                    ++$results['updated'];
                 }
-                
-                if ($import_result['is_duplicate']) {
-                    $results['duplicates'][] = [
-                        'row' => $row_number,
-                        'sku' => $import_result['sku'],
-                        'action' => $import_result['action']
-                    ];
+
+                if ( $import_result['is_duplicate'] ) {
+                    $results['duplicates'][] = array(
+                        'row'    => $row_number,
+                        'sku'    => $import_result['sku'],
+                        'action' => $import_result['action'],
+                    );
                 }
             } else {
                 $results['errors'][] = "Row {$row_number}: " . $import_result['error'];
-                $results['skipped']++;
+                ++$results['skipped'];
             }
-        } catch (Exception $e) {
+        } catch ( Exception $e ) {
             $results['errors'][] = "Row {$row_number}: " . $e->getMessage();
-            $results['skipped']++;
+            ++$results['skipped'];
         }
     }
 
@@ -1179,42 +1056,50 @@ function process_csv_import($handle, $headers) {
  */
 function generate_product_slug( $product_name, $top_out_a, $top_in_a, $sku ) {
     $parts = array();
-    
+
     // Add product name if available.
     if ( ! empty( $product_name ) ) {
         $parts[] = sanitize_title( $product_name );
     }
-    
+
     // Add top_out_a if available.
     if ( ! empty( $top_out_a ) && is_numeric( $top_out_a ) ) {
         $parts[] = $top_out_a;
     }
-    
+
     // Add top_in_a if available.
     if ( ! empty( $top_in_a ) && is_numeric( $top_in_a ) ) {
         $parts[] = $top_in_a;
     }
-    
+
     // Add SKU (always present).
     if ( ! empty( $sku ) ) {
         $parts[] = sanitize_title( $sku );
     }
-    
+
     return implode( '-', array_filter( $parts ) );
 }
 
 /**
- * Imports a single product from CSV row data
+ * Imports a single product from CSV row data.
+ *
+ * @param array $data       The CSV row data for a single product.
+ * @param array $header_map The mapping of CSV headers to their column indexes.
+ * @param int   $row_number The current row number in the CSV file.
+ * @return array            The result of the import operation.
  */
-function import_single_product($data, $header_map, $row_number) {
-    // Extract SKU (our unique identifier)
-    $sku = isset($header_map['SKU']) ? trim($data[$header_map['SKU']]) : '';
-    
-    if (empty($sku)) {
-        return ['success' => false, 'error' => 'SKU is required'];
+function import_single_product( $data, $header_map, $row_number ) {
+    // Extract SKU (our unique identifier).
+    $sku = isset( $header_map['SKU'] ) ? trim( $data[ $header_map['SKU'] ] ) : '';
+
+    if ( empty( $sku ) ) {
+        return array(
+            'success' => false,
+            'error'   => 'SKU is required',
+        );
     }
 
-    // Check if product with this SKU already exists
+    // Check if product with this SKU already exists.
     $existing_posts = get_posts(
         array(
             'post_type'      => 'product',
@@ -1229,52 +1114,55 @@ function import_single_product($data, $header_map, $row_number) {
     $is_duplicate = ! empty( $existing_posts );
     $post_id      = $is_duplicate ? $existing_posts[0] : 0;
 
-    // Extract other fields
+    // Extract other fields.
     $product_title = isset( $header_map['Product Title'] ) ? trim( $data[ $header_map['Product Title'] ] ) : '';
-    
-    // Prepare post data
+
+    // Prepare post data.
     $post_data = array(
         'post_type'    => 'product',
-        'post_title'   => $sku, // SKU becomes the post title
+        'post_title'   => $sku, // SKU becomes the post title.
         'post_status'  => 'publish',
         'post_content' => '',
     );
 
     if ( $post_id ) {
         $post_data['ID'] = $post_id;
-        $post_id = wp_update_post( $post_data );
-        $action = 'updated';
+        $post_id         = wp_update_post( $post_data );
+        $action          = 'updated';
     } else {
         $post_id = wp_insert_post( $post_data );
-        $action = 'created';
+        $action  = 'created';
     }
 
     if ( is_wp_error( $post_id ) ) {
-        return array( 'success' => false, 'error' => 'Failed to create/update post: ' . $post_id->get_error_message() );
+        return array(
+            'success' => false,
+            'error'   => 'Failed to create/update post: ' . $post_id->get_error_message(),
+        );
     }
 
     // Set ACF fields.
     if ( ! function_exists( 'update_field' ) ) {
-        return array( 
-            'success' => false, 
-            'error'   => 'ACF (Advanced Custom Fields) is not available' 
+        return array(
+            'success' => false,
+            'error'   => 'ACF (Advanced Custom Fields) is not available',
         );
     }
-    
+
     // Update the product_name field.
     update_field( 'product_name', $product_title, $post_id );
-    
-    // Set numeric fields
+
+    // Set numeric fields.
     $numeric_fields = array(
-        'Capacity'   => 'capacity',
-        'Top Out A'  => 'top_out_a',
-        'Top Out B'  => 'top_out_b', 
-        'Top In A'   => 'top_in_a',
-        'Top In B'   => 'top_in_b',
-        'Base A'     => 'base_a',
-        'Base B'     => 'base_b',
-        'Depth'      => 'depth',
-        'Weight'     => 'weight',
+        'Capacity'  => 'capacity',
+        'Top Out A' => 'top_out_a',
+        'Top Out B' => 'top_out_b',
+        'Top In A'  => 'top_in_a',
+        'Top In B'  => 'top_in_b',
+        'Base A'    => 'base_a',
+        'Base B'    => 'base_b',
+        'Depth'     => 'depth',
+        'Weight'    => 'weight',
     );
 
     foreach ( $numeric_fields as $csv_field => $acf_field ) {
@@ -1286,7 +1174,7 @@ function import_single_product($data, $header_map, $row_number) {
         }
     }
 
-    // Handle B field auto-fill from A fields
+    // Handle B field auto-fill from A fields.
     $dimension_pairs = array(
         array( 'top_out_a', 'top_out_b' ),
         array( 'top_in_a', 'top_in_b' ),
@@ -1296,26 +1184,26 @@ function import_single_product($data, $header_map, $row_number) {
     foreach ( $dimension_pairs as $pair ) {
         $a_value = get_field( $pair[0], $post_id );
         $b_value = get_field( $pair[1], $post_id );
-        
+
         if ( ! empty( $a_value ) && empty( $b_value ) ) {
             update_field( $pair[1], $a_value, $post_id );
         }
     }
 
-    // Set boolean fields
+    // Set boolean fields.
     if ( isset( $header_map['Lid'] ) ) {
         $lid_value = trim( $data[ $header_map['Lid'] ] );
-        $lid_bool  = ( strtolower( $lid_value ) === 'yes' || $lid_value === '1' );
+        $lid_bool  = ( 'yes' === strtolower( $lid_value ) || '1' === $lid_value );
         update_field( 'lid', $lid_bool, $post_id );
     }
 
     if ( isset( $header_map['Samples Available'] ) ) {
         $samples_value = trim( $data[ $header_map['Samples Available'] ] );
-        $samples_bool  = ( strtolower( $samples_value ) === 'yes' || $samples_value === '1' );
+        $samples_bool  = ( 'yes' === strtolower( $samples_value ) || '1' === $samples_value );
         update_field( 'samples_available', $samples_bool, $post_id );
     }
 
-    // Set taxonomies
+    // Set taxonomies.
     $taxonomy_fields = array(
         'Product Types'      => 'product_type',
         'Product Categories' => 'product_category',
@@ -1327,16 +1215,16 @@ function import_single_product($data, $header_map, $row_number) {
         if ( isset( $header_map[ $csv_field ] ) ) {
             $terms_string = trim( $data[ $header_map[ $csv_field ] ] );
             if ( ! empty( $terms_string ) ) {
-                // Remove quotes and split by comma
+                // Remove quotes and split by comma.
                 $terms_string = trim( $terms_string, '"' );
                 $terms        = array_map( 'trim', explode( ',', $terms_string ) );
-                
+
                 $term_ids = array();
                 foreach ( $terms as $term_name ) {
                     if ( ! empty( $term_name ) ) {
                         $term = get_term_by( 'name', $term_name, $taxonomy );
                         if ( ! $term ) {
-                            // Create the term if it doesn't exist
+                            // Create the term if it doesn't exist.
                             $term_result = wp_insert_term( $term_name, $taxonomy );
                             if ( ! is_wp_error( $term_result ) ) {
                                 $term_ids[] = $term_result['term_id'];
@@ -1346,7 +1234,7 @@ function import_single_product($data, $header_map, $row_number) {
                         }
                     }
                 }
-                
+
                 if ( ! empty( $term_ids ) ) {
                     wp_set_object_terms( $post_id, $term_ids, $taxonomy );
                 }
@@ -1358,7 +1246,7 @@ function import_single_product($data, $header_map, $row_number) {
     $top_out_a = get_field( 'top_out_a', $post_id );
     $top_in_a  = get_field( 'top_in_a', $post_id );
     $new_slug  = generate_product_slug( $product_title, $top_out_a, $top_in_a, $sku );
-    
+
     if ( ! empty( $new_slug ) ) {
         wp_update_post(
             array(
@@ -1381,86 +1269,104 @@ function import_single_product($data, $header_map, $row_number) {
  * Generates and downloads the products CSV file
  */
 function export_products_csv() {
-    $filename = 'products-export-' . date( 'Y-m-d-H-i-s' ) . '.csv';
-    
-    // Set headers
+    $filename = 'products-export-' . gmdate( 'Y-m-d-H-i-s' ) . '.csv';
+
+    // Set headers.
     header( 'Content-Type: text/csv; charset=utf-8' );
     header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
     header( 'Cache-Control: no-cache, must-revalidate' );
     header( 'Expires: 0' );
     header( 'Pragma: no-cache' );
-    
-    // Open output stream
+
+    // Open output stream.
     $output = fopen( 'php://output', 'w' );
 
-    // Add BOM for proper UTF-8 encoding in Excel
+    // Add BOM for proper UTF-8 encoding in Excel.
     fwrite( $output, "\xEF\xBB\xBF" );
 
-    // CSV Headers - matches our new mapping
-    $headers = [
-        'Product Title', 'SKU', 'Product Types', 'Product Categories', 'Edge Types', 
-        'Usage', 'Capacity', 'Lid', 'Top Out A', 'Top Out B', 'Top In A', 
-        'Top In B', 'Base A', 'Base B', 'Depth', 'Weight', 'Samples Available', 
-        'Featured Image URL', 'Date Created', 'Last Modified'
-    ];
+    // CSV Headers - matches our new mapping.
+    $headers = array(
+        'Product Title',
+        'SKU',
+        'Product Types',
+        'Product Categories',
+        'Edge Types',
+        'Usage',
+        'Capacity',
+        'Lid',
+        'Top Out A',
+        'Top Out B',
+        'Top In A',
+        'Top In B',
+        'Base A',
+        'Base B',
+        'Depth',
+        'Weight',
+        'Samples Available',
+        'Featured Image URL',
+        'Date Created',
+        'Last Modified',
+    );
     fputcsv( $output, $headers );
 
-    // Get all products
-    $products = get_posts([
-        'post_type'      => 'product',
-        'post_status'    => 'publish',
-        'posts_per_page' => -1,
-        'orderby'        => 'title',
-        'order'          => 'ASC'
-    ]);
+    // Get all products.
+    $products = get_posts(
+        array(
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        )
+    );
 
     foreach ( $products as $product ) {
-        // Get product types
+        // Get product types.
         $product_types = get_the_terms( $product->ID, 'product_type' );
-        $type_names = $product_types && !is_wp_error($product_types) ? 
+        $type_names    = $product_types && ! is_wp_error( $product_types ) ?
             implode( ', ', wp_list_pluck( $product_types, 'name' ) ) : '';
 
-        // Get product categories
+        // Get product categories.
         $product_categories = get_the_terms( $product->ID, 'product_category' );
-        $category_names = $product_categories && !is_wp_error($product_categories) ? 
+        $category_names     = $product_categories && ! is_wp_error( $product_categories ) ?
             implode( ', ', wp_list_pluck( $product_categories, 'name' ) ) : '';
 
-        // Get edge types
-        $edge_types = get_the_terms( $product->ID, 'edge_type' );
-        $edge_type_names = $edge_types && !is_wp_error($edge_types) ? 
+        // Get edge types.
+        $edge_types      = get_the_terms( $product->ID, 'edge_type' );
+        $edge_type_names = $edge_types && ! is_wp_error( $edge_types ) ?
             implode( ', ', wp_list_pluck( $edge_types, 'name' ) ) : '';
 
-        // Get usage types
+        // Get usage types.
         $usage_terms = get_the_terms( $product->ID, 'usage' );
-        $usage_names = $usage_terms && !is_wp_error($usage_terms) ? 
+        $usage_names = $usage_terms && ! is_wp_error( $usage_terms ) ?
             implode( ', ', wp_list_pluck( $usage_terms, 'name' ) ) : '';
 
-        // Get featured image
+        // Get featured image.
         $featured_image = get_the_post_thumbnail_url( $product->ID, 'full' );
 
-        // Build row data - using new field mapping
-        $row = [
-            get_field( 'product_name', $product->ID ) ?: '', // Product Title (descriptive name)
-            $product->post_title, // SKU (now the post title)
+        // Build row data - using new field mapping.
+        $row = array(
+            get_field( 'product_name', $product->ID ) ? get_field( 'product_name', $product->ID ) : '', // Product Title (descriptive name).
+            $product->post_title, // SKU (now the post title).
             $type_names,
             $category_names,
             $edge_type_names,
             $usage_names,
-            get_field( 'capacity', $product->ID ) ?: '',
+            get_field( 'capacity', $product->ID ) ? get_field( 'capacity', $product->ID ) : '',
             get_field( 'lid', $product->ID ) ? 'Yes' : '',
-            get_field( 'top_out_a', $product->ID ) ?: '',
-            get_field( 'top_out_b', $product->ID ) ?: '',
-            get_field( 'top_in_a', $product->ID ) ?: '',
-            get_field( 'top_in_b', $product->ID ) ?: '',
-            get_field( 'base_a', $product->ID ) ?: '',
-            get_field( 'base_b', $product->ID ) ?: '',
-            get_field( 'depth', $product->ID ) ?: '',
-            get_field( 'weight', $product->ID ) ?: '',
+            get_field( 'top_out_a', $product->ID ) ? get_field( 'top_out_a', $product->ID ) : '',
+            get_field( 'top_out_b', $product->ID ) ? get_field( 'top_out_b', $product->ID ) : '',
+            get_field( 'top_in_a', $product->ID ) ? get_field( 'top_in_a', $product->ID ) : '',
+            get_field( 'top_in_b', $product->ID ) ? get_field( 'top_in_b', $product->ID ) : '',
+            get_field( 'base_a', $product->ID ) ? get_field( 'base_a', $product->ID ) : '',
+            get_field( 'base_b', $product->ID ) ? get_field( 'base_b', $product->ID ) : '',
+            get_field( 'depth', $product->ID ) ? get_field( 'depth', $product->ID ) : '',
+            get_field( 'weight', $product->ID ) ? get_field( 'weight', $product->ID ) : '',
             get_field( 'samples_available', $product->ID ) ? 'Yes' : '',
-            $featured_image ?: '',
+            $featured_image ? $featured_image : '',
             $product->post_date,
-            $product->post_modified
-        ];
+            $product->post_modified,
+        );
 
         fputcsv( $output, $row );
     }
@@ -1473,127 +1379,131 @@ function export_products_csv() {
  * Deletes all products and their featured images
  */
 function clear_all_products() {
-    // Get all products
-    $products = get_posts([
-        'post_type' => 'product',
-        'post_status' => 'any',
-        'posts_per_page' => -1,
-        'fields' => 'ids'
-    ]);
+    // Get all products.
+    $products = get_posts(
+        array(
+            'post_type'      => 'product',
+            'post_status'    => 'any',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        )
+    );
 
-    foreach ($products as $product_id) {
-        // Delete featured image attachment
-        $featured_image_id = get_post_thumbnail_id($product_id);
-        if ($featured_image_id) {
-            wp_delete_attachment($featured_image_id, true);
+    foreach ( $products as $product_id ) {
+        // Delete featured image attachment.
+        $featured_image_id = get_post_thumbnail_id( $product_id );
+        if ( $featured_image_id ) {
+            wp_delete_attachment( $featured_image_id, true );
         }
 
-        // Delete the product post
-        wp_delete_post($product_id, true);
+        // Delete the product post.
+        wp_delete_post( $product_id, true );
     }
 
-    return count($products);
+    return count( $products );
 }
 
 /**
  * Generates and downloads a ZIP file containing all product featured images
  */
 function export_product_images() {
-    // Check if ZipArchive is available
-    if (!class_exists('ZipArchive')) {
-        wp_die('ZIP extension not available on this server.');
+    // Check if ZipArchive is available.
+    if ( ! class_exists( 'ZipArchive' ) ) {
+        wp_die( 'ZIP extension not available on this server.' );
         return;
     }
 
-    // Get all products with featured images
-    $products = get_posts([
-        'post_type' => 'product',
-        'post_status' => 'publish',
-        'meta_query' => [
-            [
-                'key' => '_thumbnail_id',
-                'compare' => 'EXISTS'
-            ]
-        ],
-        'posts_per_page' => -1
-    ]);
+    // Get all products with featured images.
+    $products = get_posts(
+        array(
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            'meta_query'     => array(
+                array(
+                    'key'     => '_thumbnail_id',
+                    'compare' => 'EXISTS',
+                ),
+            ),
+            'posts_per_page' => -1,
+        )
+    );
 
-    if (empty($products)) {
-        wp_die('No products with featured images found.');
+    if ( empty( $products ) ) {
+        wp_die( 'No products with featured images found.' );
         return;
     }
 
-    // Create temporary file for the ZIP
-    $temp_file = wp_tempnam('product-images.zip');
-    if (!$temp_file) {
-        wp_die('Could not create temporary file.');
+    // Create temporary file for the ZIP.
+    $temp_file = wp_tempnam( 'product-images.zip' );
+    if ( ! $temp_file ) {
+        wp_die( 'Could not create temporary file.' );
         return;
     }
 
     $zip = new ZipArchive();
-    if ($zip->open($temp_file, ZipArchive::CREATE) !== TRUE) {
-        unlink($temp_file);
-        wp_die('Could not create ZIP file.');
+    if ( $zip->open( $temp_file, ZipArchive::CREATE ) !== true ) {
+        unlink( $temp_file );
+        wp_die( 'Could not create ZIP file.' );
         return;
     }
 
-    $exported_count = 0;
-    $skipped_count = 0;
-    $filename_conflicts = [];
+    $exported_count     = 0;
+    $skipped_count      = 0;
+    $filename_conflicts = array();
 
-    foreach ($products as $product) {
-        $sku = get_the_title($product->ID);
-        $attachment_id = get_post_thumbnail_id($product->ID);
-        
-        if (!$attachment_id) {
-            $skipped_count++;
+    foreach ( $products as $product ) {
+        $sku           = get_the_title( $product->ID );
+        $attachment_id = get_post_thumbnail_id( $product->ID );
+
+        if ( ! $attachment_id ) {
+            ++$skipped_count;
             continue;
         }
 
-        $attachment_path = get_attached_file($attachment_id);
-        if (!$attachment_path || !file_exists($attachment_path)) {
-            $skipped_count++;
+        $attachment_path = get_attached_file( $attachment_id );
+        if ( ! $attachment_path || ! file_exists( $attachment_path ) ) {
+            ++$skipped_count;
             continue;
         }
 
-        // Get file extension
-        $file_info = pathinfo($attachment_path);
-        $extension = strtolower($file_info['extension']);
-        
-        // Create filename as SKU.extension
-        $zip_filename = sanitize_file_name($sku) . '.' . $extension;
-        
-        // Check for filename conflicts
-        if (in_array($zip_filename, $filename_conflicts)) {
-            // Add product ID to make it unique
-            $zip_filename = sanitize_file_name($sku) . '-' . $product->ID . '.' . $extension;
+        // Get file extension.
+        $file_info = pathinfo( $attachment_path );
+        $extension = strtolower( $file_info['extension'] );
+
+        // Create filename as SKU.extension.
+        $zip_filename = sanitize_file_name( $sku ) . '.' . $extension;
+
+        // Check for filename conflicts.
+        if ( array_search( $zip_filename, $filename_conflicts ) !== false ) {
+            // Add product ID to make it unique.
+            $zip_filename = sanitize_file_name( $sku ) . '-' . $product->ID . '.' . $extension;
         }
         $filename_conflicts[] = $zip_filename;
 
-        // Add file to ZIP
-        if ($zip->addFile($attachment_path, $zip_filename)) {
-            $exported_count++;
+        // Add file to ZIP.
+        if ( $zip->addFile( $attachment_path, $zip_filename ) ) {
+            ++$exported_count;
         } else {
-            $skipped_count++;
+            ++$skipped_count;
         }
     }
 
     $zip->close();
 
-    // Prepare download
-    $download_filename = 'product-images-' . date('Y-m-d-H-i-s') . '.zip';
-    
-    // Set headers for download
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . $download_filename . '"');
-    header('Content-Length: ' . filesize($temp_file));
-    header('Cache-Control: no-cache, must-revalidate');
-    header('Expires: 0');
-    header('Pragma: no-cache');
+    // Prepare download.
+    $download_filename = 'product-images-' . gmdate( 'Y-m-d-H-i-s' ) . '.zip';
 
-    // Output file and clean up
-    readfile($temp_file);
-    unlink($temp_file);
+    // Set headers for download.
+    header( 'Content-Type: application/zip' );
+    header( 'Content-Disposition: attachment; filename="' . $download_filename . '"' );
+    header( 'Content-Length: ' . filesize( $temp_file ) );
+    header( 'Cache-Control: no-cache, must-revalidate' );
+    header( 'Expires: 0' );
+    header( 'Pragma: no-cache' );
+
+    // Output file and clean up.
+    readfile( $temp_file );
+    unlink( $temp_file );
     exit;
 }
 
@@ -1601,146 +1511,178 @@ function export_product_images() {
  * Processes the uploaded ZIP file and imports product images
  */
 function import_product_images() {
-    // Check if file was uploaded
-    if (!isset($_FILES['product_images_zip']) || $_FILES['product_images_zip']['error'] !== UPLOAD_ERR_OK) {
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>Error uploading ZIP file. Please try again.</p></div>';
-        });
+    // Verify nonce for security.
+    if (
+        ! isset( $_POST['import_images_nonce'] ) ||
+        ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['import_images_nonce'] ) ), 'import_product_images' )
+    ) {
+        add_action(
+            'admin_notices',
+            function () {
+                echo '<div class="notice notice-error"><p>Security check failed. Invalid nonce.</p></div>';
+            }
+        );
+        return;
+    }
+
+    // Check if file was uploaded and error index exists.
+    if (
+        ! isset( $_FILES['product_images_zip'] ) ||
+        ! isset( $_FILES['product_images_zip']['error'] ) ||
+        UPLOAD_ERR_OK !== $_FILES['product_images_zip']['error']
+    ) {
+        add_action(
+            'admin_notices',
+            function () {
+                echo '<div class="notice notice-error"><p>Error uploading ZIP file. Please try again.</p></div>';
+            }
+        );
         return;
     }
 
     $zip_file = $_FILES['product_images_zip']['tmp_name'];
-    
-    // Check if ZipArchive is available
-    if (!class_exists('ZipArchive')) {
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>ZIP extension not available on this server.</p></div>';
-        });
+
+    // Check if ZipArchive is available.
+    if ( ! class_exists( 'ZipArchive' ) ) {
+        add_action(
+            'admin_notices',
+            function () {
+                echo '<div class="notice notice-error"><p>ZIP extension not available on this server.</p></div>';
+            }
+        );
         return;
     }
 
     $zip = new ZipArchive();
-    if ($zip->open($zip_file) !== TRUE) {
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>Error reading ZIP file.</p></div>';
-        });
+    if ( $zip->open( $zip_file ) !== true ) {
+        add_action(
+            'admin_notices',
+            function () {
+                echo '<div class="notice notice-error"><p>Error reading ZIP file.</p></div>';
+            }
+        );
         return;
     }
 
-    // Process the import
-    $results = process_image_import($zip);
+    // Process the import.
+    $results = process_image_import( $zip );
     $zip->close();
 
-    // Store results in session to display on page reload
-    if (session_status() === PHP_SESSION_NONE) {
+    // Store results in session to display on page reload.
+    if ( session_status() === PHP_SESSION_NONE ) {
         session_start();
     }
     $_SESSION['image_import_results'] = $results;
 
-    // Redirect to avoid resubmission
-    wp_redirect(admin_url('admin.php?page=export-products-csv&images_import_complete=1'));
+    // Redirect to avoid resubmission.
+    wp_redirect( admin_url( 'admin.php?page=export-products-csv&images_import_complete=1' ) );
     exit;
 }
 
 /**
  * Processes images from ZIP archive and matches them to products
+ *
+ * @param ZipArchive $zip The ZipArchive instance containing the images.
  */
-function process_image_import($zip) {
-    $results = [
+function process_image_import( $zip ) {
+    $results = array(
         'total_images' => 0,
-        'successful' => 0,
-        'failed' => 0,
-        'matches' => [],
-        'failures' => []
-    ];
+        'successful'   => 0,
+        'failed'       => 0,
+        'matches'      => array(),
+        'failures'     => array(),
+    );
 
-    // Get all products for matching
-    $products = get_posts([
-        'post_type' => 'product',
-        'post_status' => 'publish',
-        'posts_per_page' => -1,
-        'fields' => 'ids'
-    ]);
+    // Get all products for matching.
+    $products = get_posts(
+        array(
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        )
+    );
 
-    // Create a lookup array of SKU to post ID
-    $sku_lookup = [];
-    foreach ($products as $product_id) {
-        $sku = get_the_title($product_id);
-        $sku_lookup[strtolower($sku)] = $product_id;
+    // Create a lookup array of SKU to post ID.
+    $sku_lookup = array();
+    foreach ( $products as $product_id ) {
+        $sku = get_the_title( $product_id );
+
+        $sku_lookup[ strtolower( $sku ) ] = $product_id;
     }
 
-    // Supported image extensions
-    $supported_extensions = ['jpg', 'jpeg', 'png', 'webp'];
+    // Supported image extensions.
+    $supported_extensions = array( 'jpg', 'jpeg', 'png', 'webp' );
 
-    for ($i = 0; $i < $zip->numFiles; $i++) {
-        $filename = $zip->getNameIndex($i);
-        $results['total_images']++;
+    for ( $i = 0; $i < $zip->numFiles; $i++ ) {
+        $filename = $zip->getNameIndex( $i );
+        ++$results['total_images'];
 
-        // Skip directories and hidden files
-        if (substr($filename, -1) === '/' || strpos(basename($filename), '.') === 0) {
-            $results['failed']++;
-            $results['failures'][] = [
+        // Skip directories and hidden files.
+        if ( substr( $filename, -1 ) === '/' || strpos( basename( $filename ), '.' ) === 0 ) {
+            ++$results['failed'];
+            $results['failures'][] = array(
                 'filename' => $filename,
-                'reason' => 'Directory or hidden file'
-            ];
+                'reason'   => 'Directory or hidden file',
+            );
             continue;
         }
 
-        // Get file info
-        $pathinfo = pathinfo($filename);
-        $basename = $pathinfo['filename'];
-        $extension = strtolower($pathinfo['extension']);
+        // Get file info.
+        $pathinfo  = pathinfo( $filename );
+        $basename  = $pathinfo['filename'];
+        $extension = strtolower( $pathinfo['extension'] );
 
-        // Check if extension is supported
-        if (!in_array($extension, $supported_extensions)) {
+        // Check if extension is supported.
+        if ( ! in_array( $extension, $supported_extensions ) ) {
             $results['failed']++;
-            $results['failures'][] = [
+            $results['failures'][] = array(
                 'filename' => $filename,
-                'reason' => 'Unsupported file type'
-            ];
+                'reason'   => 'Unsupported file type',
+            );
             continue;
         }
 
-        // Look for matching product by SKU
-        $sku_lower = strtolower($basename);
-        if (!isset($sku_lookup[$sku_lower])) {
-            $results['failed']++;
-            $results['failures'][] = [
+        // Look for matching product by SKU.
+        $sku_lower = strtolower( $basename );
+        if ( ! isset( $sku_lookup[ $sku_lower ] ) ) {
+            ++$results['failed'];
+            $results['failures'][] = array(
                 'filename' => $filename,
-                'reason' => 'No matching product found for SKU: ' . $basename
-            ];
+                'reason'   => 'No matching product found for SKU: ' . $basename,
+            );
             continue;
         }
 
-        $product_id = $sku_lookup[$sku_lower];
+        $product_id = $sku_lookup[ $sku_lower ];
 
-        // Extract file content
-        $file_content = $zip->getFromIndex($i);
-        if ($file_content === false) {
-            $results['failed']++;
-            $results['failures'][] = [
+        // Extract file content.
+        $file_content = $zip->getFromIndex( $i );
+        if ( false === $file_content ) {
+            ++$results['failed'];
+            $results['failures'][] = array(
                 'filename' => $filename,
-                'reason' => 'Could not extract file from ZIP'
-            ];
+                'reason'   => 'Could not extract file from ZIP',
+            );
             continue;
         }
 
-        // Try to import the image
-        $import_result = import_product_image($product_id, $filename, $file_content, $basename);
-        
-        if ($import_result['success']) {
-            $results['successful']++;
-            $results['matches'][] = [
-                'filename' => $filename,
-                'sku' => $basename,
-                'attachment_id' => $import_result['attachment_id']
-            ];
+        // Try to import the image.
+        $import_result = import_product_image( $product_id, $filename, $file_content, $basename );
+
+        if ( $import_result['success'] ) {
+            ++$results['successful'];
+            $results['matches'][] = array(
+                'filename'      => $filename,
+                'sku'           => $basename,
+                'attachment_id' => $import_result['attachment_id'],
+            );
         } else {
-            $results['failed']++;
-            $results['failures'][] = [
+            ++$results['failed'];
+            $results['failures'][] = array(
                 'filename' => $filename,
-                'reason' => $import_result['error']
-            ];
+                'reason'   => $import_result['error'],
+            );
         }
     }
 
@@ -1748,74 +1690,101 @@ function process_image_import($zip) {
 }
 
 /**
- * Imports a single image and sets it as the product's featured image
+ * Imports a single image and sets it as the product's featured image.
+ *
+ * @param int    $product_id   The ID of the product to attach the image to.
+ * @param string $filename     The filename of the image.
+ * @param string $file_content The raw file content of the image.
+ * @param string $sku          The SKU of the product.
+ * @return array               Result of the import operation.
  */
-function import_product_image($product_id, $filename, $file_content, $sku) {
-    // Create a temporary file
-    $temp_file = wp_tempnam($filename);
-    if (!$temp_file) {
-        return ['success' => false, 'error' => 'Could not create temporary file'];
+function import_product_image( $product_id, $filename, $file_content, $sku ) {
+    // Create a temporary file.
+    $temp_file = wp_tempnam( $filename );
+    if ( ! $temp_file ) {
+        return array(
+            'success' => false,
+            'error' => 'Could not create temporary file',
+        );
     }
 
-    // Write content to temp file
-    if (file_put_contents($temp_file, $file_content) === false) {
-        unlink($temp_file);
-        return ['success' => false, 'error' => 'Could not write image data'];
+    // Write content to temp file.
+    if ( file_put_contents( $temp_file, $file_content ) === false ) {
+        unlink( $temp_file );
+        return array(
+            'success' => false,
+            'error'   => 'Could not write image data',
+        );
     }
 
-    // Validate the image
-    $image_info = getimagesize($temp_file);
-    if (!$image_info) {
-        unlink($temp_file);
-        return ['success' => false, 'error' => 'Invalid image file'];
+    // Validate the image file.
+    $image_info = getimagesize( $temp_file );
+    if ( ! $image_info ) {
+        unlink( $temp_file );
+        return array(
+            'success' => false,
+            'error'   => 'Invalid image file',
+        );
     }
 
-    // Remove existing featured image if it exists
-    $existing_featured = get_post_thumbnail_id($product_id);
-    if ($existing_featured) {
-        wp_delete_attachment($existing_featured, true);
+    // Remove existing featured image if it exists.
+    $existing_featured = get_post_thumbnail_id( $product_id );
+    if ( $existing_featured ) {
+        wp_delete_attachment( $existing_featured, true );
     }
 
-    // Prepare the attachment data
-    $upload_dir = wp_upload_dir();
-    $file_type = wp_check_filetype($filename);
-    $new_filename = sanitize_file_name($filename);
-    
-    // Move the temp file to uploads directory
+    // Prepare the attachment data.
+    $upload_dir   = wp_upload_dir();
+    $file_type    = wp_check_filetype( $filename );
+    $new_filename = sanitize_file_name( $filename );
+
+    // Move the temp file to uploads directory.
     $upload_path = $upload_dir['path'] . '/' . $new_filename;
-    if (!move_uploaded_file($temp_file, $upload_path)) {
-        if (!copy($temp_file, $upload_path)) {
-            unlink($temp_file);
-            return ['success' => false, 'error' => 'Could not move file to uploads directory'];
+    if ( ! move_uploaded_file( $temp_file, $upload_path ) ) {
+        if ( ! copy( $temp_file, $upload_path ) ) {
+            unlink( $temp_file );
+            return array(
+                'success' => false,
+                'error'   => 'Could not move file to uploads directory',
+            );
         }
-        unlink($temp_file);
+        unlink( $temp_file );
     }
 
-    // Create the attachment
-    $attachment_data = [
+    // Create the attachment.
+    $attachment_data = array(
         'post_mime_type' => $file_type['type'],
-        'post_title' => $sku . ' - Product Image',
-        'post_content' => '',
-        'post_status' => 'inherit'
-    ];
+        'post_title'     => $sku . ' - Product Image',
+        'post_content'   => '',
+        'post_status'    => 'inherit',
+    );
 
-    $attachment_id = wp_insert_attachment($attachment_data, $upload_path, $product_id);
+    $attachment_id = wp_insert_attachment( $attachment_data, $upload_path, $product_id );
 
-    if (is_wp_error($attachment_id)) {
-        unlink($upload_path);
-        return ['success' => false, 'error' => 'Could not create attachment: ' . $attachment_id->get_error_message()];
+    if ( is_wp_error( $attachment_id ) ) {
+        unlink( $upload_path );
+        return array(
+            'success' => false,
+            'error'   => 'Could not create attachment: ' . $attachment_id->get_error_message(),
+        );
     }
 
-    // Generate attachment metadata
-    require_once(ABSPATH . 'wp-admin/includes/image.php');
-    $attachment_metadata = wp_generate_attachment_metadata($attachment_id, $upload_path);
-    wp_update_attachment_metadata($attachment_id, $attachment_metadata);
+    // Generate attachment metadata.
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+    $attachment_metadata = wp_generate_attachment_metadata( $attachment_id, $upload_path );
+    wp_update_attachment_metadata( $attachment_id, $attachment_metadata );
 
-    // Set as featured image
-    if (!set_post_thumbnail($product_id, $attachment_id)) {
-        wp_delete_attachment($attachment_id, true);
-        return ['success' => false, 'error' => 'Could not set as featured image'];
+    // Set as featured image.
+    if ( ! set_post_thumbnail( $product_id, $attachment_id ) ) {
+        wp_delete_attachment( $attachment_id, true );
+        return array(
+            'success' => false,
+            'error'   => 'Could not set as featured image',
+        );
     }
 
-    return ['success' => true, 'attachment_id' => $attachment_id];
+    return array(
+        'success'       => true,
+        'attachment_id' => $attachment_id,
+    );
 }

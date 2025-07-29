@@ -118,7 +118,7 @@ get_header();
 				<div class="mb-2"><strong>SKU:</strong> <?= esc_html( $sku ); ?></div>
 				<?php
 				$product_type_terms = get_the_terms( get_the_ID(), 'product_type' );
-				
+
 				if ( $product_type_terms && ! is_wp_error( $product_type_terms ) ) {
 					echo '<div class="mb-2"><strong>Product Type:</strong> ';
 					$product_type_names = wp_list_pluck( $product_type_terms, 'name' );
