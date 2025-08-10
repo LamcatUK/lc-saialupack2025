@@ -191,15 +191,6 @@ get_header( 'brochure' ); ?>
 		}
 	}
 </style>
-	<section class="brochure-front">
-		<h1>Sai Alupack Brochure</h1>
-		<?= get_the_date( 'Y' ); ?>
-	</section>
-	<section class="brochure-intro">
-		<?= get_field( 'about_heading', 'option' ); ?>
-		<p><?= get_field( 'about_text_1', 'option' ); ?></p>
-		<p><?= get_field( 'about_text_2', 'option' ); ?></p>
-	</section>
 	<?php
 	// get terms of product_type
     $product_types = get_terms( array(
@@ -305,8 +296,5 @@ get_header( 'brochure' ); ?>
 		}
 	}
     ?>
-    <section class="brochure-back">
-		<?= get_field( 'statement_of_compliance', 'option' ); ?>
-	</section>
 
 <?php get_footer( 'brochure' ); ?>
