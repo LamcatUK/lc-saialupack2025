@@ -89,6 +89,7 @@ body {
 		margin: 0;
 		padding: 0;
 		font-family: 'Manrope', Arial, Helvetica, sans-serif;
+		color: #0f0f0f;
 	}
 	.brochure-products {
 		gap: 5mm;
