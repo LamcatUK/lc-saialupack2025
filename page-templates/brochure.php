@@ -58,7 +58,7 @@ get_header( 'brochure' ); ?>
 			margin: 2cm;
 			size: A4;
 
-			@top-left {
+			/* @top-left {
 				content: url("<?= esc_url( get_stylesheet_directory_uri() . '/img/sai-logo.svg' ); ?>");
 				width: 41mm;
 				height: 10mm;
@@ -93,12 +93,11 @@ get_header( 'brochure' ); ?>
 				color: white;
 				padding: 5mm 10mm;
 			}
-			/* Create a continuous green background across the footer */
 			@bottom {
 				margin: 0;
 				background-color: var(--col-green-900);
 				height: 15mm;
-			}
+			} */
 		}
 
 		/* First page (cover) - no header */
