@@ -11,91 +11,110 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
-// Only output product cards, 12 per page, 3x4 grid, for Illustrator import
 ?><style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Manrope', Arial, Helvetica, sans-serif;
+}
+.brochure-products {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10mm;
+	width: 100%;
+	page-break-after: always;
+}
+.brochure-product {
+	/* border removed for Illustrator */
+	padding: 6mm 5mm 2mm 5mm;
+	box-sizing: border-box;
+	page-break-inside: avoid;
+	break-inside: avoid;
+	font-size: 8pt !important;
+	font-family: 'Manrope', Arial, Helvetica, sans-serif;
+	font-weight: 400;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	line-height: 1.1;
+}
+.brochure-product-image {
+	text-align: center;
+	margin-bottom: 4mm;
+}
+.brochure-product-image img {
+	max-height: 18mm;
+	width: auto;
+	object-fit: contain;
+	display: block;
+	margin: 0 auto;
+}
+.brochure-product-sku,
+.brochure-product-title {
+	font-size: 8pt;
+	font-family: 'Manrope', Arial, Helvetica, sans-serif;
+	font-weight: 700;
+	margin-bottom: 2mm;
+}
+.brochure-product-specs {
+	display: grid;
+	grid-template-columns: auto 5mm auto 5mm;
+	align-items: center;
+	font-size: 8pt;
+	font-family: 'Manrope', Arial, Helvetica, sans-serif;
+	font-weight: 400;
+}
+.brochure-product-specs-label,
+.brochure-product-specs-colon,
+.brochure-product-specs-spec,
+.brochure-product-specs-icon {
+	margin-bottom: 1mm;
+	font-family: 'Manrope', Arial, Helvetica, sans-serif;
+	font-weight: 400;
+}
+.brochure-product-specs-icon img {
+	width: 4.5mm;
+	height: 2.9mm;
+	object-fit: contain;
+}
+@media print {
 	body {
 		margin: 0;
 		padding: 0;
+		font-family: 'Manrope', Arial, Helvetica, sans-serif;
 	}
 	.brochure-products {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 10mm;
-		width: 100%;
+		gap: 5mm;
 		page-break-after: always;
 	}
 	.brochure-product {
-		border: 1px solid #ddd;
-		border-radius: 1rem;
-		padding: 6mm 5mm 2mm 5mm;
-		box-sizing: border-box;
+		font-size: 8pt !important;
 		page-break-inside: avoid;
 		break-inside: avoid;
+		font-family: 'Manrope', Arial, Helvetica, sans-serif;
+	}
+	.brochure-product * {
 		font-size: 8pt !important;
-		font-family: Arial, Helvetica, sans-serif;
-		font-weight: normal;
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: stretch;
-		line-height: 1.1;
-	}
-	.brochure-product-image {
-		text-align: center;
-		margin-bottom: 4mm;
-	}
-	.brochure-product-image img {
-		max-height: 18mm;
-		width: auto;
-		object-fit: contain;
-		display: block;
-		margin: 0 auto;
+		font-family: 'Manrope', Arial, Helvetica, sans-serif;
 	}
 	.brochure-product-sku,
 	.brochure-product-title {
-		font-size: 8pt;
-		font-weight: bold;
-		margin-bottom: 2mm;
+		font-weight: 700;
 	}
-	.brochure-product-specs {
-		display: grid;
-		grid-template-columns: auto 5mm auto 5mm;
-		align-items: center;
-		font-size: 8pt;
-	}
+	.brochure-product-specs,
 	.brochure-product-specs-label,
 	.brochure-product-specs-colon,
 	.brochure-product-specs-spec,
 	.brochure-product-specs-icon {
-		margin-bottom: 1mm;
+		font-weight: 400;
 	}
-	.brochure-product-specs-icon img {
-		width: 4.5mm;
-		height: 2.9mm;
-		object-fit: contain;
+	.brochure-product:nth-child(12n) {
+		page-break-after: always;
+		break-after: page;
 	}
-	@media print {
-		body {
-			margin: 0;
-			padding: 0;
-		}
-		.brochure-products {
-			gap: 5mm;
-			page-break-after: always;
-		}
-		.brochure-product {
-			font-size: 8pt !important;
-			page-break-inside: avoid;
-			break-inside: avoid;
-		}
-		.brochure-product * {
-			font-size: 8pt !important;
-		}
-		.brochure-product:nth-child(12n) {
-			page-break-after: always;
-			break-after: page;
-		}
-	}
+}
 </style>
 <?php
 // Get product types (taxonomy terms)
