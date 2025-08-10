@@ -10,6 +10,8 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 session_start();
+// Hide admin bar for this template only
+add_filter('show_admin_bar', '__return_false');
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -28,9 +30,9 @@ session_start();
         href="<?= esc_url( get_stylesheet_directory_uri() ); ?>/fonts/manrope-v15-latin-700.woff2"
         as="font" type="font/woff2" crossorigin="anonymous">
     <?php
-	if ( ! is_user_logged_in() ) {
-    	if ( get_field( 'ga_property', 'options' ) ) {
-        	?>
+    if ( ! is_user_logged_in() ) {
+        if ( get_field( 'ga_property', 'options' ) ) {
+            ?>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async
         src="https://www.googletagmanager.com/gtag/js?id=<?= esc_attr( get_field( 'ga_property', 'options' ) ); ?>">
@@ -46,10 +48,10 @@ session_start();
             '<?= esc_attr( get_field( 'ga_property', 'options' ) ); ?>'
             );
     </script>
-        	<?php
-    	}
-    	if ( get_field( 'gtm_property', 'options' ) ) {
-        	?>
+            <?php
+        }
+        if ( get_field( 'gtm_property', 'options' ) ) {
+            ?>
     <!-- Google Tag Manager -->
     <script>
         (function(w, d, s, l, i) {
@@ -70,17 +72,17 @@ session_start();
             );
     </script>
     <!-- End Google Tag Manager -->
-        	<?php
-    	}
-	}
-	if ( get_field( 'google_site_verification', 'options' ) ) {
-		echo '<meta name="google-site-verification" content="' . esc_attr( get_field( 'google_site_verification', 'options' ) ) . '" />';
-	}
-	if ( get_field( 'bing_site_verification', 'options' ) ) {
-		echo '<meta name="msvalidate.01" content="' . esc_attr( get_field( 'bing_site_verification', 'options' ) ) . '" />';
-	}
+            <?php
+        }
+    }
+    if ( get_field( 'google_site_verification', 'options' ) ) {
+        echo '<meta name="google-site-verification" content="' . esc_attr( get_field( 'google_site_verification', 'options' ) ) . '" />';
+    }
+    if ( get_field( 'bing_site_verification', 'options' ) ) {
+        echo '<meta name="msvalidate.01" content="' . esc_attr( get_field( 'bing_site_verification', 'options' ) ) . '" />';
+    }
 
-	wp_head();
+    wp_head();
 
     // phpcs:disable
     
@@ -177,16 +179,16 @@ session_start();
 <body <?php body_class(); ?>
     <?php understrap_body_attributes(); ?>>
     <?php
-	do_action( 'wp_body_open' );
-	if ( ! is_user_logged_in() ) {
-    	if ( get_field( 'gtm_property', 'options' ) ) {
-        	?>
+    do_action( 'wp_body_open' );
+    if ( ! is_user_logged_in() ) {
+        if ( get_field( 'gtm_property', 'options' ) ) {
+            ?>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe
         src="https://www.googletagmanager.com/ns.html?id=<?= esc_attr( get_field( 'gtm_property', 'options' ) ); ?>"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-    		<?php
-		}
-	}
-	?>
+            <?php
+        }
+    }
+    ?>
