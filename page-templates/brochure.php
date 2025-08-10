@@ -40,9 +40,14 @@ body {
 	align-items: stretch;
 	line-height: 1.1;
 }
+/* Always reserve space for image section, even if no image */
 .brochure-product-image {
 	text-align: center;
 	margin-bottom: 4mm;
+	height: 18mm;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .brochure-product-image img {
 	max-height: 18mm;
@@ -155,11 +160,13 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 				$depth     = get_field( 'depth', get_the_ID() );
 				$capacity  = get_field( 'capacity', get_the_ID() );
 
-				echo '<div class="brochure-product">';
-				if ( has_post_thumbnail() ) {
-					echo '<div class="brochure-product-image">' . get_the_post_thumbnail( get_the_ID(), 'medium' ) . '</div>';
-				}
-				?>
+			echo '<div class="brochure-product">';
+			echo '<div class="brochure-product-image">';
+			if ( has_post_thumbnail() ) {
+				echo get_the_post_thumbnail( get_the_ID(), 'medium' );
+			}
+			echo '</div>';
+			?>
 				<div class="brochure-product-sku">SKU: <?= esc_html( get_the_title() ); ?></div>
 				<div class="brochure-product-title"><?= esc_html( get_field( 'product_name' ) ); ?></div>
 				<div class="brochure-product-specs">
