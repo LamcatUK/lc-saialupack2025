@@ -125,7 +125,8 @@ get_header( 'brochure' ); ?>
 		}
 
 		.brochure-product {
-			border: 2px solid #000;
+			.card {
+			border: 1px solid rgba( 0 0 0 / 0.175);
 			border-radius: 16px;
 		}
 
@@ -241,8 +242,8 @@ get_header( 'brochure' ); ?>
 						echo '<div class="brochure-product-image">' . get_the_post_thumbnail( get_the_ID(), 'medium' ) . '</div>';
 					}
 					?>
-					<div class="brochure-product-title">Product Name: <?= esc_html( get_field( 'product_name' ) ); ?></div>
 					<div class="brochure-product-sku">SKU: <?= esc_html( get_the_title() ); ?></div>
+					<div class="brochure-product-title"><?= esc_html( get_field( 'product_name' ) ); ?></div>
 					<div class="brochure-product-specs">
 						<?php
 						if ( $top_out_a || $top_out_b ) {
