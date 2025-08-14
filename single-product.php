@@ -224,7 +224,7 @@ get_header();
 
 			if ( $related_query->have_posts() ) {
 				?>
-				<h3>Related Products</h3>
+				<h3 class="mt-4">Related Products</h3>
 				<div class="row related_products">
 					<?php
 					while ( $related_query->have_posts() ) {
