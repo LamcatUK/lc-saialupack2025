@@ -13,6 +13,8 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
+get_header('brochure');
+
 ?><style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
 body {
