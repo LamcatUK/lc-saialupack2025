@@ -13,7 +13,7 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
-get_header('brochure');
+get_header( 'brochure' );
 
 ?><style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
@@ -172,6 +172,9 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 				echo '<div class="brochure-product-image">';
 				if ( has_post_thumbnail() ) {
 					echo get_the_post_thumbnail( get_the_ID(), 'medium' );
+				}
+				else {
+					echo '<img src="' . esc_url( get_stylesheet_directory_uri() . '/img/brochure-default.jpg' ) . '" alt="Placeholder">';
 				}
 				echo '</div>';
 				?>
