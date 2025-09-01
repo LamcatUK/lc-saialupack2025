@@ -1606,13 +1606,15 @@ function process_image_import( $zip ) {
     // Create a lookup array of SKU to post ID.
     $sku_lookup = array();
     foreach ( $products as $product_id ) {
-        $sku = get_the_title( $product_id );
-
-        $sku_lookup[ strtolower( $sku ) ] = $product_id;
+        $sku_lookup[ strtolower( get_the_title( $product_id ) ) ] = $product_id;
     }
 
     // Supported image extensions.
     $supported_extensions = array( 'jpg', 'jpeg', 'png', 'webp' );
+
+    // Process images in batches.
+    $batch_size  = 10;
+    $batch_count = 0;
 
     for ( $i = 0; $i < $zip->numFiles; $i++ ) {
         $filename = $zip->getNameIndex( $i );
@@ -1634,8 +1636,8 @@ function process_image_import( $zip ) {
         $extension = strtolower( $pathinfo['extension'] );
 
         // Check if extension is supported.
-        if ( ! in_array( $extension, $supported_extensions ) ) {
-            $results['failed']++;
+        if ( ! in_array( $extension, $supported_extensions, true ) ) {
+            ++$results['failed'];
             $results['failures'][] = array(
                 'filename' => $filename,
                 'reason'   => 'Unsupported file type',
@@ -1684,6 +1686,12 @@ function process_image_import( $zip ) {
                 'reason'   => $import_result['error'],
             );
         }
+
+        // Batch processing: Pause after every batch.
+        if ( ++$batch_count >= $batch_size ) {
+            $batch_count = 0;
+            sleep( 1 ); // Pause for 1 second to avoid server overload.
+        }
     }
 
     return $results;
@@ -1696,7 +1704,8 @@ function process_image_import( $zip ) {
  * @param string $filename     The filename of the image.
  * @param string $file_content The raw file content of the image.
  * @param string $sku          The SKU of the product.
- * @return array               Result of the import operation.
+ *
+ * @return array Result of the import operation.
  */
 function import_product_image( $product_id, $filename, $file_content, $sku ) {
     // Create a temporary file.
@@ -1704,7 +1713,7 @@ function import_product_image( $product_id, $filename, $file_content, $sku ) {
     if ( ! $temp_file ) {
         return array(
             'success' => false,
-            'error' => 'Could not create temporary file',
+            'error'   => 'Could not create temporary file',
         );
     }
 
