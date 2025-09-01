@@ -34,14 +34,14 @@ get_header();
 		?>
 		</section>
 		<div class="row">
-			<div class="col-md-6 text-center my-auto">
+			<div class="col-md-4 text-center my-auto">
 				<?php
 				if ( has_post_thumbnail() ) {
 					the_post_thumbnail( 'large', array( 'class' => 'img-fluid' ) );
 				}
 				?>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-7 offset-md-1">
 				<h1 class="h2"><?= esc_html( get_field( 'product_name' ) ); ?></h1>
 				<h2 class="h3">Product Information</h2>
 				<?php
