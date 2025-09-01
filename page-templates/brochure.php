@@ -1,13 +1,15 @@
 <?php
 /**
  * Template Name: Brochure
+ *
+ * @package lc-saialupack2025
  */
 
-defined ( 'ABSPATH' ) || exit;
+defined( 'ABSPATH' ) || exit;
 
 // if not logged in, redirect to home.
 if ( ! is_user_logged_in() ) {
-	wp_redirect( home_url() );
+	wp_safe_redirect( home_url() );
 	exit;
 }
 
@@ -123,14 +125,16 @@ body {
 }
 </style>
 <?php
-// Get product types (taxonomy terms)
-$product_types = get_terms( array(
-	'taxonomy'   => 'product_type',
-	'hide_empty' => true,
-) );
+// Get product types (taxonomy terms).
+$product_types = get_terms(
+	array(
+		'taxonomy'   => 'product_type',
+		'hide_empty' => true,
+	)
+);
 if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 	foreach ( $product_types as $product_type ) {
-		// Get products for this type, ordered by SKU (post title)
+		// Get products for this type, ordered by SKU (post title).
 		$args = array(
 			'post_type'      => 'product',
 			'tax_query'      => array(
@@ -144,6 +148,7 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 		);
+
 		$products = new WP_Query( $args );
 		if ( $products->have_posts() ) {
 			echo '<section class="brochure-product-type">';
@@ -161,13 +166,13 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 				$depth     = get_field( 'depth', get_the_ID() );
 				$capacity  = get_field( 'capacity', get_the_ID() );
 
-			echo '<div class="brochure-product">';
-			echo '<div class="brochure-product-image">';
-			if ( has_post_thumbnail() ) {
-				echo get_the_post_thumbnail( get_the_ID(), 'medium' );
-			}
-			echo '</div>';
-			?>
+				echo '<div class="brochure-product">';
+				echo '<div class="brochure-product-image">';
+				if ( has_post_thumbnail() ) {
+					echo get_the_post_thumbnail( get_the_ID(), 'medium' );
+				}
+				echo '</div>';
+				?>
 				<div class="brochure-product-sku">SKU: <?= esc_html( get_the_title() ); ?></div>
 				<div class="brochure-product-title"><?= esc_html( get_field( 'product_name' ) ); ?></div>
 				<div class="brochure-product-specs">
@@ -223,8 +228,8 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 				</div>
 				<?php
 				echo '</div>';
-				$count++;
-				if ( $count % 12 === 0 && $products->current_post + 1 < $products->post_count ) {
+				++$count;
+				if ( 0 === $count % 12 && $products->current_post + 1 < $products->post_count ) {
 					echo '</div><div class="brochure-products" style="page-break-before: always;">';
 				}
 			}

@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 <main id="main">
-	<div class="container">
+	<div class="container pb-5">
 		<section class="yoast-breadcrumbs pb-3">
 		<?php
 		echo '<a href="/">Home</a>';
@@ -113,45 +113,90 @@ get_header();
 						<?php
 					}
 					?>
+					<tr>
+						<th>SKU:</th>
+						<td colspan=2><?= esc_html( $sku ); ?></td>
+					</tr>
+					<?php
+					$product_type_terms = get_the_terms( get_the_ID(), 'product_type' );
+
+					if ( $product_type_terms && ! is_wp_error( $product_type_terms ) ) {
+						?>
+						<tr>
+							<th>Product Type</th>
+							<td colspan=2>
+								<?php
+								$product_type_names = wp_list_pluck( $product_type_terms, 'name' );
+
+								$product_type_links = array_map(
+									function ( $term ) {
+										$term_link = get_term_link( $term, 'product_type' );
+										if ( ! is_wp_error( $term_link ) ) {
+											return '<a href="' . esc_url( $term_link ) . '">' . esc_html( $term ) . '</a>';
+										}
+										return esc_html( $term );
+									},
+									$product_type_names
+								);
+
+								echo wp_kses( implode( ', ', $product_type_links ), array( 'a' => array( 'href' => array() ) ) );
+								?>
+							</td>
+						</tr>
+						<?php
+					}
+
+					$edge_type_terms = get_the_terms( get_the_ID(), 'edge_type' );
+
+					if ( $edge_type_terms && ! is_wp_error( $edge_type_terms ) ) {
+						?>
+						<tr>
+							<th>Edge Type</th>
+							<td colspan=2>
+								<?php
+								$edge_type_names = wp_list_pluck( $edge_type_terms, 'name' );
+								echo esc_html( implode( ', ', $edge_type_names ) );
+								?>
+							</td>
+						</tr>
+						<?php
+					}
+
+					$product_category_terms = get_the_terms( get_the_ID(), 'product_category' );
+
+					if ( $product_category_terms && ! is_wp_error( $product_category_terms ) ) {
+						?>
+						<tr>
+							<th>Product Category</th>
+							<td colspan=2>
+								<?php
+								$product_category_names = wp_list_pluck( $product_category_terms, 'name' );
+								echo esc_html( implode( ', ', $product_category_names ) );
+								?>
+							</td>
+						</tr>
+						<?php
+					}
+
+					$usage_category_terms = get_the_terms( get_the_ID(), 'usage' );
+
+					if ( $usage_category_terms && ! is_wp_error( $usage_category_terms ) ) {
+						?>
+						<tr>
+							<th>Usage Category</th>
+							<td colspan=2>
+								<?php
+								$usage_category_names = wp_list_pluck( $usage_category_terms, 'name' );
+								echo esc_html( implode( ', ', $usage_category_names ) );
+								?>
+							</td>
+						</tr>
+						<?php
+					}
+
+					?>
 				</table>
-
-				<div class="mb-2"><strong>SKU:</strong> <?= esc_html( $sku ); ?></div>
 				<?php
-				$product_type_terms = get_the_terms( get_the_ID(), 'product_type' );
-
-				if ( $product_type_terms && ! is_wp_error( $product_type_terms ) ) {
-					echo '<div class="mb-2"><strong>Product Type:</strong> ';
-					$product_type_names = wp_list_pluck( $product_type_terms, 'name' );
-					echo esc_html( implode( ', ', $product_type_names ) );
-					echo '</div>';
-				}
-
-				$edge_type_terms = get_the_terms( get_the_ID(), 'edge_type' );
-
-				if ( $edge_type_terms && ! is_wp_error( $edge_type_terms ) ) {
-					echo '<div class="mb-2"><strong>Edge Type:</strong> ';
-					$edge_type_names = wp_list_pluck( $edge_type_terms, 'name' );
-					echo esc_html( implode( ', ', $edge_type_names ) );
-					echo '</div>';
-				}
-
-				$product_category_terms = get_the_terms( get_the_ID(), 'product_category' );
-
-				if ( $product_category_terms && ! is_wp_error( $product_category_terms ) ) {
-					echo '<div class="mb-2"><strong>Product Category:</strong> ';
-					$product_category_names = wp_list_pluck( $product_category_terms, 'name' );
-					echo esc_html( implode( ', ', $product_category_names ) );
-					echo '</div>';
-				}
-
-				$usage_category_terms = get_the_terms( get_the_ID(), 'usage' );
-
-				if ( $usage_category_terms && ! is_wp_error( $usage_category_terms ) ) {
-					echo '<div class="mb-2"><strong>Usage Category:</strong> ';
-					$usage_category_names = wp_list_pluck( $usage_category_terms, 'name' );
-					echo esc_html( implode( ', ', $usage_category_names ) );
-					echo '</div>';
-				}
 
 				$samples_available = get_field( 'samples_available' );
 				if ( is_array( $samples_available ) && in_array( 'Yes', $samples_available, true ) ) {
@@ -170,8 +215,13 @@ get_header();
 			}
 			?>
 		</div>
-		
+	</div>
+	<?php
+	get_template_part( 'page-templates/blocks/lc-cta' );
+	?>
+	<div class="container pt-5">
 		<?php
+
 		// Get related products based on shared categories or usage.
 		$current_product_id = get_the_ID();
 		$related_products   = array();

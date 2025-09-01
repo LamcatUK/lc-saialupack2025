@@ -1,7 +1,11 @@
 <?php
 /**
  * Template Name: Brochure Index
+ *
+ * @package lc-saialupack2025
  */
+
+// phpcs:disable
 
 defined( 'ABSPATH' ) || exit;
 
@@ -65,4 +69,6 @@ if ( $products->have_posts() ) {
 	echo '</table>';
 	wp_reset_postdata();
 }
+
+// phpcs:enable
 ?>

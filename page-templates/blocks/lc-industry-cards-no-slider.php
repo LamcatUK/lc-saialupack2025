@@ -34,7 +34,7 @@ $bgcolour   = $background ? $background : 'white';
 				$industry_link  = get_permalink( $child->ID );
 				$industry_title = get_the_title( $child->ID );
 				?>
-			<a class="lc-industry-card" href="<?= esc_url( $industry_link ); ?>'">
+			<a class="lc-industry-card" href="<?= esc_url( $industry_link ); ?>">
 				<?= wp_kses_post( $industry_image ); ?>
 				<div class="lc-industry-card__overlay"></div>
 				<h3 class="lc-industry-card__title"><?= esc_html( $industry_title ); ?></h3>
