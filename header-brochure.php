@@ -11,7 +11,12 @@
 defined( 'ABSPATH' ) || exit;
 session_start();
 // Hide admin bar for this template only.
-add_filter( 'show_admin_bar', '__return_false' );
+add_action(
+    'init',
+    function () {
+        add_filter( 'show_admin_bar', '__return_false' );
+    }
+);
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
