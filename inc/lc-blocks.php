@@ -2,8 +2,7 @@
 /**
  * File: lc-blocks.php
  * Description: Registers custom ACF blocks and modifies Gutenberg core blocks for the theme.
- * Author: Your Name
- * Theme: Valewood Bathrooms
+ * Theme: Sai Alupack 2025
  *
  * @package lc-saialupack2025
  */

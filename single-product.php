@@ -40,6 +40,7 @@ get_header();
 					the_post_thumbnail( 'large', array( 'class' => 'img-fluid' ) );
 				}
 				?>
+				<div class="fs-300">Some of the images shown are design concepts for illustrative purposes only. Final products may differ in appearance, features, or specifications.</div>
 			</div>
 			<div class="col-md-7 offset-md-1">
 				<h1 class="h2"><?= esc_html( get_field( 'product_name' ) ); ?></h1>

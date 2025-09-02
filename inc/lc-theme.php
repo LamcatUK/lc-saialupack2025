@@ -17,7 +17,6 @@ require_once LC_THEME_DIR . '/inc/lc-taxonomies.php';
 
 /* require_once LC_THEME_DIR . '/inc/cli-import-products.php'; */
 
-
 if ( ! defined( 'LC_COLOUR_PALETTE' ) ) {
 	define(
         'LC_COLOUR_PALETTE',

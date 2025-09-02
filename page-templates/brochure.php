@@ -13,6 +13,8 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
+// phpcs:disable
+
 get_header( 'brochure' );
 
 ?><style>
@@ -244,5 +246,7 @@ if ( ! empty( $product_types ) && ! is_wp_error( $product_types ) ) {
 		wp_reset_postdata();
 	}
 }
-?>
-<?php get_footer( 'brochure' ); ?>
+
+get_footer( 'brochure' );
+
+// phpcs:enable
