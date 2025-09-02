@@ -1265,6 +1265,62 @@ function import_single_product( $data, $header_map, $row_number ) {
 }
 
 /**
+ * Generate a custom slug for products in the format:
+ * {product-name}-{top-out-a}-{top-in-a}-{post-title}
+ *
+ * @param int $post_id The ID of the post being saved.
+ */
+function generate_custom_product_slug( $post_id ) {
+    // Ensure this runs only for 'product' post type.
+    if ( get_post_type( $post_id ) !== 'product' ) {
+        return;
+    }
+
+    // Avoid infinite loops by checking if this is an autosave or revision.
+    if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+        return;
+    }
+
+    // Use a static variable to prevent recursion.
+    static $is_updating = false;
+    if ( $is_updating ) {
+        return;
+    }
+    $is_updating = true;
+
+    // Get the product fields.
+    $product_name = get_field( 'product_name', $post_id );
+    $top_out_a    = get_field( 'top_out_a', $post_id );
+    $top_in_a     = get_field( 'top_in_a', $post_id );
+    $post_title   = get_the_title( $post_id );
+
+    // Sanitize and build the slug parts.
+    $slug_parts = array(
+        sanitize_title( $product_name ),
+        sanitize_title( $top_out_a ),
+        sanitize_title( $top_in_a ),
+        sanitize_title( $post_title ),
+    );
+
+    // Remove empty parts and join with hyphens.
+    $custom_slug = implode( '-', array_filter( $slug_parts ) );
+
+    // Update the post slug.
+    wp_update_post(
+        array(
+            'ID'        => $post_id,
+            'post_name' => $custom_slug,
+        )
+    );
+
+    // Reset the static variable.
+    $is_updating = false;
+}
+
+// Hook into the save process for products.
+add_action( 'save_post', 'generate_custom_product_slug' );
+
+/**
  * Generates and downloads the products CSV file
  */
 function export_products_csv() {
@@ -1796,3 +1852,4 @@ function import_product_image( $product_id, $filename, $file_content, $sku ) {
         'attachment_id' => $attachment_id,
     );
 }
+
